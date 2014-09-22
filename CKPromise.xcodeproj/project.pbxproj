@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F6627B119D010DB00A26098 /* CKPromise+Extra.h in Headers */ = {isa = PBXBuildFile; fileRef = 0F6627AF19D010DB00A26098 /* CKPromise+Extra.h */; };
 		AA4D462219C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
 		AA4D462C19C8AB470010D0EE /* CKPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.m */; };
 		AA4D463419C8AB470010D0EE /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D463319C8AB470010D0EE /* SenTestingKit.framework */; };
@@ -27,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0F6627AF19D010DB00A26098 /* CKPromise+Extra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CKPromise+Extra.h"; sourceTree = "<group>"; };
 		AA4D461E19C8AB460010D0EE /* libCKPromise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCKPromise.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4D462119C8AB470010D0EE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		AA4D462419C8AB470010D0EE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -108,6 +110,7 @@
 			children = (
 				AA4D462A19C8AB470010D0EE /* CKPromise.h */,
 				AA4D462B19C8AB470010D0EE /* CKPromise.m */,
+				0F6627AF19D010DB00A26098 /* CKPromise+Extra.h */,
 				AA4D462819C8AB470010D0EE /* Supporting Files */,
 			);
 			path = CKPromise;
@@ -146,6 +149,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0F6627B119D010DB00A26098 /* CKPromise+Extra.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

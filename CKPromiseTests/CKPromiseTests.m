@@ -8,14 +8,22 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 #import "CKPromise.h"
+#import "CKPromise+Extra.h"
+#include <sys/time.h>
+
+double microtime(){
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    return time.tv_sec + time.tv_usec / 1000000.0;
+}
 
 @interface CKPromiseTests : SenTestCase
 @end
 
 #define wait(condition, timeout) \
 {\
-time_t start = time(NULL);\
-while((condition) && time(NULL) - start < timeout){\
+double start = microtime();\
+while((condition) && microtime() - start < timeout){\
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];\
 }\
 }

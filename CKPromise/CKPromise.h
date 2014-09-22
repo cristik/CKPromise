@@ -28,22 +28,14 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 @interface CKPromise : NSObject
 
 + (CKPromise*)promise;
-+ (CKPromise*)resolvedPromise:(id)value;
-+ (CKPromise*)rejectedPromise:(id)reason;
-+ (CKPromise*)aggregatePromise:(NSArray*)promises;
 
-
+// allows callers to observe the promise state
+// resolveHanlder is called with the promise value when the promise is resolved
+// rejectHanlder is called with the promise fail reason when the promise is rejected
+// returns a new promise
 - (CKPromise*)then:(CKPromiseHandler)resolveHandler :(CKPromiseHandler)rejectHandler;
-- (CKPromise*)done:(CKPromiseHandler)resolveHandler;
-- (CKPromise*)fail:(CKPromiseHandler)rejectHandler;
-- (CKPromise*)always:(CKPromiseHandler)handler;
 
 - (void)resolve:(id)value;
 - (void)reject:(id)reason;
-
-
-- (CKPromiseState)state;
-- (id)value;
-- (id)reason;
 
 @end

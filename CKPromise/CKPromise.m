@@ -7,6 +7,7 @@
 //
 
 #import "CKPromise.h"
+#import "CKPromise+Extra.h"
 
 @implementation CKTypeErrorException
 + (id)exception{
@@ -123,6 +124,16 @@
         [_rejectHandlers addObject:errorHandlerWrapper];
     }
     return resultPromise;
+}
+
+- (CKPromise*)then2:(CKPromiseHandler2)resolveHandler :(CKPromiseHandler2)rejectHandler{
+    return [self then:^id(id value) {
+        resolveHandler(value);
+        return nil;
+    } :^id(id reason) {
+        rejectHandler(reason);
+        return nil;
+    }];
 }
 
 - (CKPromise*)done:(CKPromiseHandler)resolveHandler{
