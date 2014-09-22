@@ -415,13 +415,13 @@
     NSMutableArray *callbacksOrder = [NSMutableArray arrayWithCapacity:3];
     [[[promise then:^id(id value){
         [callbacksOrder addObject:@1];
-        return [CKPromise resolved:@1];
+        return [CKPromise resolvedPromise:@1];
     } :nil] then:^id(id value){
         [callbacksOrder addObject:@2];
-        return [CKPromise rejected:@2];
+        return [CKPromise rejectedPromise:@2];
     } :nil] then:^id(id value){
         [callbacksOrder addObject:@3];
-        return [CKPromise resolved:@3];
+        return [CKPromise resolvedPromise:@3];
     } :^id(id reason){
         [callbacksOrder addObject:@4];
         return nil;
@@ -429,5 +429,36 @@
     [promise resolve:@0];
     [self waitWhileBlock:^BOOL{return YES;} timeout:0.1];
     STAssertEqualObjects(callbacksOrder, (@[@1,@2,@4]), @"Not the expected callbacks");
+}
+
+- (void)test_aggregate_waitsForAllPromises{
+    CKPromise *promise1 = [CKPromise promise];
+    CKPromise *promise2 = [CKPromise promise];
+    CKPromise *promise3 = [CKPromise promise];
+    promise = [CKPromise aggregatePromise:@[promise1, promise2, promise3]];
+    [promise1 resolve:nil];
+    [promise2 resolve:nil];
+    [self waitWhileBlock:^BOOL{return YES;} timeout:0.1];
+    STAssertEquals(promise.state, CKPromiseStatePending, @"Should be in pending until all promises have a resolution");
+}
+
+- (void)test_aggregate_resolvesIfAllPromisesResolve{
+    CKPromise *promise1 = [CKPromise promise];
+    CKPromise *promise2 = [CKPromise promise];
+    promise = [CKPromise aggregatePromise:@[promise1, promise2]];
+    [promise1 resolve:nil];
+    [promise2 resolve:nil];
+    [self waitWhileBlock:^BOOL{return promise.state == CKPromiseStatePending;} timeout:0.1];
+    STAssertEquals(promise.state, CKPromiseStateResolved, @"Should be resolved if all promises have are resolved");
+}
+
+- (void)test_aggregate_rejectsIfOnePromiseFails{
+    CKPromise *promise1 = [CKPromise promise];
+    CKPromise *promise2 = [CKPromise promise];
+    promise = [CKPromise aggregatePromise:@[promise1, promise2]];
+    [promise1 reject:nil];
+    [promise2 resolve:nil];
+    [self waitWhileBlock:^BOOL{return promise.state == CKPromiseStatePending;} timeout:0.1];
+    STAssertEquals(promise.state, CKPromiseStateRejected, @"Should be resolved if all promises have are resolved");
 }
 @end

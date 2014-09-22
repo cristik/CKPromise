@@ -22,17 +22,27 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 @interface CKHasResolutionException: NSException
 @end
 
+/**
+ * Promise A+ implementation for Objective-C. See http://promisesaplus.com/ for detailed specs
+ */
 @interface CKPromise : NSObject
 
-- (CKPromise*)then:(CKPromiseHandler)fulfillHandler :(CKPromiseHandler)rejectHandler;
-
 + (CKPromise*)promise;
-+ (CKPromise*)resolved:(id)value;
-+ (CKPromise*)rejected:(id)reason;
++ (CKPromise*)resolvedPromise:(id)value;
++ (CKPromise*)rejectedPromise:(id)reason;
++ (CKPromise*)aggregatePromise:(NSArray*)promises;
+
+
+- (CKPromise*)then:(CKPromiseHandler)resolveHandler :(CKPromiseHandler)rejectHandler;
+- (CKPromise*)done:(CKPromiseHandler)resolveHandler;
+- (CKPromise*)fail:(CKPromiseHandler)rejectHandler;
+- (CKPromise*)always:(CKPromiseHandler)handler;
 
 - (void)resolve:(id)value;
 - (void)reject:(id)reason;
 
 - (CKPromiseState)state;
+- (id)value;
+- (id)reason;
 
 @end

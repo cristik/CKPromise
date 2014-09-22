@@ -22,20 +22,80 @@
 @end
 
 @implementation CKPromise{
-    BOOL _resolved;
-    BOOL _rejected;
+    CKPromiseState _state;
     id _value;
     id _reason;
     NSMutableArray *_resolveHandlers;
     NSMutableArray *_rejectHandlers;
 }
 
-- (CKPromise*)then:(CKPromiseHandler)fulfillHandler :(CKPromiseHandler)rejectHandler{
++ (CKPromise*)promise{
+    return [[self alloc] init];
+}
+
++ (CKPromise*)resolvedPromise:(id)value{
+    CKPromise *promise = [self promise];
+    [promise resolve:value];
+    return promise;
+}
+
++ (CKPromise*)rejectedPromise:(id)reason{
+    CKPromise *promise = [self promise];
+    [promise reject:reason];
+    return promise;
+}
+
++ (CKPromise*)aggregatePromise:(NSArray*)promises{
+    CKPromise *promise = [self promise];
+    NSMutableArray *values = [NSMutableArray arrayWithCapacity:promises.count];
+    NSMutableArray *reasons = [NSMutableArray arrayWithCapacity:promises.count];
+    __block NSUInteger runningPromises = promises.count;
+    __block BOOL hadError = NO;
+    void(^handler)(id, BOOL) = ^(id obj, BOOL resolved){
+        if(resolved && obj) [values addObject:obj];
+        else if(!resolved && obj) [reasons addObject:obj];
+        if(!resolved) hadError = YES;
+        runningPromises --;
+        if(runningPromises == 0){
+            if(hadError){
+                [promise reject:reasons];
+            }else{
+                [promise resolve:values];
+            }
+        }
+
+    };
+    for(CKPromise *promise in promises){
+        [promise then:^id(id value) {
+            handler(value, YES);
+            return nil;
+        } :^id(id reason) {
+            handler(reason, NO);
+            return nil;
+        }];
+    }
+    return promise;
+}
+
+- (id)init{
+    if(self = [super init]){
+        _resolveHandlers = [[NSMutableArray alloc] init];
+        _rejectHandlers = [[NSMutableArray alloc] init];
+        _state = CKPromiseStatePending;
+    }
+    return self;
+}
+
+- (void)dispatch:(dispatch_block_t)block{
+    dispatch_async(dispatch_get_main_queue(), block);
+}
+
+- (CKPromise*)then:(CKPromiseHandler)resolveHandler :(CKPromiseHandler)rejectHandler{
     CKPromise *resultPromise = [CKPromise promise];
     dispatch_block_t successHandlerWrapper = ^{
         @try{
-            if(fulfillHandler){
-                [resultPromise resolve:fulfillHandler(_value)];
+            if(resolveHandler){
+                [resultPromise resolve:resolveHandler(_value)];
             }else{
                 [resultPromise resolve:_value];
             }
@@ -54,10 +114,10 @@
             [resultPromise reject:ex];
         }
     };
-    if(_resolved){
-        dispatch_async(dispatch_get_main_queue(), successHandlerWrapper);
-    }else if(_rejected){
-        dispatch_async(dispatch_get_main_queue(), errorHandlerWrapper);
+    if(_state == CKPromiseStateResolved){
+        [self dispatch:successHandlerWrapper];
+    }else if(_state == CKPromiseStateRejected){
+        [self dispatch:errorHandlerWrapper];
     }else{
         [_resolveHandlers addObject:successHandlerWrapper];
         [_rejectHandlers addObject:errorHandlerWrapper];
@@ -65,32 +125,20 @@
     return resultPromise;
 }
 
-+ (CKPromise*)promise{
-    return [[self alloc] init];
+- (CKPromise*)done:(CKPromiseHandler)resolveHandler{
+    return [self then:resolveHandler :nil];
 }
 
-+ (CKPromise*)resolved:(id)value{
-    CKPromise *promise = [self promise];
-    [promise resolve:value];
-    return promise;
+- (CKPromise*)fail:(CKPromiseHandler)rejectHandler{
+    return [self then:nil :rejectHandler];
 }
 
-+ (CKPromise*)rejected:(id)reason{
-    CKPromise *promise = [self promise];
-    [promise reject:reason];
-    return promise;
-}
-
-- (id)init{
-    if(self = [super init]){
-        _resolveHandlers = [[NSMutableArray alloc] init];
-        _rejectHandlers = [[NSMutableArray alloc] init];
-    }
-    return self;
+- (CKPromise*)always:(CKPromiseHandler)handler{
+    return [self then:handler :handler];
 }
 
 - (void)resolve:(id)value{
-    if(_resolved || _rejected){
+    if(_state != CKPromiseStatePending){
         [[CKHasResolutionException exception] raise];
     }
     //1. If promise and x refer to the same object, reject promise with a TypeError as the reason.
@@ -117,35 +165,41 @@
     // this doesn't apply to Objective-C
     
     //4. If x is not an object or function, fulfill promise with x.
-    _resolved = YES;
+    _state = CKPromiseStateResolved;
     _value = value;
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [self dispatch:^{
         for(dispatch_block_t resolveHandler in _resolveHandlers){
             resolveHandler();
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
-    });
+    }];
 }
 
 - (void)reject:(id)reason{
-    if(_resolved || _rejected){
+    if(_state != CKPromiseStatePending){
         [[CKHasResolutionException exception] raise];
     }
-    _rejected = YES;
+    _state = CKPromiseStateRejected;
     _reason = reason;
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [self dispatch:^{
         for(dispatch_block_t rejectHandler in _rejectHandlers){
             rejectHandler();
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
-    });
+    }];
 }
 
 - (CKPromiseState)state{
-    if(_resolved) return CKPromiseStateResolved;
-    else if(_rejected) return CKPromiseStateRejected;
-    else return CKPromiseStatePending;
+    return _state;
+}
+
+- (id)value{
+    return _value;
+}
+
+- (id)reason{
+    return _reason;
 }
 @end
