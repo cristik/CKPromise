@@ -12,6 +12,15 @@
 @interface CKPromiseTests : SenTestCase
 @end
 
+#define wait(condition, timeout) \
+{\
+time_t start = time(NULL);\
+while((condition) && time(NULL) - start < timeout){\
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];\
+}\
+}
+
+
 @implementation CKPromiseTests{
     CKPromise *promise;
 }
@@ -23,20 +32,6 @@
 
 - (void)tearDown{
     [super tearDown];
-}
-
-- (void)waitForCondtion:(BOOL*)condition timeout:(NSTimeInterval)seconds{
-    NSDate *start = [NSDate date];
-    while(!*condition && [[NSDate date] timeIntervalSinceDate:start] < seconds){
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
-    };
-}
-
-- (void)waitWhileBlock:(BOOL(^)())block timeout:(NSTimeInterval)seconds{
-    NSDate *start = [NSDate date];
-    while(block() && [[NSDate date] timeIntervalSinceDate:start] < seconds){
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
-    };
 }
 
 // # Promise States
@@ -110,14 +105,14 @@
     [promise then:nil:nil];
     [promise resolve:@1];
     //nothing should happen, no exceptions or other nasty stuff
-    [self waitWhileBlock:^BOOL{return NO;} timeout:0.1];
+    wait(NO, 0.1);
 }
 
 - (void)test_reject_withoutCallback{
     [promise then:nil:nil];
     [promise reject:@1];
     //nothing should happen, no exceptions or other nasty stuff
-    [self waitWhileBlock:^BOOL{return NO;} timeout:0.1];
+    wait(NO, 0.1);
 }
 
 //2. If onFulfilled is a function:
@@ -142,7 +137,7 @@
     STAssertFalse(executed, @"Callback should not be executed before resolving");
     [promise resolve:@12];
     STAssertFalse(executed, @"Callback should not be executed in this cycle");
-    [self waitForCondtion:&executed timeout:1];
+    wait(!executed, 1);
     STAssertTrue(executed, @"Resolved dallback not executed");
     STAssertFalse(rejectedExecuted, @"Rejected callback was executed");
     STAssertEquals(executeCount, 1, @"Callback not executed exactly once");
@@ -171,7 +166,7 @@
     STAssertFalse(executed, @"Callback should not be executed before resolving");
     [promise reject:@13];
     STAssertFalse(executed, @"Callback should not be executed in this cycle");
-    [self waitForCondtion:&executed timeout:1];
+    wait(!executed, 1);
     STAssertTrue(executed, @"Rejected dallback not executed");
     STAssertFalse(resolvedExecuted, @"Resolved callback was executed");
     STAssertEquals(executeCount, 1, @"Callback not executed exactly once");
@@ -198,9 +193,7 @@
         return nil;
     } :nil];
     [promise resolve:@4];
-    [self waitWhileBlock:^BOOL{
-        return callbacksOrder.count < 3;
-    } timeout:1.0];
+    wait(callbacksOrder.count < 3, 1.0);
     STAssertEqualObjects(callbacksOrder, (@[@1,@2,@3]), @"Resolve callbacks not called in order");
 }
 
@@ -220,9 +213,7 @@
         return nil;
     }];
     [promise reject:@4];
-    [self waitWhileBlock:^BOOL{
-        return callbacksOrder.count < 3;
-    } timeout:1.0];
+    wait(callbacksOrder.count < 3, 1.0);
     STAssertEqualObjects(callbacksOrder, (@[@1,@2,@3]), @"Resolve callbacks not called in order");
 }
 
@@ -244,9 +235,7 @@
         return nil;
     } :nil];
     [promise resolve:@18];
-    [self waitWhileBlock:^BOOL{
-        return promise2.state == CKPromiseStatePending;
-    } timeout:1.0];
+    wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateResolved, @"Promise2 should be resolved");
     STAssertEqualObjects(value, @19, @"Incorrect promise2 value");
 }
@@ -261,9 +250,7 @@
         return nil;
     } :nil];
     [promise reject:@28];
-    [self waitWhileBlock:^BOOL{
-        return promise2.state == CKPromiseStatePending;
-    } timeout:1.0];
+    wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateResolved, @"Promise2 should be resolved");
     STAssertEqualObjects(value, @29, @"Incorrect promise2 value");
 
@@ -282,9 +269,7 @@
         return nil;
     }];
     [promise resolve:@18];
-    [self waitWhileBlock:^BOOL{
-        return promise2.state == CKPromiseStatePending;
-    } timeout:1.0];
+    wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateRejected, @"Promise2 should be rejected");
     STAssertEquals(reason, ex, @"Incorrect promise2 reason");
 }
@@ -301,9 +286,7 @@
         return nil;
     }];
     [promise reject:@28];
-    [self waitWhileBlock:^BOOL{
-        return promise2.state == CKPromiseStatePending;
-    } timeout:1.0];
+    wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateRejected, @"Promise2 should be rejected");
     STAssertEquals(reason, ex, @"Incorrect promise2 reason");
     
@@ -318,9 +301,7 @@
         return nil;
     } :nil];
     [promise resolve:@18];
-    [self waitWhileBlock:^BOOL{
-        return promise2.state == CKPromiseStatePending;
-    } timeout:1.0];
+    wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateResolved, @"Promise2 should be resolved");
     STAssertEqualObjects(value, @18, @"Incorrect promise2 value");
 }
@@ -334,9 +315,7 @@
         return nil;
     }];
     [promise reject:@18];
-    [self waitWhileBlock:^BOOL{
-        return promise2.state == CKPromiseStatePending;
-    } timeout:1.0];
+    wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateRejected, @"Promise2 should be resolved");
     STAssertEqualObjects(reason, @18, @"Incorrect promise2 value");
 }
@@ -359,7 +338,7 @@
 - (void)test_resolve_pendingPromise_staysInPending{
     CKPromise *x = [CKPromise promise];
     [promise resolve:x];
-    [self waitWhileBlock:^BOOL{return NO;} timeout:0.1];
+    wait(NO, 0.1);
     STAssertEquals(promise.state, CKPromiseStatePending, @"Should be in pending");
 }
 
@@ -373,7 +352,7 @@
     CKPromise *x = [CKPromise promise];
     [promise resolve:x];
     [x resolve:@"x"];
-    [self waitWhileBlock:^BOOL{return YES;} timeout:0.1];
+    wait(YES, 0.1);
     STAssertEquals(promise.state, CKPromiseStateResolved, @"Should be in resolved");
     STAssertEqualObjects(value, @"x", @"Should have been resolved with same value");
 }
@@ -388,7 +367,7 @@
     CKPromise *x = [CKPromise promise];
     [promise resolve:x];
     [x reject:@"y"];
-    [self waitWhileBlock:^BOOL{return YES;} timeout:0.1];
+    wait(YES, 0.1);
     STAssertEquals(promise.state, CKPromiseStateRejected, @"Should be in resolved");
     STAssertEqualObjects(reason, @"y", @"Should have been rejected with same reason");
 }
@@ -404,30 +383,30 @@
         return nil;
     } :nil];
     [promise resolve:@"z"];
-    [self waitWhileBlock:^BOOL{return YES;} timeout:0.1];
+    wait(YES, 0.1);
     STAssertEquals(promise.state, CKPromiseStateResolved, @"Should be in resolved");
     STAssertEqualObjects(value, @"z", @"Should have been resolved with the provided value");
 }
 
 // If a promise is resolved with a thenable that participates in a circular thenable chain, such that the recursive nature of [[Resolve]](promise, thenable) eventually causes [[Resolve]](promise, thenable) to be called again, following the above algorithm will lead to infinite recursion. Implementations are encouraged, but not required, to detect such recursion and reject promise with an informative TypeError as the reason. [3.6]
 
-- (void)test_chain_onePromiseFails{
+- (void)test_chained_onePromiseFails{
     NSMutableArray *callbacksOrder = [NSMutableArray arrayWithCapacity:3];
-    [[[promise then:^id(id value){
+    [[[[promise done:^id(id value){
         [callbacksOrder addObject:@1];
         return [CKPromise resolvedPromise:@1];
-    } :nil] then:^id(id value){
+    }] done:^id(id value){
         [callbacksOrder addObject:@2];
         return [CKPromise rejectedPromise:@2];
-    } :nil] then:^id(id value){
+    }] done:^id(id value){
         [callbacksOrder addObject:@3];
         return [CKPromise resolvedPromise:@3];
-    } :^id(id reason){
+    }] fail:^id(id reason){
         [callbacksOrder addObject:@4];
         return nil;
     }];
     [promise resolve:@0];
-    [self waitWhileBlock:^BOOL{return YES;} timeout:0.1];
+    wait(YES, 0.1);
     STAssertEqualObjects(callbacksOrder, (@[@1,@2,@4]), @"Not the expected callbacks");
 }
 
@@ -438,7 +417,7 @@
     promise = [CKPromise aggregatePromise:@[promise1, promise2, promise3]];
     [promise1 resolve:nil];
     [promise2 resolve:nil];
-    [self waitWhileBlock:^BOOL{return YES;} timeout:0.1];
+    wait(YES, 0.1);
     STAssertEquals(promise.state, CKPromiseStatePending, @"Should be in pending until all promises have a resolution");
 }
 
@@ -448,7 +427,7 @@
     promise = [CKPromise aggregatePromise:@[promise1, promise2]];
     [promise1 resolve:nil];
     [promise2 resolve:nil];
-    [self waitWhileBlock:^BOOL{return promise.state == CKPromiseStatePending;} timeout:0.1];
+    wait(promise.state == CKPromiseStatePending, 0.1);
     STAssertEquals(promise.state, CKPromiseStateResolved, @"Should be resolved if all promises have are resolved");
 }
 
@@ -458,7 +437,7 @@
     promise = [CKPromise aggregatePromise:@[promise1, promise2]];
     [promise1 reject:nil];
     [promise2 resolve:nil];
-    [self waitWhileBlock:^BOOL{return promise.state == CKPromiseStatePending;} timeout:0.1];
+    wait(promise.state == CKPromiseStatePending, 0.1);
     STAssertEquals(promise.state, CKPromiseStateRejected, @"Should be resolved if all promises have are resolved");
 }
 @end
