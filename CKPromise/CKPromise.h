@@ -27,6 +27,8 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 - (CKPromise*)then:(CKPromiseHandler)fulfillHandler :(CKPromiseHandler)rejectHandler;
 
 + (CKPromise*)promise;
++ (CKPromise*)resolved:(id)value;
++ (CKPromise*)rejected:(id)reason;
 
 - (void)resolve:(id)value;
 - (void)reject:(id)reason;

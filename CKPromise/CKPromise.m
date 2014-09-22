@@ -69,6 +69,18 @@
     return [[self alloc] init];
 }
 
++ (CKPromise*)resolved:(id)value{
+    CKPromise *promise = [self promise];
+    [promise resolve:value];
+    return promise;
+}
+
++ (CKPromise*)rejected:(id)reason{
+    CKPromise *promise = [self promise];
+    [promise reject:reason];
+    return promise;
+}
+
 - (id)init{
     if(self = [super init]){
         _resolveHandlers = [[NSMutableArray alloc] init];

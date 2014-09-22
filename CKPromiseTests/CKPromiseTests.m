@@ -411,4 +411,23 @@
 
 // If a promise is resolved with a thenable that participates in a circular thenable chain, such that the recursive nature of [[Resolve]](promise, thenable) eventually causes [[Resolve]](promise, thenable) to be called again, following the above algorithm will lead to infinite recursion. Implementations are encouraged, but not required, to detect such recursion and reject promise with an informative TypeError as the reason. [3.6]
 
+- (void)test_chain_onePromiseFails{
+    NSMutableArray *callbacksOrder = [NSMutableArray arrayWithCapacity:3];
+    [[[promise then:^id(id value){
+        [callbacksOrder addObject:@1];
+        return [CKPromise resolved:@1];
+    } :nil] then:^id(id value){
+        [callbacksOrder addObject:@2];
+        return [CKPromise rejected:@2];
+    } :nil] then:^id(id value){
+        [callbacksOrder addObject:@3];
+        return [CKPromise resolved:@3];
+    } :^id(id reason){
+        [callbacksOrder addObject:@4];
+        return nil;
+    }];
+    [promise resolve:@0];
+    [self waitWhileBlock:^BOOL{return YES;} timeout:0.1];
+    STAssertEqualObjects(callbacksOrder, (@[@1,@2,@4]), @"Not the expected callbacks");
+}
 @end
