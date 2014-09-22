@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		AA4D462219C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
-		AA4D462C19C8AB470010D0EE /* KCPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* KCPromise.m */; };
+		AA4D462C19C8AB470010D0EE /* CKPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.m */; };
 		AA4D463419C8AB470010D0EE /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D463319C8AB470010D0EE /* SenTestingKit.framework */; };
 		AA4D463519C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
-		AA4D463819C8AB470010D0EE /* libKCPromise.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D461E19C8AB460010D0EE /* libKCPromise.a */; };
+		AA4D463819C8AB470010D0EE /* libCKPromise.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D461E19C8AB460010D0EE /* libCKPromise.a */; };
 		AA4D463E19C8AB470010D0EE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA4D463C19C8AB470010D0EE /* InfoPlist.strings */; };
-		AA4D464119C8AB470010D0EE /* KCPromiseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D464019C8AB470010D0EE /* KCPromiseTests.m */; };
+		AA4D464119C8AB470010D0EE /* CKPromiseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D464019C8AB470010D0EE /* CKPromiseTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,20 +27,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		AA4D461E19C8AB460010D0EE /* libKCPromise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libKCPromise.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA4D461E19C8AB460010D0EE /* libCKPromise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCKPromise.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4D462119C8AB470010D0EE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		AA4D462419C8AB470010D0EE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		AA4D462519C8AB470010D0EE /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		AA4D462619C8AB470010D0EE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		AA4D462919C8AB470010D0EE /* KCPromise-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KCPromise-Prefix.pch"; sourceTree = "<group>"; };
-		AA4D462A19C8AB470010D0EE /* KCPromise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KCPromise.h; sourceTree = "<group>"; };
-		AA4D462B19C8AB470010D0EE /* KCPromise.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KCPromise.m; sourceTree = "<group>"; };
-		AA4D463219C8AB470010D0EE /* KCPromiseTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KCPromiseTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA4D462919C8AB470010D0EE /* CKPromise-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CKPromise-Prefix.pch"; sourceTree = "<group>"; };
+		AA4D462A19C8AB470010D0EE /* CKPromise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKPromise.h; sourceTree = "<group>"; };
+		AA4D462B19C8AB470010D0EE /* CKPromise.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKPromise.m; sourceTree = "<group>"; };
+		AA4D463219C8AB470010D0EE /* CKPromiseTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CKPromiseTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4D463319C8AB470010D0EE /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		AA4D463B19C8AB470010D0EE /* KCPromiseTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "KCPromiseTests-Info.plist"; sourceTree = "<group>"; };
+		AA4D463B19C8AB470010D0EE /* CKPromiseTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CKPromiseTests-Info.plist"; sourceTree = "<group>"; };
 		AA4D463D19C8AB470010D0EE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		AA4D463F19C8AB470010D0EE /* KCPromiseTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KCPromiseTests.h; sourceTree = "<group>"; };
-		AA4D464019C8AB470010D0EE /* KCPromiseTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KCPromiseTests.m; sourceTree = "<group>"; };
+		AA4D464019C8AB470010D0EE /* CKPromiseTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKPromiseTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +57,7 @@
 			files = (
 				AA4D463419C8AB470010D0EE /* SenTestingKit.framework in Frameworks */,
 				AA4D463519C8AB470010D0EE /* Cocoa.framework in Frameworks */,
-				AA4D463819C8AB470010D0EE /* libKCPromise.a in Frameworks */,
+				AA4D463819C8AB470010D0EE /* libCKPromise.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,8 +67,8 @@
 		AA4D461519C8AB460010D0EE = {
 			isa = PBXGroup;
 			children = (
-				AA4D462719C8AB470010D0EE /* KCPromise */,
-				AA4D463919C8AB470010D0EE /* KCPromiseTests */,
+				AA4D462719C8AB470010D0EE /* CKPromise */,
+				AA4D463919C8AB470010D0EE /* CKPromiseTests */,
 				AA4D462019C8AB460010D0EE /* Frameworks */,
 				AA4D461F19C8AB460010D0EE /* Products */,
 			);
@@ -78,8 +77,8 @@
 		AA4D461F19C8AB460010D0EE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AA4D461E19C8AB460010D0EE /* libKCPromise.a */,
-				AA4D463219C8AB470010D0EE /* KCPromiseTests.octest */,
+				AA4D461E19C8AB460010D0EE /* libCKPromise.a */,
+				AA4D463219C8AB470010D0EE /* CKPromiseTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -104,38 +103,37 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		AA4D462719C8AB470010D0EE /* KCPromise */ = {
+		AA4D462719C8AB470010D0EE /* CKPromise */ = {
 			isa = PBXGroup;
 			children = (
-				AA4D462A19C8AB470010D0EE /* KCPromise.h */,
-				AA4D462B19C8AB470010D0EE /* KCPromise.m */,
+				AA4D462A19C8AB470010D0EE /* CKPromise.h */,
+				AA4D462B19C8AB470010D0EE /* CKPromise.m */,
 				AA4D462819C8AB470010D0EE /* Supporting Files */,
 			);
-			path = KCPromise;
+			path = CKPromise;
 			sourceTree = "<group>";
 		};
 		AA4D462819C8AB470010D0EE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				AA4D462919C8AB470010D0EE /* KCPromise-Prefix.pch */,
+				AA4D462919C8AB470010D0EE /* CKPromise-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		AA4D463919C8AB470010D0EE /* KCPromiseTests */ = {
+		AA4D463919C8AB470010D0EE /* CKPromiseTests */ = {
 			isa = PBXGroup;
 			children = (
-				AA4D463F19C8AB470010D0EE /* KCPromiseTests.h */,
-				AA4D464019C8AB470010D0EE /* KCPromiseTests.m */,
+				AA4D464019C8AB470010D0EE /* CKPromiseTests.m */,
 				AA4D463A19C8AB470010D0EE /* Supporting Files */,
 			);
-			path = KCPromiseTests;
+			path = CKPromiseTests;
 			sourceTree = "<group>";
 		};
 		AA4D463A19C8AB470010D0EE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				AA4D463B19C8AB470010D0EE /* KCPromiseTests-Info.plist */,
+				AA4D463B19C8AB470010D0EE /* CKPromiseTests-Info.plist */,
 				AA4D463C19C8AB470010D0EE /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -154,9 +152,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		AA4D461D19C8AB460010D0EE /* KCPromise */ = {
+		AA4D461D19C8AB460010D0EE /* CKPromise */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AA4D464419C8AB470010D0EE /* Build configuration list for PBXNativeTarget "KCPromise" */;
+			buildConfigurationList = AA4D464419C8AB470010D0EE /* Build configuration list for PBXNativeTarget "CKPromise" */;
 			buildPhases = (
 				AA4D461A19C8AB460010D0EE /* Sources */,
 				AA4D461B19C8AB460010D0EE /* Frameworks */,
@@ -166,14 +164,14 @@
 			);
 			dependencies = (
 			);
-			name = KCPromise;
+			name = CKPromise;
 			productName = KCPromise;
-			productReference = AA4D461E19C8AB460010D0EE /* libKCPromise.a */;
+			productReference = AA4D461E19C8AB460010D0EE /* libCKPromise.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		AA4D463119C8AB470010D0EE /* KCPromiseTests */ = {
+		AA4D463119C8AB470010D0EE /* CKPromiseTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AA4D464719C8AB470010D0EE /* Build configuration list for PBXNativeTarget "KCPromiseTests" */;
+			buildConfigurationList = AA4D464719C8AB470010D0EE /* Build configuration list for PBXNativeTarget "CKPromiseTests" */;
 			buildPhases = (
 				AA4D462D19C8AB470010D0EE /* Sources */,
 				AA4D462E19C8AB470010D0EE /* Frameworks */,
@@ -185,9 +183,9 @@
 			dependencies = (
 				AA4D463719C8AB470010D0EE /* PBXTargetDependency */,
 			);
-			name = KCPromiseTests;
+			name = CKPromiseTests;
 			productName = KCPromiseTests;
-			productReference = AA4D463219C8AB470010D0EE /* KCPromiseTests.octest */;
+			productReference = AA4D463219C8AB470010D0EE /* CKPromiseTests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -199,7 +197,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = Cristik;
 			};
-			buildConfigurationList = AA4D461919C8AB460010D0EE /* Build configuration list for PBXProject "KCPromise" */;
+			buildConfigurationList = AA4D461919C8AB460010D0EE /* Build configuration list for PBXProject "CKPromise" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -211,8 +209,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AA4D461D19C8AB460010D0EE /* KCPromise */,
-				AA4D463119C8AB470010D0EE /* KCPromiseTests */,
+				AA4D461D19C8AB460010D0EE /* CKPromise */,
+				AA4D463119C8AB470010D0EE /* CKPromiseTests */,
 			);
 		};
 /* End PBXProject section */
@@ -249,7 +247,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA4D462C19C8AB470010D0EE /* KCPromise.m in Sources */,
+				AA4D462C19C8AB470010D0EE /* CKPromise.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,7 +255,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA4D464119C8AB470010D0EE /* KCPromiseTests.m in Sources */,
+				AA4D464119C8AB470010D0EE /* CKPromiseTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,7 +264,7 @@
 /* Begin PBXTargetDependency section */
 		AA4D463719C8AB470010D0EE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AA4D461D19C8AB460010D0EE /* KCPromise */;
+			target = AA4D461D19C8AB460010D0EE /* CKPromise */;
 			targetProxy = AA4D463619C8AB470010D0EE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -346,8 +344,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "KCPromise/KCPromise-Prefix.pch";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "CKPromise/CKPromise-Prefix.pch";
+				PRODUCT_NAME = CKPromise;
 			};
 			name = Debug;
 		};
@@ -355,8 +353,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "KCPromise/KCPromise-Prefix.pch";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "CKPromise/CKPromise-Prefix.pch";
+				PRODUCT_NAME = CKPromise;
 			};
 			name = Release;
 		};
@@ -366,9 +364,9 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "KCPromise/KCPromise-Prefix.pch";
-				INFOPLIST_FILE = "KCPromiseTests/KCPromiseTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "CKPromise/CKPromise-Prefix.pch";
+				INFOPLIST_FILE = "CKPromiseTests/CKPromiseTests-Info.plist";
+				PRODUCT_NAME = CKPromiseTests;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -379,9 +377,9 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "KCPromise/KCPromise-Prefix.pch";
-				INFOPLIST_FILE = "KCPromiseTests/KCPromiseTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "CKPromise/CKPromise-Prefix.pch";
+				INFOPLIST_FILE = "CKPromiseTests/CKPromiseTests-Info.plist";
+				PRODUCT_NAME = CKPromiseTests;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
@@ -389,7 +387,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA4D461919C8AB460010D0EE /* Build configuration list for PBXProject "KCPromise" */ = {
+		AA4D461919C8AB460010D0EE /* Build configuration list for PBXProject "CKPromise" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA4D464219C8AB470010D0EE /* Debug */,
@@ -398,21 +396,23 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AA4D464419C8AB470010D0EE /* Build configuration list for PBXNativeTarget "KCPromise" */ = {
+		AA4D464419C8AB470010D0EE /* Build configuration list for PBXNativeTarget "CKPromise" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA4D464519C8AB470010D0EE /* Debug */,
 				AA4D464619C8AB470010D0EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
-		AA4D464719C8AB470010D0EE /* Build configuration list for PBXNativeTarget "KCPromiseTests" */ = {
+		AA4D464719C8AB470010D0EE /* Build configuration list for PBXNativeTarget "CKPromiseTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA4D464819C8AB470010D0EE /* Debug */,
 				AA4D464919C8AB470010D0EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
