@@ -8,18 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-typedef id(^CKPromiseHandler)(id);
-
-typedef NS_ENUM(NSUInteger, CKPromiseState){
-    CKPromiseStatePending,
-    CKPromiseStateResolved,
-    CKPromiseStateRejected
-};
 
 @interface CKTypeErrorException: NSException
 @end
 
 @interface CKHasResolutionException: NSException
+@end
+
+@interface CKInvalidHandlerException: NSException
 @end
 
 /**
@@ -33,7 +29,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 // resolveHanlder is called with the promise value when the promise is resolved
 // rejectHanlder is called with the promise fail reason when the promise is rejected
 // returns a new promise
-- (CKPromise*)then:(CKPromiseHandler)resolveHandler :(CKPromiseHandler)rejectHandler;
+- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler;
 
 - (void)resolve:(id)value;
 - (void)reject:(id)reason;
