@@ -46,21 +46,21 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 
 
 @implementation CKTypeErrorException
-+ (id)exception{
-    return [self exceptionWithName:@"TypeError" reason:@"TypeError" userInfo:nil];
++ (void)raise{
+    [[self exceptionWithName:@"TypeError" reason:@"TypeError" userInfo:nil] raise];
 }
 @end
 
 
 @implementation CKHasResolutionException
-+ (id)exception{
-    return [self exceptionWithName:@"HasResolution" reason:@"Already resolved/rejected" userInfo:nil];
++ (void)raise{
+    [[self exceptionWithName:@"HasResolution" reason:@"Already resolved/rejected" userInfo:nil] raise];
 }
 @end
 
 @implementation CKInvalidHandlerException
-+ (id)exception{
-    return [self exceptionWithName:@"InvalidHandler" reason:@"Passed handler is not a valid promise handler" userInfo:nil];
++ (void)raise{
+    [[self exceptionWithName:@"InvalidHandler" reason:@"Passed handler is not a valid promise handler" userInfo:nil] raise];
 }
 @end
 
@@ -172,6 +172,38 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     };
 }
 
+- (CKPromise*)onResolve:(id)resolveHandler reject:(id)rejectHandler{
+    id (^actualResolveHandler)(id) = [self transformHandler:resolveHandler];
+    id (^actualRejectHandler)(id) = [self transformHandler:rejectHandler];
+    if(actualResolveHandler){
+        dispatch_block_t successHandlerWrapper = ^{
+            actualResolveHandler(_value);
+        };
+        if(_state == CKPromiseStateResolved){
+            [self dispatch:successHandlerWrapper];
+        }else{
+            [_resolveHandlers addObject:successHandlerWrapper];
+        }
+    }
+    if(actualRejectHandler){
+        dispatch_block_t errorHandlerWrapper = ^{
+            actualRejectHandler(_reason);
+        };
+        if(_state == CKPromiseStateRejected){
+            [self dispatch:errorHandlerWrapper];
+        }else{
+            [_rejectHandlers addObject:errorHandlerWrapper];
+        }
+    }
+    return self;
+}
+
+- (CKPromise*(^)(id resolveHandler))done{
+    return ^CKPromise*(id resolveHandler){
+        return self.then(resolveHandler, nil);
+    };
+}
+
 - (CKPromise*(^)(id resolveHandler))done{
     return ^CKPromise*(id resolveHandler){
         return self.then(resolveHandler, nil);
@@ -190,13 +222,21 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     };
 }
 
+- (CKPromise*)onResolve:(id)resolveHandler{
+    return [self onResolve:resolveHandler reject:nil];
+}
+
+- (CKPromise*)onReject:(id)rejectHandler{
+    return [self onResolve:nil reject:rejectHandler];
+}
+
 - (void)resolve:(id)value{
     if(_state != CKPromiseStatePending){
-        [[CKHasResolutionException exception] raise];
+        [CKHasResolutionException raise];
     }
     //1. If promise and x refer to the same object, reject promise with a TypeError as the reason.
     if(value == self){
-        [[CKTypeErrorException exception] raise];
+        [CKTypeErrorException raise];
     }
     
     //2. If x is a promise, adopt its state [3.4]:
@@ -231,7 +271,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 
 - (void)reject:(id)reason{
     if(_state != CKPromiseStatePending){
-        [[CKHasResolutionException exception] raise];
+        [CKHasResolutionException raise];
     }
     _state = CKPromiseStateRejected;
     _reason = reason;
@@ -278,7 +318,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     
     NSMethodSignature *blockSignature = [self methodSignatureForBlock:block];
     if(!blockSignature){
-        [[CKInvalidHandlerException exception] raise];
+        [CKInvalidHandlerException raise];
     }
     
     NSUInteger blockArgumentCount = blockSignature.numberOfArguments;
@@ -309,7 +349,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         }
     }
     
-    [[CKInvalidHandlerException exception] raise];
+    [CKInvalidHandlerException raise];
     return nil;
 }
 

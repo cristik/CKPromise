@@ -616,4 +616,9 @@ while((condition) && microtime() - start < timeout){\
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Should be resolved if all promises have are resolved");
 }
+
+- (void)test_OnResolveReject_returnsSamePromise{
+    STAssertEquals([promise onResolve:nil reject:nil], promise, @"Expected same promise");
+}
+
 @end
