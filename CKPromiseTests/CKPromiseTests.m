@@ -92,14 +92,19 @@ while((condition) && microtime() - start < timeout){\
 
 - (void)test_acceptsResolveHandlerNSStringVoid{
     __block BOOL handlerExecuted = NO;
+    __block id value = nil;
     CKPromise *promise2 = promise.done(^NSString*{
         handlerExecuted = YES;
         return @"abc";
     });
+    promise2.then(^(id val){
+        value = val;
+        handlerExecuted = YES;
+    }, nil);
     [promise resolve:nil];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
-    STAssertEqualObjects(promise2.value, @"abc", @"Incorrect resolve value for promise2");
+    STAssertEqualObjects(value, @"abc", @"Incorrect resolve value for promise2");
 }
 
 - (void)test_acceptsResolveHandlerIdId{
@@ -168,19 +173,36 @@ while((condition) && microtime() - start < timeout){\
 
 //A promise must be in one of three states: pending, fulfilled, or rejected.
 - (void)test_initialState_isPending{
-    STAssertEquals(promise.state, CKPromiseStatePending, @"Incorrect state");
+    __block BOOL handlerExecuted = NO;;
+    promise.then(^{
+        handlerExecuted = YES;
+    }, ^{
+        handlerExecuted = YES;
+    });
+    wait(YES, 0.02);
+    STAssertFalse(handlerExecuted, @"Incorrect state");
 }
 
 // 1. When pending, a promise:
 // may transition to either the fulfilled or rejected state.
 - (void)test_resolve_transitionsToResolved{
+    __block BOOL handlerExecuted = NO;;
+    promise.then(nil, ^{
+        handlerExecuted = YES;
+    });
+    wait(YES, 0.02);
     [promise resolve:nil];
-    STAssertEquals(promise.state, CKPromiseStateResolved, @"Incorrect state");
+    STAssertFalse(handlerExecuted, @"Incorrect state");
 }
 
 - (void)test_reject_transitionsToRejected{
+    __block BOOL handlerExecuted = NO;;
+    promise.then(^{
+        handlerExecuted = YES;
+    }, nil);
+    wait(YES, 0.02);
     [promise reject:nil];
-    STAssertEquals(promise.state, CKPromiseStateRejected, @"Incorrect state");
+    STAssertFalse(handlerExecuted, @"Incorrect state");
 }
 
 //2. When fulfilled, a promise:
@@ -188,13 +210,11 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_resolve_cannotBeResolvedAgain{
     [promise resolve:nil];
     STAssertThrows([promise resolve:nil], @"Should throw exception");
-    STAssertEquals(promise.state, CKPromiseStateResolved, @"Incorrect state");
 }
 
 - (void)test_resolve_cannotBeAlsoRejected{
     [promise resolve:nil];
     STAssertThrows([promise reject:nil], @"Should throw exception");
-    STAssertEquals(promise.state, CKPromiseStateResolved, @"Incorrect state");
 }
 
 //2.ii. must have a value, which must not change.
@@ -206,13 +226,11 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_reject_cannotBeRejectedAgain{
     [promise reject:nil];
     STAssertThrows([promise reject:nil], @"Should throw exception");
-    STAssertEquals(promise.state, CKPromiseStateRejected, @"Incorrect state");
 }
 
 - (void)test_reject_cannotBeAlsoResolved{
     [promise reject:nil];
     STAssertThrows([promise resolve:nil], @"Should throw exception");
-    STAssertEquals(promise.state, CKPromiseStateRejected, @"Incorrect state");
 }
 
 //3.ii. must have a reason, which must not change.
@@ -367,8 +385,7 @@ while((condition) && microtime() - start < timeout){\
         return nil;
     }, nil);
     [promise resolve:@18];
-    wait(promise2.state == CKPromiseStatePending, 1.0);
-    STAssertEquals(promise2.state, CKPromiseStateResolved, @"Promise2 should be resolved");
+    wait(!value, 1.0);
     STAssertEqualObjects(value, @19, @"Incorrect promise2 value");
 }
 
@@ -382,8 +399,7 @@ while((condition) && microtime() - start < timeout){\
         return nil;
     }, nil);
     [promise reject:@28];
-    wait(promise2.state == CKPromiseStatePending, 1.0);
-    STAssertEquals(promise2.state, CKPromiseStateResolved, @"Promise2 should be resolved");
+    wait(!value, 1.0);
     STAssertEqualObjects(value, @29, @"Incorrect promise2 value");
 
 }
@@ -394,15 +410,14 @@ while((condition) && microtime() - start < timeout){\
     __block id reason = nil;
     CKPromise *promise2 = promise.then(^id(id val){
         [ex raise];
-        return @19;
+        return @21;
     }, nil);
     promise2.then(nil, ^id(id aReason){
         reason = aReason;
         return nil;
     });
     [promise resolve:@18];
-    wait(promise2.state == CKPromiseStatePending, 1.0);
-    STAssertEquals(promise2.state, CKPromiseStateRejected, @"Promise2 should be rejected");
+    wait(!reason, 1.0);
     STAssertEquals(reason, ex, @"Incorrect promise2 reason");
 }
 
@@ -418,8 +433,7 @@ while((condition) && microtime() - start < timeout){\
         return nil;
     });
     [promise reject:@28];
-    wait(promise2.state == CKPromiseStatePending, 1.0);
-    STAssertEquals(promise2.state, CKPromiseStateRejected, @"Promise2 should be rejected");
+    wait(!reason, 0.02);
     STAssertEquals(reason, ex, @"Incorrect promise2 reason");
     
 }
@@ -433,8 +447,7 @@ while((condition) && microtime() - start < timeout){\
         return nil;
     }, nil);
     [promise resolve:@18];
-    wait(promise2.state == CKPromiseStatePending, 1.0);
-    STAssertEquals(promise2.state, CKPromiseStateResolved, @"Promise2 should be resolved");
+    wait(!value, 0.02);
     STAssertEqualObjects(value, @18, @"Incorrect promise2 value");
 }
 
@@ -447,8 +460,7 @@ while((condition) && microtime() - start < timeout){\
         return nil;
     });
     [promise reject:@18];
-    wait(promise2.state == CKPromiseStatePending, 1.0);
-    STAssertEquals(promise2.state, CKPromiseStateRejected, @"Promise2 should be resolved");
+    wait(!reason, 0.02);
     STAssertEqualObjects(reason, @18, @"Incorrect promise2 value");
 }
 
@@ -470,8 +482,14 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_resolve_pendingPromise_staysInPending{
     CKPromise *x = [CKPromise promise];
     [promise resolve:x];
-    wait(NO, 0.1);
-    STAssertEquals(promise.state, CKPromiseStatePending, @"Should be in pending");
+    __block BOOL handlerExecuted = NO;;
+    promise.then(^{
+        handlerExecuted = YES;
+    }, ^{
+        handlerExecuted = YES;
+    });
+    wait(!handlerExecuted, 0.02);
+    STAssertFalse(handlerExecuted, @"Should be in pending");
 }
 
 //2.ii. If/when x is fulfilled, fulfill promise with the same value.
@@ -484,8 +502,14 @@ while((condition) && microtime() - start < timeout){\
     CKPromise *x = [CKPromise promise];
     [promise resolve:x];
     [x resolve:@"x"];
-    wait(promise.state == CKPromiseStatePending, 0.1);
-    STAssertEquals(promise.state, CKPromiseStateResolved, @"Should be in resolved");
+    __block BOOL handlerExecuted = NO;;
+    promise.then(^{
+        handlerExecuted = YES;
+    }, ^{
+        handlerExecuted = YES;
+    });
+    wait(!value, 0.02);
+    STAssertTrue(handlerExecuted, @"Should be in resolved");
     STAssertEqualObjects(value, @"x", @"Should have been resolved with same value");
 }
 
@@ -499,8 +523,13 @@ while((condition) && microtime() - start < timeout){\
     CKPromise *x = [CKPromise promise];
     [promise resolve:x];
     [x reject:@"y"];
-    wait(promise.state == CKPromiseStatePending, 0.1);
-    STAssertEquals(promise.state, CKPromiseStateRejected, @"Should be in resolved");
+    __block BOOL handlerExecuted = NO;;
+    promise.then(^{
+        handlerExecuted = YES;
+    }, ^{
+        handlerExecuted = YES;
+    });
+    wait(!reason, 0.02);
     STAssertEqualObjects(reason, @"y", @"Should have been rejected with same reason");
 }
 
@@ -511,13 +540,11 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_resolve_noPromise{
     __block id value = nil;
     promise.then(^id(id val) {
-        NSLog(@"then. %ld",time(NULL));  
         value = val;
         return nil;
     }, nil);
     [promise resolve:@"z"];
     wait(!value, 0.1);
-    STAssertEquals(promise.state, CKPromiseStateResolved, @"Should be in resolved");
     STAssertEqualObjects(value, @"z", @"Should have been resolved with the provided value");
 }
 
@@ -550,8 +577,14 @@ while((condition) && microtime() - start < timeout){\
     promise = [CKPromise when:@[promise1, promise2, promise3]];
     [promise1 resolve:nil];
     [promise2 resolve:nil];
-    wait(YES, 0.1);
-    STAssertEquals(promise.state, CKPromiseStatePending, @"Should be in pending until all promises have a resolution");
+    __block BOOL handlerExecuted = NO;;
+    promise.then(^{
+        handlerExecuted = YES;
+    }, ^{
+        handlerExecuted = YES;
+    });
+    wait(!handlerExecuted, 0.02);
+    STAssertFalse(handlerExecuted, @"Should be in pending until all promises have a resolution");
 }
 
 - (void)test_aggregate_resolvesIfAllPromisesResolve{
@@ -560,8 +593,14 @@ while((condition) && microtime() - start < timeout){\
     promise = [CKPromise when:@[promise1, promise2]];
     [promise1 resolve:nil];
     [promise2 resolve:nil];
-    wait(promise.state == CKPromiseStatePending, 0.1);
-    STAssertEquals(promise.state, CKPromiseStateResolved, @"Should be resolved if all promises have are resolved");
+    __block BOOL handlerExecuted = NO;;
+    promise.then(^{
+        handlerExecuted = YES;
+    }, ^{
+        handlerExecuted = YES;
+    });
+    wait(!handlerExecuted, 0.02);
+    STAssertTrue(handlerExecuted, @"Should be resolved if all promises have are resolved");
 }
 
 - (void)test_aggregate_rejectsIfOnePromiseFails{
@@ -570,7 +609,11 @@ while((condition) && microtime() - start < timeout){\
     promise = [CKPromise when:@[promise1, promise2]];
     [promise1 reject:nil];
     [promise2 resolve:nil];
-    wait(promise.state == CKPromiseStatePending, 0.1);
-    STAssertEquals(promise.state, CKPromiseStateRejected, @"Should be resolved if all promises have are resolved");
+    __block BOOL handlerExecuted = NO;;
+    promise.then(nil, ^{
+        handlerExecuted = YES;
+    });
+    wait(!handlerExecuted, 0.02);
+    STAssertTrue(handlerExecuted, @"Should be resolved if all promises have are resolved");
 }
 @end

@@ -38,6 +38,12 @@ typedef NS_OPTIONS(NSUInteger, CKBlockDescriptionFlags) {
     CKBlockDescriptionFlagsHasSignature = (1 << 30)
 };
 
+typedef NS_ENUM(NSUInteger, CKPromiseState){
+    CKPromiseStatePending,
+    CKPromiseStateResolved,
+    CKPromiseStateRejected
+};
+
 
 @implementation CKTypeErrorException
 + (id)exception{
@@ -238,17 +244,6 @@ typedef NS_OPTIONS(NSUInteger, CKBlockDescriptionFlags) {
     }];
 }
 
-- (CKPromiseState)state{
-    return _state;
-}
-
-- (id)value{
-    return _value;
-}
-
-- (id)reason{
-    return _reason;
-}
 
 #pragma mark -
 #pragma mark Privates
