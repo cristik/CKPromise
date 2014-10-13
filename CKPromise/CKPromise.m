@@ -103,13 +103,13 @@ typedef NS_OPTIONS(NSUInteger, CKBlockDescriptionFlags) {
 
     };
     for(CKPromise *promise in promises){
-        [promise then:^id(id value) {
+        promise.then(^id(id value) {
             handler(value, YES);
             return nil;
-        } :^id(id reason) {
+        }, ^id(id reason) {
             handler(reason, NO);
             return nil;
-        }];
+        });
     }
     return promise;
 }
@@ -127,53 +127,61 @@ typedef NS_OPTIONS(NSUInteger, CKBlockDescriptionFlags) {
     dispatch_async(dispatch_get_main_queue(), block);
 }
 
-- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler{
-    id (^actualResolveHandler)(id) = [self transformHandler:resolveHandler];
-    id (^actualRejectHandler)(id) = [self transformHandler:rejectHandler];
-    CKPromise *resultPromise = [CKPromise promise];
-    dispatch_block_t successHandlerWrapper = ^{
-        @try{
-            if(actualResolveHandler){
-                [resultPromise resolve:actualResolveHandler(_value)];
-            }else{
-                [resultPromise resolve:_value];
+- (CKPromise*(^)(id resolveHandler, id rejectHandler))then{
+    return ^CKPromise*(id resolveHandler, id rejectHandler){
+        id (^actualResolveHandler)(id) = [CKPromise transformHandler:resolveHandler];
+        id (^actualRejectHandler)(id) = [CKPromise transformHandler:rejectHandler];
+        CKPromise *resultPromise = [CKPromise promise];
+        dispatch_block_t successHandlerWrapper = ^{
+            @try{
+                if(actualResolveHandler){
+                    [resultPromise resolve:actualResolveHandler(_value)];
+                }else{
+                    [resultPromise resolve:_value];
+                }
+            }@catch (NSException *ex) {
+                [resultPromise reject:ex];
             }
-        }@catch (NSException *ex) {
-            [resultPromise reject:ex];
-        }
-    };
-    dispatch_block_t errorHandlerWrapper = ^{
-        @try{
-            if(actualRejectHandler){
-                [resultPromise resolve:actualRejectHandler(_reason)];
-            }else{
-                [resultPromise reject:_reason];
+        };
+        dispatch_block_t errorHandlerWrapper = ^{
+            @try{
+                if(actualRejectHandler){
+                    [resultPromise resolve:actualRejectHandler(_reason)];
+                }else{
+                    [resultPromise reject:_reason];
+                }
+            }@catch (NSException *ex) {
+                [resultPromise reject:ex];
             }
-        }@catch (NSException *ex) {
-            [resultPromise reject:ex];
+        };
+        if(_state == CKPromiseStateResolved){
+            [self dispatch:successHandlerWrapper];
+        }else if(_state == CKPromiseStateRejected){
+            [self dispatch:errorHandlerWrapper];
+        }else{
+            [_resolveHandlers addObject:successHandlerWrapper];
+            [_rejectHandlers addObject:errorHandlerWrapper];
         }
+        return resultPromise;
     };
-    if(_state == CKPromiseStateResolved){
-        [self dispatch:successHandlerWrapper];
-    }else if(_state == CKPromiseStateRejected){
-        [self dispatch:errorHandlerWrapper];
-    }else{
-        [_resolveHandlers addObject:successHandlerWrapper];
-        [_rejectHandlers addObject:errorHandlerWrapper];
-    }
-    return resultPromise;
 }
 
-- (CKPromise*)done:(id)resolveHandler{
-    return [self then:resolveHandler :nil];
+- (CKPromise*(^)(id resolveHandler))done{
+    return ^CKPromise*(id resolveHandler){
+        return self.then(resolveHandler, nil);
+    };
 }
 
-- (CKPromise*)fail:(id)rejectHandler{
-    return [self then:nil :rejectHandler];
+- (CKPromise*(^)(id rejectHandler))fail{
+    return ^CKPromise*(id rejectHandler){
+        return self.then(nil, rejectHandler);
+    };
 }
 
-- (CKPromise*)always:(id)handler{
-    return [self then:handler :handler];
+- (CKPromise*(^)(id handler))always{
+    return ^CKPromise*(id handler){
+        return self.then(handler, handler);
+    };
 }
 
 - (void)resolve:(id)value{
@@ -190,13 +198,13 @@ typedef NS_OPTIONS(NSUInteger, CKBlockDescriptionFlags) {
         //i. If x is pending, promise must remain pending until x is fulfilled or rejected.
         //ii. If/when x is fulfilled, fulfill promise with the same value.
         //iii. If/when x is rejected, reject promise with the same reason.
-        [value then:^id(id value) {
+        ((CKPromise*)value).then(^id(id value) {
             [self resolve:value];
             return nil;
-        } :^id(id reason){
+        }, ^id(id reason){
             [self reject:reason];
             return nil;
-        }];
+        });
         return;
     }
     
@@ -246,7 +254,7 @@ typedef NS_OPTIONS(NSUInteger, CKBlockDescriptionFlags) {
 #pragma mark Privates
 #pragma mark -
 
-- (NSMethodSignature*)methodSignatureForBlock:(id)block{
++ (NSMethodSignature*)methodSignatureForBlock:(id)block{
     if (![block isKindOfClass:NSClassFromString(@"__NSGlobalBlock__")] &&
         ![block isKindOfClass:NSClassFromString(@"__NSStackBlock__")] &&
         ![block isKindOfClass:NSClassFromString(@"__NSMallocBlock__")]) return nil;
@@ -270,7 +278,7 @@ typedef NS_OPTIONS(NSUInteger, CKBlockDescriptionFlags) {
     return nil;
 }
 
-- (id(^)(id))transformHandler:(id)block{
++ (id(^)(id))transformHandler:(id)block{
     if(!block) return nil;
     
     NSMethodSignature *blockSignature = [self methodSignatureForBlock:block];

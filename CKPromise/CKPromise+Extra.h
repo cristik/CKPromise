@@ -25,10 +25,10 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 - (id)reason;
 
 // alias for [promise then:resolveHandler :nil]
-- (CKPromise*)done:(id)resolveHandler;
+- (CKPromise*(^)(id resolveHandler))done;
 // alias for [promise then:nil :rejectHandler]
-- (CKPromise*)fail:(id)rejectHandler;
+- (CKPromise*(^)(id resolveHandler))fail;
 // alias for [promise then:handler :handler]
-- (CKPromise*)always:(id)handler;
+- (CKPromise*(^)(id resolveHandler))always;
 
 @end

@@ -45,9 +45,9 @@ while((condition) && microtime() - start < timeout){\
 // Callback types
 - (void)test_acceptsResolveHandlerVoidVoid{
     __block BOOL handlerExecuted = NO;
-    [promise done:^{
+    promise.done(^{
         handlerExecuted = YES;
-    }];
+    });
     [promise resolve:nil];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
@@ -56,10 +56,10 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_acceptsResolveHandlerVoidId{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
-    [promise done:^(id val){
+    promise.done(^(id val){
         handlerExecuted = YES;
         resolveValue = val;
-    }];
+    });
     [promise resolve:@15];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
@@ -69,10 +69,10 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_acceptsResolveHandlerVoidNSNumber{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
-    [promise done:^(NSNumber *val){
+    promise.done(^(NSNumber *val){
         handlerExecuted = YES;
         resolveValue = val;
-    }];
+    });
     [promise resolve:@15];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
@@ -81,10 +81,10 @@ while((condition) && microtime() - start < timeout){\
 
 - (void)test_acceptsResolveHandlerIdVoid{
     __block BOOL handlerExecuted = NO;
-    [promise done:^id{
+    promise.done(^id{
         handlerExecuted = YES;
         return nil;
-    }];
+    });
     [promise resolve:nil];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
@@ -92,10 +92,10 @@ while((condition) && microtime() - start < timeout){\
 
 - (void)test_acceptsResolveHandlerNSStringVoid{
     __block BOOL handlerExecuted = NO;
-    CKPromise *promise2 = [promise done:^NSString*{
+    CKPromise *promise2 = promise.done(^NSString*{
         handlerExecuted = YES;
         return @"abc";
-    }];
+    });
     [promise resolve:nil];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
@@ -105,11 +105,11 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_acceptsResolveHandlerIdId{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
-    [promise done:^id(id val){
+    promise.done(^id(id val){
         handlerExecuted = YES;
         resolveValue = val;
         return nil;
-    }];
+    });
     [promise resolve:@16];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
@@ -118,9 +118,9 @@ while((condition) && microtime() - start < timeout){\
 
 - (void)test_acceptsRejectHandlerVoidVoid{
     __block BOOL handlerExecuted = NO;
-    [promise fail:^{
+    promise.fail(^{
         handlerExecuted = YES;
-    }];
+    });
     [promise reject:nil];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
@@ -129,10 +129,10 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_acceptsRejectHandlerVoidId{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
-    [promise fail:^(id val){
+    promise.fail(^(id val){
         handlerExecuted = YES;
         resolveValue = val;
-    }];
+    });
     [promise reject:@17];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
@@ -141,10 +141,10 @@ while((condition) && microtime() - start < timeout){\
 
 - (void)test_acceptsRejectHandlerIdVoid{
     __block BOOL handlerExecuted = NO;
-    [promise fail:^id{
+    promise.fail(^id{
         handlerExecuted = YES;
         return nil;
-    }];
+    });
     [promise reject:nil];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
@@ -153,11 +153,11 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_acceptsRejectHandlerIdId{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
-    [promise fail:^id(id val){
+    promise.fail(^id(id val){
         handlerExecuted = YES;
         resolveValue = val;
         return nil;
-    }];
+    });
     [promise reject:@18];
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Completion handler was not executed");
@@ -225,21 +225,23 @@ while((condition) && microtime() - start < timeout){\
 //A promise's then method accepts two arguments:
 //promise.then(onFulfilled, onRejected)
 - (void)test_has_then_method{
-    STAssertTrue([promise respondsToSelector:@selector(then::)], @"Should have a then method");
+    NSMethodSignature *sig = [NSMethodSignature signatureWithObjCTypes:"@?@:"];
+    STAssertTrue([promise respondsToSelector:@selector(then)], @"Should have a then method");
+    STAssertEqualObjects([promise methodSignatureForSelector:@selector(then)], sig, @"Unexpected signature for then");
 }
 
 //1. Both onFulfilled and onRejected are optional arguments:
 //1.i. If onFulfilled is not a function, it must be ignored.
 //1.ii. If onRejected is not a function, it must be ignored.
 - (void)test_resolve_withoutCallback{
-    [promise then:nil :nil];
+    promise.then(nil, nil);
     [promise resolve:@1];
     //nothing should happen, no exceptions or other nasty stuff
     wait(NO, 0.1);
 }
 
 - (void)test_reject_withoutCallback{
-    [promise then:nil :nil];
+    promise.then(nil, nil);
     [promise reject:@1];
     //nothing should happen, no exceptions or other nasty stuff
     wait(NO, 0.1);
@@ -255,15 +257,15 @@ while((condition) && microtime() - start < timeout){\
     __block BOOL rejectedExecuted = NO;
     __block int executeCount = 0;
     __block id value = nil;
-    [promise then:^id(id val) {
+    promise.then(^id(id val) {
         executed = YES;
         value = val;
         executeCount++;
         return nil;
-    } :^id(id rsn){
+    }, ^id(id rsn){
         rejectedExecuted = YES;
         return nil;
-    }];
+    });
     STAssertFalse(executed, @"Callback should not be executed before resolving");
     [promise resolve:@12];
     STAssertFalse(executed, @"Callback should not be executed in this cycle");
@@ -284,15 +286,15 @@ while((condition) && microtime() - start < timeout){\
     __block BOOL resolvedExecuted = NO;
     __block int executeCount = 0;
     __block id reason = nil;
-    [promise then:^id(id value){
+    promise.then(^id(id value){
         resolvedExecuted = YES;
         return nil;
-    } :^id(id aReason) {
+    }, ^id(id aReason) {
         executed = YES;
         reason = aReason;
         executeCount++;
         return nil;
-    }];
+    });
     STAssertFalse(executed, @"Callback should not be executed before resolving");
     [promise reject:@13];
     STAssertFalse(executed, @"Callback should not be executed in this cycle");
@@ -310,18 +312,18 @@ while((condition) && microtime() - start < timeout){\
 //6.i. If/when promise is fulfilled, all respective onFulfilled callbacks must execute in the order of their originating calls to then.
 - (void)test_resolve_callbackOrder{
     NSMutableArray *callbacksOrder = [NSMutableArray arrayWithCapacity:3];
-    [promise then:^id(id val) {
+    promise.then(^id(id val) {
         [callbacksOrder addObject:@1];
         return nil;
-    } :nil];
-    [promise then:^id(id val) {
+    }, nil);
+    promise.then(^id(id val) {
         [callbacksOrder addObject:@2];
         return nil;
-    } :nil];
-    [promise then:^id(id val) {
+    } ,nil);
+    promise.then(^id(id val) {
         [callbacksOrder addObject:@3];
         return nil;
-    } :nil];
+    }, nil);
     [promise resolve:@4];
     wait(callbacksOrder.count < 3, 1.0);
     STAssertEqualObjects(callbacksOrder, (@[@1,@2,@3]), @"Resolve callbacks not called in order");
@@ -330,18 +332,18 @@ while((condition) && microtime() - start < timeout){\
 //6.ii. If/when promise is rejected, all respective onRejected callbacks must execute in the order of their originating calls to then.
 - (void)test_reject_callbackOrder{
     NSMutableArray *callbacksOrder = [NSMutableArray arrayWithCapacity:3];
-    [promise then:nil :^id(id val) {
+    promise.then(nil, ^id(id val) {
         [callbacksOrder addObject:@1];
         return nil;
-    }];
-    [promise then:nil :^id(id val) {
+    });
+    promise.then(nil, ^id(id val) {
         [callbacksOrder addObject:@2];
         return nil;
-    }];
-    [promise then:nil :^id(id val) {
+    });
+    promise.then(nil, ^id(id val) {
         [callbacksOrder addObject:@3];
         return nil;
-    }];
+    });
     [promise reject:@4];
     wait(callbacksOrder.count < 3, 1.0);
     STAssertEqualObjects(callbacksOrder, (@[@1,@2,@3]), @"Resolve callbacks not called in order");
@@ -349,7 +351,7 @@ while((condition) && microtime() - start < timeout){\
 
 //7. then must return a promise [3.3]
 - (void)test_then_returnsAnotherPromise{
-    CKPromise *promise2 = [promise then:nil :nil];
+    CKPromise *promise2 = promise.then(nil, nil);
     STAssertTrue([promise2 isKindOfClass:[CKPromise class]], @"Expected a promise to be returned");
     STAssertFalse(promise2==promise, @"Expected a different promise");
 }
@@ -357,13 +359,13 @@ while((condition) && microtime() - start < timeout){\
 // 7.i. If either onFulfilled or onRejected returns a value x, run the Promise Resolution Procedure [[Resolve]](promise2, x).
 - (void)test_then_resolvedCallbackReturnsValue_promise2IsResolvedWithThatValue{
     __block id value = nil;
-    CKPromise *promise2 = [promise then:^id(id val){
+    CKPromise *promise2 = promise.then(^id(id val){
         return @19;
-    }:nil];
-    [promise2 then:^id(id val) {
+    }, nil);
+    promise2.then(^id(id val) {
         value = val;
         return nil;
-    } :nil];
+    }, nil);
     [promise resolve:@18];
     wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateResolved, @"Promise2 should be resolved");
@@ -372,13 +374,13 @@ while((condition) && microtime() - start < timeout){\
 
 - (void)test_then_rejectedCallbackReturnsValue_promise2IsResolvedWithThatValue{
     __block id value = nil;
-    CKPromise *promise2 = [promise then:nil :^id(id rsn){
+    CKPromise *promise2 = promise.then(nil, ^id(id rsn){
         return @29;
-    }];
-    [promise2 then:^id(id val) {
+    });
+    promise2.then(^id(id val) {
         value = val;
         return nil;
-    } :nil];
+    }, nil);
     [promise reject:@28];
     wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateResolved, @"Promise2 should be resolved");
@@ -390,14 +392,14 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_then_resolvedThrowsException_promise2IsRejectedWithThatException{
     NSException *ex = [NSException exceptionWithName:@"aa" reason:@"bb" userInfo:nil];
     __block id reason = nil;
-    CKPromise *promise2 = [promise then:^id(id val){
+    CKPromise *promise2 = promise.then(^id(id val){
         [ex raise];
         return @19;
-    }:nil];
-    [promise2 then:nil :^id(id aReason){
+    }, nil);
+    promise2.then(nil, ^id(id aReason){
         reason = aReason;
         return nil;
-    }];
+    });
     [promise resolve:@18];
     wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateRejected, @"Promise2 should be rejected");
@@ -407,14 +409,14 @@ while((condition) && microtime() - start < timeout){\
 - (void)test_then_rejectedThrowsException_promise2IsRejectedWithThatException{
     NSException *ex = [NSException exceptionWithName:@"aa" reason:@"bb" userInfo:nil];
     __block id reason = nil;
-    CKPromise *promise2 = [promise then:nil :^id(id rsn){
+    CKPromise *promise2 = promise.then(nil, ^id(id rsn){
         [ex raise];
         return @29;
-    }];
-    [promise2 then:nil :^id(id aReason){
+    });
+    promise2.then(nil, ^id(id aReason){
         reason = aReason;
         return nil;
-    }];
+    });
     [promise reject:@28];
     wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateRejected, @"Promise2 should be rejected");
@@ -425,11 +427,11 @@ while((condition) && microtime() - start < timeout){\
 //7.iii. If onFulfilled is not a function and promise1 is fulfilled, promise2 must be fulfilled with the same value as promise1.
 - (void)test_then_noResolvedCallback_promise2IsResolvedWithPromise1Value{
     __block id value = nil;
-    CKPromise *promise2 = [promise then:nil :nil];
-    [promise2 then:^id(id val) {
+    CKPromise *promise2 = promise.then(nil, nil);
+    promise2.then(^id(id val) {
         value = val;
         return nil;
-    } :nil];
+    }, nil);
     [promise resolve:@18];
     wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateResolved, @"Promise2 should be resolved");
@@ -439,11 +441,11 @@ while((condition) && microtime() - start < timeout){\
 //7.iv. If onRejected is not a function and promise1 is rejected, promise2 must be rejected with the same reason as promise1.
 - (void)test_then_noRejectedCallback_promise2IsRejectedWithPromise1Reason{
     __block id reason = nil;
-    CKPromise *promise2 = [promise then:nil :nil];
-    [promise2 then:nil :^id(id aReason){
+    CKPromise *promise2 = promise.then(nil, nil);
+    promise2.then(nil, ^id(id aReason){
         reason = aReason;
         return nil;
-    }];
+    });
     [promise reject:@18];
     wait(promise2.state == CKPromiseStatePending, 1.0);
     STAssertEquals(promise2.state, CKPromiseStateRejected, @"Promise2 should be resolved");
@@ -475,14 +477,14 @@ while((condition) && microtime() - start < timeout){\
 //2.ii. If/when x is fulfilled, fulfill promise with the same value.
 - (void)test_resolve_resolvingPromise_resolves{
     __block id value = nil;
-    [promise then:^id(id val) {
+    promise.then(^id(id val) {
         value = val;
         return nil;
-    } :nil];
+    }, nil);
     CKPromise *x = [CKPromise promise];
     [promise resolve:x];
     [x resolve:@"x"];
-    wait(YES, 0.1);
+    wait(promise.state == CKPromiseStatePending, 0.1);
     STAssertEquals(promise.state, CKPromiseStateResolved, @"Should be in resolved");
     STAssertEqualObjects(value, @"x", @"Should have been resolved with same value");
 }
@@ -490,14 +492,14 @@ while((condition) && microtime() - start < timeout){\
 //2.iii. If/when x is rejected, reject promise with the same reason.
 - (void)test_resolve_rejectingPromise_rejects{
     __block id reason = nil;
-    [promise then:nil :^id(id rsn) {
+    promise.then(nil, ^id(id rsn) {
         reason = rsn;
         return nil;
-    }];
+    });
     CKPromise *x = [CKPromise promise];
     [promise resolve:x];
     [x reject:@"y"];
-    wait(YES, 0.1);
+    wait(promise.state == CKPromiseStatePending, 0.1);
     STAssertEquals(promise.state, CKPromiseStateRejected, @"Should be in resolved");
     STAssertEqualObjects(reason, @"y", @"Should have been rejected with same reason");
 }
@@ -508,12 +510,13 @@ while((condition) && microtime() - start < timeout){\
 // 4. If x is not an object or function, fulfill promise with x.
 - (void)test_resolve_noPromise{
     __block id value = nil;
-    [promise then:^id(id val) {
+    promise.then(^id(id val) {
+        NSLog(@"then. %ld",time(NULL));  
         value = val;
         return nil;
-    } :nil];
+    }, nil);
     [promise resolve:@"z"];
-    wait(YES, 0.1);
+    wait(!value, 0.1);
     STAssertEquals(promise.state, CKPromiseStateResolved, @"Should be in resolved");
     STAssertEqualObjects(value, @"z", @"Should have been resolved with the provided value");
 }
@@ -522,21 +525,21 @@ while((condition) && microtime() - start < timeout){\
 
 - (void)test_chained_onePromiseFails{
     NSMutableArray *callbacksOrder = [NSMutableArray arrayWithCapacity:3];
-    [[[[promise done:^id(id value){
+    promise.done(^id(id value){
         [callbacksOrder addObject:@1];
         return [CKPromise resolved:@1];
-    }] done:^id(id value){
+    }).done(^id(id value){
         [callbacksOrder addObject:@2];
         return [CKPromise rejected:@2];
-    }] done:^id(id value){
+    }).done(^id(id value){
         [callbacksOrder addObject:@3];
         return [CKPromise resolved:@3];
-    }] fail:^id(id reason){
+    }).fail(^id(id reason){
         [callbacksOrder addObject:@4];
         return nil;
-    }];
+    });
     [promise resolve:@0];
-    wait(YES, 0.1);
+    wait(callbacksOrder.count < 3, 0.1);
     STAssertEqualObjects(callbacksOrder, (@[@1,@2,@4]), @"Not the expected callbacks");
 }
 

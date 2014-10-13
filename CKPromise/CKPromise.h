@@ -29,7 +29,7 @@
 // resolveHanlder is called with the promise value when the promise is resolved
 // rejectHanlder is called with the promise fail reason when the promise is rejected
 // returns a new promise
-- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler;
+- (CKPromise*(^)(id resolveHandler, id rejectHandler))then;
 
 - (void)resolve:(id)value;
 - (void)reject:(id)reason;
