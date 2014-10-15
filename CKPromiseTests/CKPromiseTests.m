@@ -94,7 +94,6 @@ while((condition) && microtime() - start < timeout){\
     __block BOOL handlerExecuted = NO;
     __block id value = nil;
     CKPromise *promise2 = promise.done(^NSString*{
-        handlerExecuted = YES;
         return @"abc";
     });
     promise2.then(^(id val){
@@ -618,7 +617,7 @@ while((condition) && microtime() - start < timeout){\
 }
 
 - (void)test_OnResolveReject_returnsSamePromise{
-    STAssertEquals([promise onResolve:nil reject:nil], promise, @"Expected same promise");
+    STAssertEquals(promise.on(nil, nil), promise, @"Expected same promise");
 }
 
 @end

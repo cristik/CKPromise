@@ -172,35 +172,31 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     };
 }
 
-- (CKPromise*)onResolve:(id)resolveHandler reject:(id)rejectHandler{
-    id (^actualResolveHandler)(id) = [self transformHandler:resolveHandler];
-    id (^actualRejectHandler)(id) = [self transformHandler:rejectHandler];
-    if(actualResolveHandler){
-        dispatch_block_t successHandlerWrapper = ^{
-            actualResolveHandler(_value);
-        };
-        if(_state == CKPromiseStateResolved){
-            [self dispatch:successHandlerWrapper];
-        }else{
-            [_resolveHandlers addObject:successHandlerWrapper];
+- (CKPromise*(^)(id resolveHandler, id rejectHandler))on{
+    return ^CKPromise*(id resolveHandler, id rejectHandler){
+        id (^actualResolveHandler)(id) = [CKPromise transformHandler:resolveHandler];
+        id (^actualRejectHandler)(id) = [CKPromise transformHandler:rejectHandler];
+        if(actualResolveHandler){
+            dispatch_block_t successHandlerWrapper = ^{
+                actualResolveHandler(_value);
+            };
+            if(_state == CKPromiseStateResolved){
+                [self dispatch:successHandlerWrapper];
+            }else{
+                [_resolveHandlers addObject:successHandlerWrapper];
+            }
         }
-    }
-    if(actualRejectHandler){
-        dispatch_block_t errorHandlerWrapper = ^{
-            actualRejectHandler(_reason);
-        };
-        if(_state == CKPromiseStateRejected){
-            [self dispatch:errorHandlerWrapper];
-        }else{
-            [_rejectHandlers addObject:errorHandlerWrapper];
+        if(actualRejectHandler){
+            dispatch_block_t errorHandlerWrapper = ^{
+                actualRejectHandler(_reason);
+            };
+            if(_state == CKPromiseStateRejected){
+                [self dispatch:errorHandlerWrapper];
+            }else{
+                [_rejectHandlers addObject:errorHandlerWrapper];
+            }
         }
-    }
-    return self;
-}
-
-- (CKPromise*(^)(id resolveHandler))done{
-    return ^CKPromise*(id resolveHandler){
-        return self.then(resolveHandler, nil);
+        return self;
     };
 }
 
@@ -222,12 +218,22 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     };
 }
 
-- (CKPromise*)onResolve:(id)resolveHandler{
-    return [self onResolve:resolveHandler reject:nil];
+- (CKPromise*(^)(id resolveHandler))onResolve{
+    return ^CKPromise*(id resolveHandler){
+        return self.on(resolveHandler, nil);
+    };
 }
 
-- (CKPromise*)onReject:(id)rejectHandler{
-    return [self onResolve:nil reject:rejectHandler];
+- (CKPromise*(^)(id rejectHandler))onReject{
+    return ^CKPromise*(id rejectHandler){
+        return self.on(nil, rejectHandler);
+    };
+}
+
+- (CKPromise*(^)(id handler))onAny{
+    return ^CKPromise*(id handler){
+        return self.on(handler, handler);
+    };
 }
 
 - (void)resolve:(id)value{
@@ -317,9 +323,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     if(!block) return nil;
     
     NSMethodSignature *blockSignature = [self methodSignatureForBlock:block];
-    if(!blockSignature){
-        [CKInvalidHandlerException raise];
-    }
+    if(!blockSignature) return nil;
     
     NSUInteger blockArgumentCount = blockSignature.numberOfArguments;
     const char *blockReturnType = blockSignature.methodReturnType;
@@ -341,7 +345,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
        [blockSignature getArgumentTypeAtIndex:1][0] == '@'){
         if(blockReturnsVoid){
             return ^id(id arg){
-                ((id(^)(id))block)(arg);
+                ((void(^)(id))block)(arg);
                 return nil;
             };
         }else if(blockReturnsId){

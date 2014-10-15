@@ -21,7 +21,11 @@
 // alias for [promise then:handler :handler]
 - (CKPromise*(^)(id handler))always;
 
-- (CKPromise*)onResolve:(id)resolveHandler;
-- (CKPromise*)onReject:(id)rejectHandler;
+// alias for [promise onResolve:resolveHander reject:nil]
+- (CKPromise*(^)(id resolveHandler))onResolve;
+// alias for [promise nil reject:rejectHandler]
+- (CKPromise*(^)(id rejectHandler))onReject;
+// alias for [promise onResolve:handler reject:handler]
+- (CKPromise*(^)(id rejectHandler))onAny;
 
 @end

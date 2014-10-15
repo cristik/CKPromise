@@ -32,7 +32,7 @@
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then;
 
 // similar to then::, however it doesn't create a new promise, it returns itself
-- (CKPromise*)onResolve:(id)resolveHandler reject:(id)rejectHandler;
+- (CKPromise*(^)(id resolveHandler, id rejectHandler))on;
 
 - (void)resolve:(id)value;
 - (void)reject:(id)reason;
