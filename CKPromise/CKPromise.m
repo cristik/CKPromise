@@ -351,8 +351,8 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     
     NSUInteger blockArgumentCount = blockSignature.numberOfArguments;
     const char *blockReturnType = blockSignature.methodReturnType;
-    BOOL blockReturnsVoid = !strcmp(blockReturnType, @encode(void));
-    BOOL blockReturnsId = strstr(blockReturnType, @encode(id)) == blockReturnType;
+    BOOL blockReturnsVoid = blockReturnType[0] == 'v';
+    BOOL blockReturnsObject = blockReturnType[0] == '@';
     
     if(blockArgumentCount == 1){
         if(blockReturnsVoid){
@@ -360,20 +360,123 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
                 ((void(^)(void))block)();
                 return nil;
             };
-        } else if(blockReturnsId){
+        } else if(blockReturnsObject){
             return ^id(id arg){
                 return ((id(^)(void))block)();
             };
         }
-    }else if(blockArgumentCount == 2 &&
-       [blockSignature getArgumentTypeAtIndex:1][0] == '@'){
-        if(blockReturnsVoid){
-            return ^id(id arg){
-                ((void(^)(id))block)(arg);
-                return nil;
-            };
-        }else if(blockReturnsId){
-            return (id(^)(id))block;
+    }else if(blockArgumentCount == 2){
+        switch([blockSignature getArgumentTypeAtIndex:1][0]){
+            case 'c':
+            case 'C':
+                if(blockReturnsVoid){
+                    return ^id(id arg){
+                        ((void(^)(char))block)([arg charValue]);
+                        return nil;
+                    };
+                }else if(blockReturnsObject){
+                    return ^id(id arg){
+                        return ((id(^)(char))block)([arg charValue]);
+                    };
+                }else{
+                    break;
+                }
+            case 'i':
+            case 'I':
+                if(blockReturnsVoid){
+                    return ^id(id arg){
+                        ((void(^)(int))block)([arg intValue]);
+                        return nil;
+                    };
+                }else if(blockReturnsObject){
+                    return ^id(id arg){
+                        return ((id(^)(int))block)([arg intValue]);
+                    };
+                }else{
+                    break;
+                }
+            case 's':
+            case 'S':
+                if(blockReturnsVoid){
+                    return ^id(id arg){
+                        ((void(^)(short))block)([arg shortValue]);
+                        return nil;
+                    };
+                }else if(blockReturnsObject){
+                    return ^id(id arg){
+                        return ((id(^)(short))block)([arg shortValue]);
+                    };
+                }else{
+                    break;
+                }
+            case 'l':
+            case 'L':
+                if(blockReturnsVoid){
+                    return ^id(id arg){
+                        ((void(^)(long))block)([arg intValue]);
+                        return nil;
+                    };
+                }else if(blockReturnsObject){
+                    return ^id(id arg){
+                        return ((id(^)(long))block)([arg intValue]);
+                    };
+                }else{
+                    break;
+                }
+            case 'q':
+            case 'Q':
+                if(blockReturnsVoid){
+                    return ^id(id arg){
+                        ((void(^)(long long))block)([arg longLongValue]);
+                        return nil;
+                    };
+                }else if(blockReturnsObject){
+                    return ^id(id arg){
+                        return ((id(^)(long long))block)([arg longLongValue]);
+                    };
+                }else{
+                    break;
+                }
+            case 'f':
+                if(blockReturnsVoid){
+                    return ^id(id arg){
+                        ((void(^)(float))block)([arg floatValue]);
+                        return nil;
+                    };
+                }else if(blockReturnsObject){
+                    return ^id(id arg){
+                        return ((id(^)(float))block)([arg floatValue]);
+                    };
+                }else{
+                    break;
+                }
+            case 'd':
+                if(blockReturnsVoid){
+                    return ^id(id arg){
+                        ((void(^)(double))block)([arg doubleValue]);
+                        return nil;
+                    };
+                }else if(blockReturnsObject){
+                    return ^id(id arg){
+                        return ((id(^)(double))block)([arg doubleValue]);
+                    };
+                }else{
+                    break;
+                }
+            case '@':
+                if(blockReturnsVoid){
+                    return ^id(id arg){
+                        ((void(^)(id))block)(arg);
+                        return nil;
+                    };
+                }else if(blockReturnsObject){
+                    return (id(^)(id))block;
+                }else{
+                    break;
+                }
+            default:
+                break;
+                
         }
     }
     

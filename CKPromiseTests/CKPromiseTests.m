@@ -167,6 +167,27 @@ while((condition) && microtime() - start < timeout){\
     STAssertEqualObjects(resolveValue, @18, @"Incorrect resolve value");
 }
 
+// scalar values
+- (void)test_acceptsResolveHandlerVoidInt{
+    __block int value = 0;
+    promise.then(^(int val){
+        value = val;
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, 27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsResolveHandlerVoidDouble{
+    __block double value = 0;
+    promise.then(^(double val){
+        value = val;
+    }, nil);
+    [promise resolve:@28.98];
+    wait(YES, 0.02);
+    STAssertEquals(value, 28.98, @"Unexpected promise value");
+}
+
 // # Promise States
 
 //A promise must be in one of three states: pending, fulfilled, or rejected.
