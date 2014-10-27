@@ -314,6 +314,10 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     }];
 }
 
+- (void)abort{
+    [_resolveHandlers removeAllObjects];
+    [_rejectHandlers removeAllObjects];
+}
 
 #pragma mark -
 #pragma mark Privates

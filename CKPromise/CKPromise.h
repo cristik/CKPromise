@@ -74,6 +74,12 @@
   */
 - (void)reject:(id)reason;
 
+/**
+  * Aborts the promise. No callbacks are called. Subclasses need to call super in order to avoid
+  * any memory leaks due to circular references in the callbacks
+  */
+- (void)abort;
+
 @end
 
 @interface CKPromise(Extra)
