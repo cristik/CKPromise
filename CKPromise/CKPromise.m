@@ -7,7 +7,6 @@
 //
 
 #import "CKPromise.h"
-#import "CKPromise+Extra.h"
 
 struct CKBlockLiteral{
     void *isa;

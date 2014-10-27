@@ -8,7 +8,6 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 #import "CKPromise.h"
-#import "CKPromise+Extra.h"
 #include <sys/time.h>
 
 double microtime(){
