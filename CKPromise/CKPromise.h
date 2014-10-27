@@ -90,36 +90,37 @@
 + (CKPromise*)resolved:(id)value;
 
 /**
- * Returns a rejected promise
- */
+  * Returns a rejected promise
+  */
 + (CKPromise*)rejected:(id)reason;
 
 /**
- * Returns a promise that gets resolved when all input promises are resolved
- */
+  * Returns a promise that gets resolved when all input promises are resolved
+  */
 + (CKPromise*)when:(NSArray*)promises;
 
 /**
-  * alias for then(,resolveHandler, nil)
+  * Alias for then(,resolveHandler, nil)
   */
 - (CKPromise*(^)(id resolveHandler))done;
 
 /** 
-  * alias for then(nil, rejectHandler)
+  * Alias for then(nil, rejectHandler)
   */
 - (CKPromise*(^)(id rejectHandler))fail;
+
 /**
-  * alias for then(handler, handler)
+  * Alias for then(handler, handler)
   */
 - (CKPromise*(^)(id handler))always;
 
 /**
-  * alias for promise.on(resolveHander, reject)
+  * Alias for promise.on(resolveHander, reject)
   */
 - (CKPromise*(^)(id resolveHandler))onResolve;
 
 /**
-  * alias for promise.on(nil, rejectHandler)
+  * Alias for promise.on(nil, rejectHandler)
   */
 - (CKPromise*(^)(id rejectHandler))onReject;
 

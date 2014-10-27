@@ -87,6 +87,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 @end
 
 @implementation CKPromise{
+    CKPromise *_selfCopy;
     CKPromiseState _state;
     id _value;
     id _reason;
@@ -144,6 +145,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 
 - (id)init{
     if(self = [super init]){
+        _selfCopy = self;
         _resolveHandlers = [[NSMutableArray alloc] init];
         _rejectHandlers = [[NSMutableArray alloc] init];
         _state = CKPromiseStatePending;
@@ -296,6 +298,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
+        _selfCopy = nil;
     }];
 }
 
@@ -311,12 +314,16 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
+        _selfCopy = nil;
     }];
 }
 
 - (void)abort{
-    [_resolveHandlers removeAllObjects];
-    [_rejectHandlers removeAllObjects];
+    [self dispatch:^{
+        [_resolveHandlers removeAllObjects];
+        [_rejectHandlers removeAllObjects];
+        _selfCopy = nil;
+    }];
 }
 
 #pragma mark -
