@@ -1,10 +1,27 @@
+// Copyright (c) 2014, Cristian Kocza
+// All rights reserved.
 //
-//  CKPromise.m
-//  CKPromise
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
 //
-//  Created by Cristian Kocza on 9/16/14.
-//  Copyright (c) 2014 Cristik. All rights reserved.
+// 1. Redistributions of source code must retain the above copyright notice,
+// this list of conditions and the following disclaimer.
 //
+// 2. Redistributions in binary form must reproduce the above copyright notice,
+// this list of conditions and the following disclaimer in the documentation
+// and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+// OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+// OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #import "CKPromise.h"
 
@@ -23,9 +40,9 @@ struct CKBlockLiteral{
     } *descriptor;
     
     // Here the struct contains one entry for every surrounding scope variable.
-    // For non-pointers, these entries are the actual const values of the variables.
-    // For pointers, there are a range of possibilities (__block pointer,
-    // object pointer, weak pointer, ordinary pointer)
+    // For non-pointers, these entries are the actual const values of
+    // the variables. For pointers, there are a range of possibilities
+    // (__block pointer, object pointer, weak pointer, ordinary pointer)
 
 };
 
@@ -46,20 +63,26 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 
 @implementation CKTypeErrorException
 + (void)raise{
-    [[self exceptionWithName:@"TypeError" reason:@"TypeError" userInfo:nil] raise];
+    [[self exceptionWithName:@"TypeError"
+                      reason:@"TypeError"
+                    userInfo:nil] raise];
 }
 @end
 
 
 @implementation CKHasResolutionException
 + (void)raise{
-    [[self exceptionWithName:@"HasResolution" reason:@"Already resolved/rejected" userInfo:nil] raise];
+    [[self exceptionWithName:@"HasResolution"
+                      reason:@"Already resolved/rejected"
+                    userInfo:nil] raise];
 }
 @end
 
 @implementation CKInvalidHandlerException
 + (void)raise{
-    [[self exceptionWithName:@"InvalidHandler" reason:@"Passed handler is not a valid promise handler" userInfo:nil] raise];
+    [[self exceptionWithName:@"InvalidHandler"
+                      reason:@"Passed handler is not a valid promise handler"
+                    userInfo:nil] raise];
 }
 @end
 
@@ -239,16 +262,18 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     if(_state != CKPromiseStatePending){
         [CKHasResolutionException raise];
     }
-    //1. If promise and x refer to the same object, reject promise with a TypeError as the reason.
+    // 1. If promise and x refer to the same object, reject promise with a
+    //    TypeError as the reason.
     if(value == self){
         [CKTypeErrorException raise];
     }
     
     //2. If x is a promise, adopt its state [3.4]:
     if([value isKindOfClass:[CKPromise class]]){
-        //i. If x is pending, promise must remain pending until x is fulfilled or rejected.
-        //ii. If/when x is fulfilled, fulfill promise with the same value.
-        //iii. If/when x is rejected, reject promise with the same reason.
+        //   i. If x is pending, promise must remain pending until x is fulfilled
+        //      or rejected.
+        //  ii. If/when x is fulfilled, fulfill promise with the same value.
+        // iii. If/when x is rejected, reject promise with the same reason.
         ((CKPromise*)value).then(^id(id value) {
             [self resolve:value];
             return nil;
@@ -259,10 +284,10 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         return;
     }
     
-    //3. Otherwise, if x is an object or function,
-    // this doesn't apply to Objective-C
+    // 3. Otherwise, if x is an object or function,
+    // (this doesn't apply to Objective-C)
     
-    //4. If x is not an object or function, fulfill promise with x.
+    // 4. If x is not an object or function, fulfill promise with x.
     _state = CKPromiseStateResolved;
     _value = value;
     [self dispatch:^{
