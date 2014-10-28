@@ -96,7 +96,7 @@
 + (CKPromise*)when:(NSArray*)promises;
 
 /**
-  * Alias for then(,resolveHandler, nil)
+  * Alias for then(resolveHandler, nil)
   */
 - (CKPromise*(^)(id resolveHandler))done;
 
