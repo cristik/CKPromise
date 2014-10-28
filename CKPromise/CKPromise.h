@@ -24,17 +24,25 @@
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-
-
 #import <Foundation/Foundation.h>
 
-
+/**
+  * Thrown if a promise callback returns the same promise
+  */
 @interface CKTypeErrorException: NSException
 @end
 
+/**
+  * Thrown if a promise is attempted to be resolved/rejected twice
+  * or the promise is attempted to be rejected after being resolved,
+  * or vice-versa
+  */
 @interface CKHasResolutionException: NSException
 @end
 
+/**
+ * Thrown if a passed promise callback is not a valid block
+ */
 @interface CKInvalidHandlerException: NSException
 @end
 

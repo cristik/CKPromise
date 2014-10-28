@@ -28,22 +28,14 @@
 struct CKBlockLiteral{
     void *isa;
     int flags;
-    int reserved; // is actually the retain count of heap allocated blocks
-    void (*invoke)(void *, ...); // a pointer to the block's compiled code
+    int reserved;
+    void (*invoke)(void *, ...);
     struct CKBlockDescriptor {
-        unsigned long int reserved;  // always nil
-    	unsigned long int size;  // size of the entire CKBlockLiteral
-        
-        // functions used to copy and dispose of the block (if needed)
+        unsigned long int reserved;
+    	unsigned long int size;
     	void (*copy_helper)(void *dst, void *src);
     	void (*dispose_helper)(void *src);
     } *descriptor;
-    
-    // Here the struct contains one entry for every surrounding scope variable.
-    // For non-pointers, these entries are the actual const values of
-    // the variables. For pointers, there are a range of possibilities
-    // (__block pointer, object pointer, weak pointer, ordinary pointer)
-
 };
 
 typedef NS_OPTIONS(NSUInteger, CKBlockDescriptionFlags) {
@@ -87,7 +79,6 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 @end
 
 @implementation CKPromise{
-    CKPromise *_selfCopy;
     CKPromiseState _state;
     id _value;
     id _reason;
@@ -145,7 +136,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 
 - (id)init{
     if(self = [super init]){
-        _selfCopy = self;
+        CFRetain((__bridge CFTypeRef)(self));
         _resolveHandlers = [[NSMutableArray alloc] init];
         _rejectHandlers = [[NSMutableArray alloc] init];
         _state = CKPromiseStatePending;
@@ -298,7 +289,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
-        _selfCopy = nil;
+        CFRetain((__bridge CFTypeRef)(self));
     }];
 }
 
@@ -314,7 +305,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
-        _selfCopy = nil;
+        CFRetain((__bridge CFTypeRef)(self));
     }];
 }
 
@@ -322,7 +313,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     [self dispatch:^{
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
-        _selfCopy = nil;
+        CFRetain((__bridge CFTypeRef)(self));
     }];
 }
 
