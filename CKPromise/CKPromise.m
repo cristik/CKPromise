@@ -136,7 +136,6 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 
 - (id)init{
     if(self = [super init]){
-        CFRetain((__bridge CFTypeRef)(self));
         _resolveHandlers = [[NSMutableArray alloc] init];
         _rejectHandlers = [[NSMutableArray alloc] init];
         _state = CKPromiseStatePending;
@@ -243,7 +242,6 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
-        CFRetain((__bridge CFTypeRef)(self));
     }];
 }
 
@@ -259,7 +257,6 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
-        CFRetain((__bridge CFTypeRef)(self));
     }];
 }
 
