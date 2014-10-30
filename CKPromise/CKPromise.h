@@ -66,12 +66,6 @@
   */
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then;
 
-/** 
-  * similar to then::, however it doesn't create a new promise, it returns 
-  * itself
-  */
-- (CKPromise*(^)(id resolveHandler, id rejectHandler))on;
-
 /**
   * Resolves the promise with the provided value
   */
@@ -81,12 +75,6 @@
   * Rejects the promise with the provided value
   */
 - (void)reject:(id)reason;
-
-/**
-  * Aborts the promise. No callbacks are called. Subclasses need to call super in order to avoid
-  * any memory leaks due to circular references in the callbacks
-  */
-- (void)abort;
 
 @end
 
@@ -121,20 +109,5 @@
   * Alias for then(handler, handler)
   */
 - (CKPromise*(^)(id handler))always;
-
-/**
-  * Alias for promise.on(resolveHander, reject)
-  */
-- (CKPromise*(^)(id resolveHandler))onResolve;
-
-/**
-  * Alias for promise.on(nil, rejectHandler)
-  */
-- (CKPromise*(^)(id rejectHandler))onReject;
-
-/**
-  * alias for promise.onResolve(handler, handler)
-  */
-- (CKPromise*(^)(id rejectHandler))onAny;
 
 @end

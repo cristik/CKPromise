@@ -187,34 +187,6 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     };
 }
 
-- (CKPromise*(^)(id resolveHandler, id rejectHandler))on{
-    return ^CKPromise*(id resolveHandler, id rejectHandler){
-        id (^actualResolveHandler)(id) = [CKPromise transformHandler:resolveHandler];
-        id (^actualRejectHandler)(id) = [CKPromise transformHandler:rejectHandler];
-        if(actualResolveHandler){
-            dispatch_block_t successHandlerWrapper = ^{
-                actualResolveHandler(_value);
-            };
-            if(_state == CKPromiseStateResolved){
-                [self dispatch:successHandlerWrapper];
-            }else{
-                [_resolveHandlers addObject:successHandlerWrapper];
-            }
-        }
-        if(actualRejectHandler){
-            dispatch_block_t errorHandlerWrapper = ^{
-                actualRejectHandler(_reason);
-            };
-            if(_state == CKPromiseStateRejected){
-                [self dispatch:errorHandlerWrapper];
-            }else{
-                [_rejectHandlers addObject:errorHandlerWrapper];
-            }
-        }
-        return self;
-    };
-}
-
 - (CKPromise*(^)(id resolveHandler))done{
     return ^CKPromise*(id resolveHandler){
         return self.then(resolveHandler, nil);
@@ -230,24 +202,6 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 - (CKPromise*(^)(id handler))always{
     return ^CKPromise*(id handler){
         return self.then(handler, handler);
-    };
-}
-
-- (CKPromise*(^)(id resolveHandler))onResolve{
-    return ^CKPromise*(id resolveHandler){
-        return self.on(resolveHandler, nil);
-    };
-}
-
-- (CKPromise*(^)(id rejectHandler))onReject{
-    return ^CKPromise*(id rejectHandler){
-        return self.on(nil, rejectHandler);
-    };
-}
-
-- (CKPromise*(^)(id handler))onAny{
-    return ^CKPromise*(id handler){
-        return self.on(handler, handler);
     };
 }
 
@@ -303,14 +257,6 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         for(dispatch_block_t rejectHandler in _rejectHandlers){
             rejectHandler();
         }
-        [_resolveHandlers removeAllObjects];
-        [_rejectHandlers removeAllObjects];
-        CFRetain((__bridge CFTypeRef)(self));
-    }];
-}
-
-- (void)abort{
-    [self dispatch:^{
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
         CFRetain((__bridge CFTypeRef)(self));

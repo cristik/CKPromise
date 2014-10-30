@@ -420,9 +420,4 @@
 
 // If a promise is resolved with a thenable that participates in a circular thenable chain, such that the recursive nature of [[Resolve]](promise, thenable) eventually causes [[Resolve]](promise, thenable) to be called again, following the above algorithm will lead to infinite recursion. Implementations are encouraged, but not required, to detect such recursion and reject promise with an informative TypeError as the reason. [3.6]
 
-
-- (void)test_OnResolveReject_returnsSamePromise{
-    STAssertEquals(promise.on(nil, nil), promise, @"Expected same promise");
-}
-
 @end
