@@ -272,6 +272,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     struct CKBlockLiteral *blockRef = (__bridge struct CKBlockLiteral *)block;
     CKBlockDescriptionFlags flags = (CKBlockDescriptionFlags)blockRef->flags;
 
+    NSMethodSignature *signature = nil;
     if (flags & CKBlockDescriptionFlagsHasSignature) {
         void *signatureLocation = blockRef->descriptor;
         signatureLocation += sizeof(unsigned long int);
@@ -282,10 +283,10 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
             signatureLocation += sizeof(void (*)(void *src));
         }
 
-        const char *signature = (*(const char **)signatureLocation);
-        return [NSMethodSignature signatureWithObjCTypes:signature];
+        const char *sigStr = (*(const char **)signatureLocation);
+        signature = [NSMethodSignature signatureWithObjCTypes:sigStr];
     }
-    return nil;
+    return signature;
 }
 
 + (id(^)(id))transformHandler:(id)block{
@@ -354,20 +355,20 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
                 }else{
                     break;
                 }
-            case 'l':
-            case 'L':
-                if(blockReturnsVoid){
-                    return ^id(id arg){
-                        ((void(^)(long))block)([arg intValue]);
-                        return nil;
-                    };
-                }else if(blockReturnsObject){
-                    return ^id(id arg){
-                        return ((id(^)(long))block)([arg intValue]);
-                    };
-                }else{
-                    break;
-                }
+//            case 'l':
+//            case 'L':
+//                if(blockReturnsVoid){
+//                    return ^id(id arg){
+//                        ((void(^)(long))block)([arg intValue]);
+//                        return nil;
+//                    };
+//                }else if(blockReturnsObject){
+//                    return ^id(id arg){
+//                        return ((id(^)(long))block)([arg intValue]);
+//                    };
+//                }else{
+//                    break;
+//                }
             case 'q':
             case 'Q':
                 if(blockReturnsVoid){

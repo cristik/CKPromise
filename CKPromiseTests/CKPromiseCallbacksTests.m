@@ -117,6 +117,14 @@
     STAssertEqualObjects(resolveValue, @16, @"Incorrect resolve value");
 }
 
+- (void)test_acceptsRejectHandlerNSRectId{
+    STAssertThrows(promise.then(^NSRect(NSObject* val){
+        return NSZeroRect;
+    }, ^NSRect(NSFileManager *val){
+        return NSZeroRect;
+    }), @"Expected exception");
+}
+
 - (void)test_acceptsRejectHandlerVoidVoid{
     __block BOOL handlerExecuted = NO;
     promise.fail(^{
@@ -165,6 +173,14 @@
     STAssertEqualObjects(resolveValue, @18, @"Incorrect resolve value");
 }
 
+- (void)test_acceptsRejectHandlerNSRectChar{
+    STAssertThrows(promise.then(^NSRect(char val){
+        return NSZeroRect;
+    }, ^NSRect(char val){
+        return NSZeroRect;
+    }), @"Expected exception");
+}
+
 // scalar values
 - (void)test_acceptsResolveHandlerVoidInt{
     __block int value = 0;
@@ -176,6 +192,181 @@
     STAssertEquals(value, 27, @"Unexpected promise value");
 }
 
+- (void)test_acceptsRejectHandlerNSRectInt{
+    STAssertThrows(promise.then(^NSRect(int val){
+        return NSZeroRect;
+    }, ^NSRect(int val){
+        return NSZeroRect;
+    }), @"Expected exception");
+}
+
+- (void)test_acceptsResolveHandlerVoidChar{
+    __block char value = 0;
+    promise.then(^(char val){
+        value = val;
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (char)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsResolveHandlerIdChar{
+    __block char value = 0;
+    promise.then(^id(char val){
+        value = val;
+        return @"aa";
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (char)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsResolveHandlerVoidShort{
+    __block short value = 0;
+    promise.then(^(short val){
+        value = val;
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (short)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsResolveHandlerIdShort{
+    __block short value = 0;
+    promise.then(^id(short val){
+        value = val;
+        return @"aa";
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (short)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsRejectHandlerNSRectShort{
+    STAssertThrows(promise.then(^NSRect(short val){
+        return NSZeroRect;
+    }, ^NSRect(short val){
+        return NSZeroRect;
+    }), @"Expected exception");
+}
+
+- (void)test_acceptsResolveHandlerVoidLong{
+    __block long value = 0;
+    promise.then(^(long val){
+        value = val;
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (long)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsResolveHandlerIdLong{
+    __block long value = 0;
+    promise.then(^id(long val){
+        value = val;
+        return @"aa";
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (long)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsRejectHandlerNSRectLong{
+    STAssertThrows(promise.then(^NSRect(long val){
+        return NSZeroRect;
+    }, ^NSRect(long val){
+        return NSZeroRect;
+    }), @"Expected exception");
+}
+
+- (void)test_acceptsResolveHandlerVoidLong1{
+    __block long value = 0;
+    promise.then(^(long val){
+        value = val;
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (long)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsResolveHandlerIdLong1{
+    __block long value = 0;
+    promise.then(^id(long val){
+        value = val;
+        return @"aa";
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (long)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsRejectHandlerNSRectLong1{
+    STAssertThrows(promise.then(^NSRect(long val){
+        return NSZeroRect;
+    }, ^NSRect(long val){
+        return NSZeroRect;
+    }), @"Expected exception");
+}
+
+- (void)test_acceptsResolveHandlerVoidLongLong{
+    __block long long value = 0;
+    promise.then(^(long long val){
+        value = val;
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (long long)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsResolveHandlerIdLongLong{
+    __block long long value = 0;
+    promise.then(^id(long long val){
+        value = val;
+        return @"aa";
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (long long)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsRejectHandlerNSRectLongLong{
+    STAssertThrows(promise.then(^NSRect(long long val){
+        return NSZeroRect;
+    }, ^NSRect(long long val){
+        return NSZeroRect;
+    }), @"Expected exception");
+}
+
+- (void)test_acceptsResolveHandlerVoidFloat{
+    __block float value = 0;
+    promise.then(^(float val){
+        value = val;
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (float)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsResolveHandlerIdFloat{
+    __block float value = 0;
+    promise.then(^id(float val){
+        value = val;
+        return @"aa";
+    }, nil);
+    [promise resolve:@27];
+    wait(YES, 0.02);
+    STAssertEquals(value, (float)27, @"Unexpected promise value");
+}
+
+- (void)test_acceptsRejectHandlerNSRectFloat{
+    STAssertThrows(promise.then(^NSRect(float val){
+        return NSZeroRect;
+    }, ^NSRect(float val){
+        return NSZeroRect;
+    }), @"Expected exception");
+}
+
+
 - (void)test_acceptsResolveHandlerVoidDouble{
     __block double value = 0;
     promise.then(^(double val){
@@ -184,6 +375,61 @@
     [promise resolve:@28.98];
     wait(YES, 0.02);
     STAssertEquals(value, 28.98, @"Unexpected promise value");
+}
+
+- (void)test_acceptsResolveHandlerIdDouble{
+    __block double value = 0;
+    promise.then(^id(double val){
+        value = val;
+        return @132;
+    }, nil);
+    [promise resolve:@28.98];
+    wait(YES, 0.02);
+    STAssertEquals(value, 28.98, @"Unexpected promise value");
+}
+
+- (void)test_acceptsRejectHandlerNSRectDouble{
+    STAssertThrows(promise.then(^NSRect(double val){
+        return NSZeroRect;
+    }, ^NSRect(double val){
+        return NSZeroRect;
+    }), @"Expected exception");
+}
+
+//invalid handler
+- (void)test_acceptsResolveHandlerVoidNSRect{
+    __block NSRect value = NSZeroRect;
+    STAssertThrows(
+                   promise.then(^(NSRect val){
+        value = val;
+        return 8.1;
+    }, nil), @"Expected exception");
+}
+
+- (void)test_always_executes_resolveHandler{
+    __block BOOL handlerExecuted = NO;
+    promise.always(^(){
+        handlerExecuted = YES;
+    });
+    [promise resolve:@18];
+    wait(!handlerExecuted, 0.02);
+    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
+}
+
+- (void)test_always_executes_rejectHandler{
+    __block BOOL handlerExecuted = NO;
+    promise.always(^(){
+        handlerExecuted = YES;
+    });
+    [promise reject:@18];
+    wait(!handlerExecuted, 0.02);
+    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
+}
+
+- (void)test_ignores_nonBlock_handler{
+    promise.then(@15, @16);
+    [promise resolve:@17];
+    wait(YES, 0.02);
 }
 
 @end
