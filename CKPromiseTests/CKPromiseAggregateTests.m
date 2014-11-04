@@ -99,12 +99,61 @@
     promise = [CKPromise when:@[promise1, promise2]];
     [promise1 reject:nil];
     [promise2 resolve:nil];
-    __block BOOL handlerExecuted = NO;;
+    __block BOOL handlerExecuted = NO;
     promise.then(nil, ^{
         handlerExecuted = YES;
     });
     wait(!handlerExecuted, 0.02);
     STAssertTrue(handlerExecuted, @"Should be resolved if all promises have are resolved");
+}
+
+- (CKPromise*)alteredPromise{
+    return promise.then(^id(int val){
+        if(val != 1) return [CKPromise rejected:@(val)];
+        else return [CKPromise resolved:@(val)];
+    }, nil);
+}
+
+- (void)test_promise_alteration_success{
+    CKPromise *promise2 = [self alteredPromise];
+    __block BOOL handlerExecuted = NO;
+    __block int value = 0;
+    promise2.then(^(int val){
+        handlerExecuted = YES;
+        value = val;
+    }, nil);
+    [promise resolve:@1];
+    wait(!handlerExecuted, 0.02);
+    STAssertTrue(handlerExecuted, @"Should be resolved");
+    STAssertEquals(value, 1, @"Expected to receive the resolve value");
+}
+
+- (void)test_promise_alteration_success_but_altered_rejected{
+    CKPromise *promise2 = [self alteredPromise];
+    __block BOOL handlerExecuted = NO;
+    __block int reason = 0;
+    promise2.then(nil, ^(int rsn){
+        handlerExecuted = YES;
+        reason = rsn;
+    });
+    [promise resolve:@2];
+    wait(!handlerExecuted, 0.02);
+    STAssertTrue(handlerExecuted, @"Should be resolved");
+    STAssertEquals(reason, 2, @"Expected to receive the resolve value");
+}
+
+- (void)test_promise_alteration_reject{
+    CKPromise *promise2 = [self alteredPromise];
+    __block BOOL handlerExecuted = NO;
+    __block int reason = 0;
+    promise2.then(nil, ^(int rsn){
+        handlerExecuted = YES;
+        reason = rsn;
+    });
+    [promise reject:@3];
+    wait(!handlerExecuted, 0.02);
+    STAssertTrue(handlerExecuted, @"Should be resolved");
+    STAssertEquals(reason, 3, @"Expected to receive the resolve value");
 }
 
 @end

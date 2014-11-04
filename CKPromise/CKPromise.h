@@ -110,6 +110,18 @@
   * will be resolved with the same value as promise1.
   * If rejectHandler is not a function and promise1 is rejected, promise2 will 
   * be rejected with the same reason as promise1.
+  * 
+  * A valid promise callback handler is a block that has one of the following
+  * signatures:
+  * - void(^)(void)
+  * - void(^)(int)
+  * - void(^)(double)
+  * - void(^)(id)
+  * - id(^)(void)
+  * - id(^)(int)
+  * - id(^)(double)
+  * - id(^)(id)
+  * the "id" type can be replaced by any other concrete class
   */
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then;
 
