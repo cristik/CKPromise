@@ -425,6 +425,8 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         }
     }
     
+    // The block doesn't match any of the supported ones,
+    // raise an exception
     [CKInvalidHandlerException raise];
     return nil;
 }
