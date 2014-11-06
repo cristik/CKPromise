@@ -23,7 +23,7 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@interface CKPromiseAggregateTests : SenTestCase
+@interface CKPromiseAggregateTests : XCTestCase
 
 @end
 
@@ -57,7 +57,7 @@
     });
     [promise resolve:@0];
     wait(callbacksOrder.count < 3, 0.1);
-    STAssertEqualObjects(callbacksOrder, (@[@1,@2,@4]), @"Not the expected callbacks");
+    XCTAssertEqualObjects(callbacksOrder, (@[@1,@2,@4]), @"Not the expected callbacks");
 }
 
 - (void)test_aggregate_waitsForAllPromises{
@@ -74,7 +74,7 @@
         handlerExecuted = YES;
     });
     wait(!handlerExecuted, 0.02);
-    STAssertFalse(handlerExecuted, @"Should be in pending until all promises have a resolution");
+    XCTAssertFalse(handlerExecuted, @"Should be in pending until all promises have a resolution");
 }
 
 - (void)test_aggregate_resolvesIfAllPromisesResolve{
@@ -90,7 +90,7 @@
         handlerExecuted = YES;
     });
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Should be resolved if all promises have are resolved");
+    XCTAssertTrue(handlerExecuted, @"Should be resolved if all promises have are resolved");
 }
 
 - (void)test_aggregate_rejectsIfOnePromiseFails{
@@ -104,7 +104,7 @@
         handlerExecuted = YES;
     });
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Should be resolved if all promises have are resolved");
+    XCTAssertTrue(handlerExecuted, @"Should be resolved if all promises have are resolved");
 }
 
 - (CKPromise*)alteredPromise{
@@ -124,8 +124,8 @@
     }, nil);
     [promise resolve:@1];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Should be resolved");
-    STAssertEquals(value, 1, @"Expected to receive the resolve value");
+    XCTAssertTrue(handlerExecuted, @"Should be resolved");
+    XCTAssertEqual(value, 1, @"Expected to receive the resolve value");
 }
 
 - (void)test_promise_alteration_success_but_altered_rejected{
@@ -138,8 +138,8 @@
     });
     [promise resolve:@2];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Should be resolved");
-    STAssertEquals(reason, 2, @"Expected to receive the resolve value");
+    XCTAssertTrue(handlerExecuted, @"Should be resolved");
+    XCTAssertEqual(reason, 2, @"Expected to receive the resolve value");
 }
 
 - (void)test_promise_alteration_reject{
@@ -152,8 +152,8 @@
     });
     [promise reject:@3];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Should be resolved");
-    STAssertEquals(reason, 3, @"Expected to receive the resolve value");
+    XCTAssertTrue(handlerExecuted, @"Should be resolved");
+    XCTAssertEqual(reason, 3, @"Expected to receive the resolve value");
 }
 
 @end

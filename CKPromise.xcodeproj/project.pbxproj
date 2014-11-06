@@ -11,7 +11,6 @@
 		0FCC9B6319FF27C900292330 /* CKPromiseAggregateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */; };
 		AA4D462219C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
 		AA4D462C19C8AB470010D0EE /* CKPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.m */; };
-		AA4D463419C8AB470010D0EE /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D463319C8AB470010D0EE /* SenTestingKit.framework */; };
 		AA4D463519C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
 		AA4D463819C8AB470010D0EE /* libCKPromise.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D461E19C8AB460010D0EE /* libCKPromise.a */; };
 		AA4D463E19C8AB470010D0EE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA4D463C19C8AB470010D0EE /* InfoPlist.strings */; };
@@ -41,7 +40,6 @@
 		AA4D462A19C8AB470010D0EE /* CKPromise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKPromise.h; sourceTree = "<group>"; };
 		AA4D462B19C8AB470010D0EE /* CKPromise.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKPromise.m; sourceTree = "<group>"; };
 		AA4D463219C8AB470010D0EE /* CKPromiseTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CKPromiseTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA4D463319C8AB470010D0EE /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		AA4D463B19C8AB470010D0EE /* CKPromiseTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CKPromiseTests-Info.plist"; sourceTree = "<group>"; };
 		AA4D463D19C8AB470010D0EE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AA4D464019C8AB470010D0EE /* CKPromiseSpecsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKPromiseSpecsTests.m; sourceTree = "<group>"; };
@@ -60,7 +58,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA4D463419C8AB470010D0EE /* SenTestingKit.framework in Frameworks */,
 				AA4D463519C8AB470010D0EE /* Cocoa.framework in Frameworks */,
 				AA4D463819C8AB470010D0EE /* libCKPromise.a in Frameworks */,
 			);
@@ -92,7 +89,6 @@
 			isa = PBXGroup;
 			children = (
 				AA4D462119C8AB470010D0EE /* Cocoa.framework */,
-				AA4D463319C8AB470010D0EE /* SenTestingKit.framework */,
 				AA4D462319C8AB470010D0EE /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -194,7 +190,7 @@
 			name = CKPromiseTests;
 			productName = KCPromiseTests;
 			productReference = AA4D463219C8AB470010D0EE /* CKPromiseTests.octest */;
-			productType = "com.apple.product-type.bundle.ocunit-test";
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -203,7 +199,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0610;
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = Cristik;
 			};
 			buildConfigurationList = AA4D461919C8AB460010D0EE /* Build configuration list for PBXProject "CKPromise" */;
@@ -296,7 +292,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -328,6 +323,7 @@
 		0FCDCB1119E51E44005E42F0 /* Test */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -340,14 +336,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(inherited)",
+				);
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CKPromiseTests/CKPromiseTests-Prefix.pch";
 				INFOPLIST_FILE = "CKPromiseTests/CKPromiseTests-Info.plist";
 				PRODUCT_NAME = CKPromiseTests;
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Test;
 		};
@@ -355,7 +353,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -388,7 +385,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -413,6 +409,7 @@
 		AA4D464519C8AB470010D0EE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CKPromise/CKPromise-Prefix.pch";
 				PRODUCT_NAME = CKPromise;
@@ -422,6 +419,7 @@
 		AA4D464619C8AB470010D0EE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CKPromise/CKPromise-Prefix.pch";
 				PRODUCT_NAME = CKPromise;
@@ -432,14 +430,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(inherited)",
+				);
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CKPromiseTests/CKPromiseTests-Prefix.pch";
 				INFOPLIST_FILE = "CKPromiseTests/CKPromiseTests-Info.plist";
 				PRODUCT_NAME = CKPromiseTests;
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
@@ -447,14 +447,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(inherited)",
+				);
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CKPromiseTests/CKPromiseTests-Prefix.pch";
 				INFOPLIST_FILE = "CKPromiseTests/CKPromiseTests-Info.plist";
 				PRODUCT_NAME = CKPromiseTests;
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};

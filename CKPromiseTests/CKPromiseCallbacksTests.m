@@ -23,7 +23,7 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@interface CKPromiseCallbacksTests : SenTestCase
+@interface CKPromiseCallbacksTests : XCTestCase
 @end
 
 @implementation CKPromiseCallbacksTests{
@@ -47,7 +47,7 @@
     });
     [promise resolve:nil];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
 }
 
 - (void)test_acceptsResolveHandlerVoidId{
@@ -59,8 +59,8 @@
     });
     [promise resolve:@15];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
-    STAssertEqualObjects(resolveValue, @15, @"Incorrect resolve value");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertEqualObjects(resolveValue, @15, @"Incorrect resolve value");
 }
 
 - (void)test_acceptsResolveHandlerVoidNSNumber{
@@ -72,8 +72,8 @@
     });
     [promise resolve:@15];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
-    STAssertEqualObjects(resolveValue, @15, @"Incorrect resolve value");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertEqualObjects(resolveValue, @15, @"Incorrect resolve value");
 }
 
 - (void)test_acceptsResolveHandlerIdVoid{
@@ -84,7 +84,7 @@
     });
     [promise resolve:nil];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
 }
 
 - (void)test_acceptsResolveHandlerNSStringVoid{
@@ -99,8 +99,8 @@
     }, nil);
     [promise resolve:nil];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
-    STAssertEqualObjects(value, @"abc", @"Incorrect resolve value for promise2");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertEqualObjects(value, @"abc", @"Incorrect resolve value for promise2");
 }
 
 - (void)test_acceptsResolveHandlerIdId{
@@ -113,12 +113,12 @@
     });
     [promise resolve:@16];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
-    STAssertEqualObjects(resolveValue, @16, @"Incorrect resolve value");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertEqualObjects(resolveValue, @16, @"Incorrect resolve value");
 }
 
 - (void)test_acceptsRejectHandlerNSRectId{
-    STAssertThrows(promise.then(^NSRect(NSObject* val){
+    XCTAssertThrows(promise.then(^NSRect(NSObject* val){
         return NSZeroRect;
     }, ^NSRect(NSFileManager *val){
         return NSZeroRect;
@@ -132,7 +132,7 @@
     });
     [promise reject:nil];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
 }
 
 - (void)test_acceptsRejectHandlerVoidId{
@@ -144,8 +144,8 @@
     });
     [promise reject:@17];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
-    STAssertEqualObjects(resolveValue, @17, @"Incorrect resolve value");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertEqualObjects(resolveValue, @17, @"Incorrect resolve value");
 }
 
 - (void)test_acceptsRejectHandlerIdVoid{
@@ -156,7 +156,7 @@
     });
     [promise reject:nil];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
 }
 
 - (void)test_acceptsRejectHandlerIdId{
@@ -169,12 +169,12 @@
     });
     [promise reject:@18];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
-    STAssertEqualObjects(resolveValue, @18, @"Incorrect resolve value");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertEqualObjects(resolveValue, @18, @"Incorrect resolve value");
 }
 
 - (void)test_acceptsRejectHandlerNSRectChar{
-    STAssertThrows(promise.then(^NSRect(char val){
+    XCTAssertThrows(promise.then(^NSRect(char val){
         return NSZeroRect;
     }, ^NSRect(char val){
         return NSZeroRect;
@@ -189,11 +189,11 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, 27, @"Unexpected promise value");
+    XCTAssertEqual(value, 27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsRejectHandlerNSRectInt{
-    STAssertThrows(promise.then(^NSRect(int val){
+    XCTAssertThrows(promise.then(^NSRect(int val){
         return NSZeroRect;
     }, ^NSRect(int val){
         return NSZeroRect;
@@ -207,7 +207,7 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (char)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (char)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsResolveHandlerIdChar{
@@ -218,7 +218,7 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (char)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (char)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsResolveHandlerVoidShort{
@@ -228,7 +228,7 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (short)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (short)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsResolveHandlerIdShort{
@@ -239,11 +239,11 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (short)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (short)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsRejectHandlerNSRectShort{
-    STAssertThrows(promise.then(^NSRect(short val){
+    XCTAssertThrows(promise.then(^NSRect(short val){
         return NSZeroRect;
     }, ^NSRect(short val){
         return NSZeroRect;
@@ -257,7 +257,7 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (long)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (long)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsResolveHandlerIdLong{
@@ -268,11 +268,11 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (long)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (long)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsRejectHandlerNSRectLong{
-    STAssertThrows(promise.then(^NSRect(long val){
+    XCTAssertThrows(promise.then(^NSRect(long val){
         return NSZeroRect;
     }, ^NSRect(long val){
         return NSZeroRect;
@@ -286,7 +286,7 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (long)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (long)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsResolveHandlerIdLong1{
@@ -297,11 +297,11 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (long)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (long)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsRejectHandlerNSRectLong1{
-    STAssertThrows(promise.then(^NSRect(long val){
+    XCTAssertThrows(promise.then(^NSRect(long val){
         return NSZeroRect;
     }, ^NSRect(long val){
         return NSZeroRect;
@@ -315,7 +315,7 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (long long)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (long long)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsResolveHandlerIdLongLong{
@@ -326,11 +326,11 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (long long)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (long long)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsRejectHandlerNSRectLongLong{
-    STAssertThrows(promise.then(^NSRect(long long val){
+    XCTAssertThrows(promise.then(^NSRect(long long val){
         return NSZeroRect;
     }, ^NSRect(long long val){
         return NSZeroRect;
@@ -344,7 +344,7 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (float)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (float)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsResolveHandlerIdFloat{
@@ -355,11 +355,11 @@
     }, nil);
     [promise resolve:@27];
     wait(YES, 0.02);
-    STAssertEquals(value, (float)27, @"Unexpected promise value");
+    XCTAssertEqual(value, (float)27, @"Unexpected promise value");
 }
 
 - (void)test_acceptsRejectHandlerNSRectFloat{
-    STAssertThrows(promise.then(^NSRect(float val){
+    XCTAssertThrows(promise.then(^NSRect(float val){
         return NSZeroRect;
     }, ^NSRect(float val){
         return NSZeroRect;
@@ -374,7 +374,7 @@
     }, nil);
     [promise resolve:@28.98];
     wait(YES, 0.02);
-    STAssertEquals(value, 28.98, @"Unexpected promise value");
+    XCTAssertEqual(value, 28.98, @"Unexpected promise value");
 }
 
 - (void)test_acceptsResolveHandlerIdDouble{
@@ -385,11 +385,11 @@
     }, nil);
     [promise resolve:@28.98];
     wait(YES, 0.02);
-    STAssertEquals(value, 28.98, @"Unexpected promise value");
+    XCTAssertEqual(value, 28.98, @"Unexpected promise value");
 }
 
 - (void)test_acceptsRejectHandlerNSRectDouble{
-    STAssertThrows(promise.then(^NSRect(double val){
+    XCTAssertThrows(promise.then(^NSRect(double val){
         return NSZeroRect;
     }, ^NSRect(double val){
         return NSZeroRect;
@@ -399,7 +399,7 @@
 //invalid handler
 - (void)test_acceptsResolveHandlerVoidNSRect{
     __block NSRect value = NSZeroRect;
-    STAssertThrows(
+    XCTAssertThrows(
                    promise.then(^(NSRect val){
         value = val;
         return 8.1;
@@ -413,7 +413,7 @@
     });
     [promise resolve:@18];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
 }
 
 - (void)test_always_executes_rejectHandler{
@@ -423,7 +423,7 @@
     });
     [promise reject:@18];
     wait(!handlerExecuted, 0.02);
-    STAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
 }
 
 - (void)test_ignores_nonBlock_handler{

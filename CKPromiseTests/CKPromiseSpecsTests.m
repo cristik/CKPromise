@@ -23,7 +23,7 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@interface CKPromiseSpecsTests : SenTestCase
+@interface CKPromiseSpecsTests : XCTestCase
 @end
 
 @implementation CKPromiseSpecsTests{
@@ -50,7 +50,7 @@
         handlerExecuted = YES;
     });
     wait(YES, 0.02);
-    STAssertFalse(handlerExecuted, @"Incorrect state");
+    XCTAssertFalse(handlerExecuted, @"Incorrect state");
 }
 
 // 1. When pending, a promise:
@@ -62,7 +62,7 @@
     });
     wait(YES, 0.02);
     [promise resolve:nil];
-    STAssertFalse(handlerExecuted, @"Incorrect state");
+    XCTAssertFalse(handlerExecuted, @"Incorrect state");
 }
 
 - (void)test_reject_transitionsToRejected{
@@ -72,19 +72,19 @@
     }, nil);
     wait(YES, 0.02);
     [promise reject:nil];
-    STAssertFalse(handlerExecuted, @"Incorrect state");
+    XCTAssertFalse(handlerExecuted, @"Incorrect state");
 }
 
 //2. When fulfilled, a promise:
 //2.i. must not transition to any other state.
 - (void)test_resolve_cannotBeResolvedAgain{
     [promise resolve:nil];
-    STAssertThrows([promise resolve:nil], @"Should throw exception");
+    XCTAssertThrows([promise resolve:nil], @"Should throw exception");
 }
 
 - (void)test_resolve_cannotBeAlsoRejected{
     [promise resolve:nil];
-    STAssertThrows([promise reject:nil], @"Should throw exception");
+    XCTAssertThrows([promise reject:nil], @"Should throw exception");
 }
 
 //2.ii. must have a value, which must not change.
@@ -95,12 +95,12 @@
 //3.i. must not transition to any other state.
 - (void)test_reject_cannotBeRejectedAgain{
     [promise reject:nil];
-    STAssertThrows([promise reject:nil], @"Should throw exception");
+    XCTAssertThrows([promise reject:nil], @"Should throw exception");
 }
 
 - (void)test_reject_cannotBeAlsoResolved{
     [promise reject:nil];
-    STAssertThrows([promise resolve:nil], @"Should throw exception");
+    XCTAssertThrows([promise resolve:nil], @"Should throw exception");
 }
 
 //3.ii. must have a reason, which must not change.
@@ -114,8 +114,8 @@
 //promise.then(onFulfilled, onRejected)
 - (void)test_has_then_method{
     NSMethodSignature *sig = [NSMethodSignature signatureWithObjCTypes:"@?@:"];
-    STAssertTrue([promise respondsToSelector:@selector(then)], @"Should have a then method");
-    STAssertEqualObjects([promise methodSignatureForSelector:@selector(then)], sig, @"Unexpected signature for then");
+    XCTAssertTrue([promise respondsToSelector:@selector(then)], @"Should have a then method");
+    XCTAssertEqualObjects([promise methodSignatureForSelector:@selector(then)], sig, @"Unexpected signature for then");
 }
 
 //1. Both onFulfilled and onRejected are optional arguments:
@@ -154,14 +154,14 @@
         rejectedExecuted = YES;
         return nil;
     });
-    STAssertFalse(executed, @"Callback should not be executed before resolving");
+    XCTAssertFalse(executed, @"Callback should not be executed before resolving");
     [promise resolve:@12];
-    STAssertFalse(executed, @"Callback should not be executed in this cycle");
+    XCTAssertFalse(executed, @"Callback should not be executed in this cycle");
     wait(!executed, 1);
-    STAssertTrue(executed, @"Resolved dallback not executed");
-    STAssertFalse(rejectedExecuted, @"Rejected callback was executed");
-    STAssertEquals(executeCount, 1, @"Callback not executed exactly once");
-    STAssertEqualObjects(value, @12, @"Resolve value doesn't match");
+    XCTAssertTrue(executed, @"Resolved dallback not executed");
+    XCTAssertFalse(rejectedExecuted, @"Rejected callback was executed");
+    XCTAssertEqual(executeCount, 1, @"Callback not executed exactly once");
+    XCTAssertEqualObjects(value, @12, @"Resolve value doesn't match");
 }
 
 //3. If onRejected is a function,
@@ -183,14 +183,14 @@
         executeCount++;
         return nil;
     });
-    STAssertFalse(executed, @"Callback should not be executed before resolving");
+    XCTAssertFalse(executed, @"Callback should not be executed before resolving");
     [promise reject:@13];
-    STAssertFalse(executed, @"Callback should not be executed in this cycle");
+    XCTAssertFalse(executed, @"Callback should not be executed in this cycle");
     wait(!executed, 1);
-    STAssertTrue(executed, @"Rejected dallback not executed");
-    STAssertFalse(resolvedExecuted, @"Resolved callback was executed");
-    STAssertEquals(executeCount, 1, @"Callback not executed exactly once");
-    STAssertEqualObjects(reason, @13, @"Reject reason doesn't match");
+    XCTAssertTrue(executed, @"Rejected dallback not executed");
+    XCTAssertFalse(resolvedExecuted, @"Resolved callback was executed");
+    XCTAssertEqual(executeCount, 1, @"Callback not executed exactly once");
+    XCTAssertEqualObjects(reason, @13, @"Reject reason doesn't match");
 }
 
 //5. onFulfilled and onRejected must be called as functions (i.e. with no this value). [3.2]
@@ -214,7 +214,7 @@
     }, nil);
     [promise resolve:@4];
     wait(callbacksOrder.count < 3, 1.0);
-    STAssertEqualObjects(callbacksOrder, (@[@1,@2,@3]), @"Resolve callbacks not called in order");
+    XCTAssertEqualObjects(callbacksOrder, (@[@1,@2,@3]), @"Resolve callbacks not called in order");
 }
 
 //6.ii. If/when promise is rejected, all respective onRejected callbacks must execute in the order of their originating calls to then.
@@ -234,14 +234,14 @@
     });
     [promise reject:@4];
     wait(callbacksOrder.count < 3, 1.0);
-    STAssertEqualObjects(callbacksOrder, (@[@1,@2,@3]), @"Resolve callbacks not called in order");
+    XCTAssertEqualObjects(callbacksOrder, (@[@1,@2,@3]), @"Resolve callbacks not called in order");
 }
 
 //7. then must return a promise [3.3]
 - (void)test_then_returnsAnotherPromise{
     CKPromise *promise2 = promise.then(nil, nil);
-    STAssertTrue([promise2 isKindOfClass:[CKPromise class]], @"Expected a promise to be returned");
-    STAssertFalse(promise2==promise, @"Expected a different promise");
+    XCTAssertTrue([promise2 isKindOfClass:[CKPromise class]], @"Expected a promise to be returned");
+    XCTAssertFalse(promise2==promise, @"Expected a different promise");
 }
 
 // 7.i. If either onFulfilled or onRejected returns a value x, run the Promise Resolution Procedure [[Resolve]](promise2, x).
@@ -256,7 +256,7 @@
     }, nil);
     [promise resolve:@18];
     wait(!value, 1.0);
-    STAssertEqualObjects(value, @19, @"Incorrect promise2 value");
+    XCTAssertEqualObjects(value, @19, @"Incorrect promise2 value");
 }
 
 - (void)test_then_rejectedCallbackReturnsValue_promise2IsResolvedWithThatValue{
@@ -270,7 +270,7 @@
     }, nil);
     [promise reject:@28];
     wait(!value, 1.0);
-    STAssertEqualObjects(value, @29, @"Incorrect promise2 value");
+    XCTAssertEqualObjects(value, @29, @"Incorrect promise2 value");
 
 }
 
@@ -288,7 +288,7 @@
     });
     [promise resolve:@18];
     wait(!reason, 1.0);
-    STAssertEquals(reason, ex, @"Incorrect promise2 reason");
+    XCTAssertEqual(reason, ex, @"Incorrect promise2 reason");
 }
 
 - (void)test_then_rejectedThrowsException_promise2IsRejectedWithThatException{
@@ -304,7 +304,7 @@
     });
     [promise reject:@28];
     wait(!reason, 0.02);
-    STAssertEquals(reason, ex, @"Incorrect promise2 reason");
+    XCTAssertEqual(reason, ex, @"Incorrect promise2 reason");
     
 }
 
@@ -318,7 +318,7 @@
     }, nil);
     [promise resolve:@18];
     wait(!value, 0.02);
-    STAssertEqualObjects(value, @18, @"Incorrect promise2 value");
+    XCTAssertEqualObjects(value, @18, @"Incorrect promise2 value");
 }
 
 //7.iv. If onRejected is not a function and promise1 is rejected, promise2 must be rejected with the same reason as promise1.
@@ -331,7 +331,7 @@
     });
     [promise reject:@18];
     wait(!reason, 0.02);
-    STAssertEqualObjects(reason, @18, @"Incorrect promise2 value");
+    XCTAssertEqualObjects(reason, @18, @"Incorrect promise2 value");
 }
 
 // #The Promise Resolution Procedure
@@ -344,7 +344,7 @@
 
 //1. If promise and x refer to the same object, reject promise with a TypeError as the reason.
 - (void)test_resolve_samePromise_raiseException{
-    STAssertThrowsSpecific([promise resolve:promise], CKTypeErrorException, @"Should raise TypeError exception");
+    XCTAssertThrowsSpecific([promise resolve:promise], CKTypeErrorException, @"Should raise TypeError exception");
 }
 
 //2. If x is a promise, adopt its state [3.4]:
@@ -359,7 +359,7 @@
         handlerExecuted = YES;
     });
     wait(!handlerExecuted, 0.02);
-    STAssertFalse(handlerExecuted, @"Should be in pending");
+    XCTAssertFalse(handlerExecuted, @"Should be in pending");
 }
 
 //2.ii. If/when x is fulfilled, fulfill promise with the same value.
@@ -379,8 +379,8 @@
         handlerExecuted = YES;
     });
     wait(!value, 0.02);
-    STAssertTrue(handlerExecuted, @"Should be in resolved");
-    STAssertEqualObjects(value, @"x", @"Should have been resolved with same value");
+    XCTAssertTrue(handlerExecuted, @"Should be in resolved");
+    XCTAssertEqualObjects(value, @"x", @"Should have been resolved with same value");
 }
 
 //2.iii. If/when x is rejected, reject promise with the same reason.
@@ -400,7 +400,7 @@
         handlerExecuted = YES;
     });
     wait(!reason, 0.02);
-    STAssertEqualObjects(reason, @"y", @"Should have been rejected with same reason");
+    XCTAssertEqualObjects(reason, @"y", @"Should have been rejected with same reason");
 }
 
 // 3. Otherwise, if x is an object or function,
@@ -415,7 +415,7 @@
     }, nil);
     [promise resolve:@"z"];
     wait(!value, 0.1);
-    STAssertEqualObjects(value, @"z", @"Should have been resolved with the provided value");
+    XCTAssertEqualObjects(value, @"z", @"Should have been resolved with the provided value");
 }
 
 // If a promise is resolved with a thenable that participates in a circular thenable chain, such that the recursive nature of [[Resolve]](promise, thenable) eventually causes [[Resolve]](promise, thenable) to be called again, following the above algorithm will lead to infinite recursion. Implementations are encouraged, but not required, to detect such recursion and reject promise with an informative TypeError as the reason. [3.6]
