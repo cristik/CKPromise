@@ -27,26 +27,6 @@
 #import <Foundation/Foundation.h>
 
 /**
-  * Thrown if a promise callback returns the same promise
-  */
-@interface CKTypeErrorException: NSException
-@end
-
-/**
-  * Thrown if a promise is attempted to be resolved/rejected twice
-  * or the promise is attempted to be rejected after being resolved,
-  * or vice-versa
-  */
-@interface CKHasResolutionException: NSException
-@end
-
-/**
- * Thrown if a passed promise callback is not a valid block
- */
-@interface CKInvalidHandlerException: NSException
-@end
-
-/**
   * A promise represents the eventual result of an asynchronous operation. The
   * primary way of interacting with a promise is through its "then" method, 
   * which registers callbacks to receive either a promise’s eventual value or 
@@ -62,6 +42,22 @@
   * a reason, which will not change.
   * Here, “must not change” means immutable identity (i.e. ==), but does not
   * imply deep immutability.
+  *
+  * Subclassing notes. Although CKPromise can be extended without much
+  * difficulty, it is recommended to not extend the CKPromose class, and 
+  * instead provide methods of other classes that create/return a promise.
+  * For example a NSURLConnection object can return a promise to allow watching
+  * it's state. The object that creates the promise will then be responsible
+  * with resolving or rejecting the promise.
+  *
+  * Other notes. CKPromise doesn't have an abort (or cancel) method, as in the
+  * current design a promise instance doesn't do much work excepting allowing
+  * to be observed and moving from pending to resolved or rejected (this keeps 
+  * things simple and provides reduced coupling between classes). The abort of
+  * an async operation should be taken care by objects that are very familliar
+  * to the domain of the async operation. Given the NSURLConnection example,
+  * cancelling the async operation should be handled by the NSURLConnection
+  * instance, or by a manager if the url requests are managed by other objects.
   */
 @interface CKPromise: NSObject
 
@@ -141,7 +137,7 @@
   *   - if/when x is resolved, resolve promise with the same value.
   *   - if/when x is rejected, reject promise with the same reason.
   *
-  * - If x is not a promise, fulfill promise with x.
+  * - If x is not a promise, resolve promise with x.
   */
 - (void)resolve:(id)value;
 
@@ -184,4 +180,24 @@
   */
 - (CKPromise*(^)(id handler))always;
 
+@end
+
+/**
+ * Thrown if a promise callback returns the same promise
+ */
+@interface CKTypeErrorException: NSException
+@end
+
+/**
+ * Thrown if a promise is attempted to be resolved/rejected twice
+ * or the promise is attempted to be rejected after being resolved,
+ * or vice-versa
+ */
+@interface CKHasResolutionException: NSException
+@end
+
+/**
+ * Thrown if a passed promise callback is not a valid block
+ */
+@interface CKInvalidHandlerException: NSException
 @end
