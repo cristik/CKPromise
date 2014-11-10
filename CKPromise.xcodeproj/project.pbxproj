@@ -39,7 +39,7 @@
 		AA4D462919C8AB470010D0EE /* CKPromise-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CKPromise-Prefix.pch"; sourceTree = "<group>"; };
 		AA4D462A19C8AB470010D0EE /* CKPromise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKPromise.h; sourceTree = "<group>"; };
 		AA4D462B19C8AB470010D0EE /* CKPromise.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKPromise.m; sourceTree = "<group>"; };
-		AA4D463219C8AB470010D0EE /* CKPromiseTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CKPromiseTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA4D463219C8AB470010D0EE /* CKPromiseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CKPromiseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4D463B19C8AB470010D0EE /* CKPromiseTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CKPromiseTests-Info.plist"; sourceTree = "<group>"; };
 		AA4D463D19C8AB470010D0EE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AA4D464019C8AB470010D0EE /* CKPromiseSpecsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKPromiseSpecsTests.m; sourceTree = "<group>"; };
@@ -80,7 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				AA4D461E19C8AB460010D0EE /* libCKPromise.a */,
-				AA4D463219C8AB470010D0EE /* CKPromiseTests.octest */,
+				AA4D463219C8AB470010D0EE /* CKPromiseTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -189,7 +189,7 @@
 			);
 			name = CKPromiseTests;
 			productName = KCPromiseTests;
-			productReference = AA4D463219C8AB470010D0EE /* CKPromiseTests.octest */;
+			productReference = AA4D463219C8AB470010D0EE /* CKPromiseTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */

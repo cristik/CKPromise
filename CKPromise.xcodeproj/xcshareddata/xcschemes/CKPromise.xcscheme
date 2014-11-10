@@ -33,7 +33,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AA4D463119C8AB470010D0EE"
-               BuildableName = "CKPromiseTests.octest"
+               BuildableName = "CKPromiseTests.xctest"
                BlueprintName = "CKPromiseTests"
                ReferencedContainer = "container:CKPromise.xcodeproj">
             </BuildableReference>
