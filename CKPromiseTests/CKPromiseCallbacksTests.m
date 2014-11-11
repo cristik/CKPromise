@@ -499,7 +499,7 @@
                                       @"promise2.3"],@"promise3"]));
 }
 
-- (void)test_when_nil_returnedAsNil{
+- (void)test_when_nil_returnedAsNSNull{
     CKPromise *promise1 = [CKPromise promise];
     CKPromise *promise2 = [CKPromise promise];
     CKPromise *promise3 = [CKPromise promise];

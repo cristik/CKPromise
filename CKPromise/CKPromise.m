@@ -166,18 +166,36 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     NSMutableArray *values = [NSMutableArray arrayWithCapacity:promises.count];
     __block NSUInteger runningPromises = promises.count;
 
-    void(^handler)(id, BOOL) = ^(id obj, BOOL resolved){
+    void(^handler)(id, BOOL) = ^(CKPromiseArray *arr, BOOL resolved){
         if(!resolved) {
-            [promise reject:obj];
+            [promise reject:arr];
         } else {
             runningPromises--;
-            CKPromiseArray *arr = obj;
             if(arr->_objects.count == 0) {
                 [values addObject:[NSNull null]];
             } else if(arr->_objects.count == 1) {
                 [values addObject:arr[0]];
             } else {
-                [values addObject:((CKPromiseArray*)obj)->_objects];
+                BOOL hasCKNull = NO;
+                for(id val in arr->_objects){
+                    if(val == [CKNull null]){
+                        hasCKNull = YES;
+                        break;
+                    }
+                }
+                if(hasCKNull) {
+                    NSMutableArray *mappedArr =
+                    [NSMutableArray arrayWithCapacity:arr->_objects.count];
+                    for(id val in arr->_objects) {
+                        if(val == [CKNull null]) {
+                            [mappedArr addObject:[NSNull null]];
+                        } else {
+                            [mappedArr addObject:val];
+                        }
+                    }
+                } else {
+                    [values addObject:arr->_objects];
+                }
             }
             if(runningPromises == 0) {
                 id value = [[CKPromiseArray alloc] initWithObjects:@[values]];

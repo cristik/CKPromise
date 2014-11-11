@@ -164,6 +164,11 @@
 
 /**
   * Returns a promise that gets resolved when all input promises are resolved
+  * The resolve value consists in a NSArray populated with the results from
+  * the aggregated promises.
+  * In case of the promises fails, the aggregate promise fails with the reason
+  * of the first failed promise. In this scenario, the other promises are kept
+  * running.
   */
 + (CKPromise*)when:(NSArray*)promises;
 
@@ -202,12 +207,4 @@
  * Thrown if a passed promise callback is not a valid block
  */
 @interface CKInvalidHandlerException: NSException
-@end
-
-/**
- * Thrown if "when" is called with more than the allowed promise count,
- * or if a passed callback is constructed with more then the allowed arguments
- * count
- */
-@interface CKExceededMaximumArgumentsException: NSException
 @end
