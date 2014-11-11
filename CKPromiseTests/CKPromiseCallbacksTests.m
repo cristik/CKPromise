@@ -432,4 +432,120 @@
     wait(YES, 0.02);
 }
 
+- (void)test_allowsCallbacksWith2Arguments{
+    promise.then(^(id val1, id val2){
+        
+    }, ^(int val3, NSNumber *val4){
+        
+    });
+    [promise resolve:@18];
+    wait(YES, 0.02);
+}
+
+- (void)test_allowsCallbacksWith3Arguments{
+    promise.then(^(char val1, id val2, id val3){
+        
+    }, ^(short val4, NSNumber *val5, NSString *val6){
+        
+    });
+    [promise resolve:@18];
+    wait(YES, 0.02);
+}
+
+- (void)test_allowsCallbacksWith4Arguments{
+    promise.then(^(float val1, id val2, id val3, id val4){
+        
+    }, ^(double val5, NSNumber *val6, NSString *val7, NSURL *val8){
+        
+    });
+    [promise resolve:@18];
+    wait(YES, 0.02);
+}
+
+- (void)test_allowsCallbacksWith5Arguments{
+    promise.then(^(long long val1, id val2, id val3, id val4, id val5){
+        
+    }, ^(NSError *val6, NSNumber *val7, NSString *val8, NSURL *val9, NSArray *val10){
+        
+    });
+    [promise resolve:@18];
+    wait(YES, 0.02);
+}
+
+- (void)test_resolve_2values{
+    __block BOOL handlerExecuted = NO;
+    __block int value1 = 0;
+    __block id value2 = nil;
+    promise.done(^(int val1, id val2){
+        value1 = val1;
+        value2 = val2;
+        handlerExecuted = YES;
+    });
+    [promise resolve2:@19, @20, nil];
+    wait(!handlerExecuted, 0.02);
+    XCTAssertTrue(handlerExecuted);
+    XCTAssertEqual(value1, 19);
+    XCTAssertEqualObjects(value2, @20);
+}
+
+- (void)test_acceptsOnlyIdForOtherArguments{
+    XCTAssertThrowsSpecific((promise.then(^(int val1, int val2){
+        
+    }, nil)), CKInvalidHandlerException);
+}
+
+- (void)test_when_multipleValues_returnedAsArray{
+    CKPromise *promise1 = [CKPromise promise];
+    CKPromise *promise2 = [CKPromise promise];
+    CKPromise *promise3 = [CKPromise promise];
+    promise = [CKPromise when:@[promise1, promise2, promise3]];
+    __block BOOL succeeded = NO;
+    __block BOOL failed = NO;
+    __block id value1 = nil, value2 = nil, value3 = nil;
+    promise.then(^(id val1, id val2, id val3){
+        value1 = val1;
+        value2 = val2;
+        value3 = val3;
+        succeeded = YES;
+    }, ^{
+        failed = YES;
+    });
+    [promise1 resolve:@"promise1"];
+    [promise2 resolve2:@"promise2.1", @"promise2.2", @"promise2.3", nil];
+    [promise3 resolve:@"promise3"];
+    wait(!succeeded || !failed, 0.02);
+    XCTAssertTrue(succeeded);
+    XCTAssertFalse(failed);
+    XCTAssertEqualObjects(value1, @"promise1");
+    XCTAssertEqualObjects(value2, (@[@"promise2.1", @"promise2.2", @"promise2.3"]));
+    XCTAssertEqualObjects(value3, @"promise3");
+}
+
+- (void)test_when_nil_returnedAsNil{
+    CKPromise *promise1 = [CKPromise promise];
+    CKPromise *promise2 = [CKPromise promise];
+    CKPromise *promise3 = [CKPromise promise];
+    promise = [CKPromise when:@[promise1, promise2, promise3]];
+    __block BOOL succeeded = NO;
+    __block BOOL failed = NO;
+    __block id value1 = nil, value2 = nil, value3 = nil;
+    promise.then(^(id val1, id val2, id val3){
+        value1 = val1;
+        value2 = val2;
+        value3 = val3;
+        succeeded = YES;
+    }, ^{
+        failed = YES;
+    });
+    [promise1 resolve:@"promise1"];
+    [promise2 resolve:nil];
+    [promise3 resolve:@"promise3"];
+    wait(!succeeded || !failed, 0.02);
+    XCTAssertTrue(succeeded);
+    XCTAssertFalse(failed);
+    XCTAssertEqualObjects(value1, @"promise1");
+    XCTAssertEqualObjects(value2, nil);
+    XCTAssertEqualObjects(value3, @"promise3");
+}
+
 @end

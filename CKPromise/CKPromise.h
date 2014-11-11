@@ -140,11 +140,13 @@
   * - If x is not a promise, resolve promise with x.
   */
 - (void)resolve:(id)value;
+- (void)resolve2:(id)value, ... NS_REQUIRES_NIL_TERMINATION;
 
 /**
   * Rejects the promise with the provided value
   */
 - (void)reject:(id)reason;
+- (void)reject2:(id)reason, ... NS_REQUIRES_NIL_TERMINATION;
 
 @end
 
@@ -200,4 +202,12 @@
  * Thrown if a passed promise callback is not a valid block
  */
 @interface CKInvalidHandlerException: NSException
+@end
+
+/**
+ * Thrown if "when" is called with more than the allowed promise count,
+ * or if a passed callback is constructed with more then the allowed arguments
+ * count
+ */
+@interface CKExceededMaximumArgumentsException: NSException
 @end

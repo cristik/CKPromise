@@ -67,7 +67,7 @@
     promise = [CKPromise when:@[promise1, promise2, promise3]];
     [promise1 resolve:nil];
     [promise2 resolve:nil];
-    __block BOOL handlerExecuted = NO;;
+    __block BOOL handlerExecuted = NO;
     promise.then(^{
         handlerExecuted = YES;
     }, ^{

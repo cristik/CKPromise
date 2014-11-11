@@ -78,6 +78,65 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 }
 @end
 
+@interface CKPromiseArray: NSObject{
+@public
+    NSArray *_objects;
+}
+
+- (id)initWithVaList:(va_list)valist arg0:(id)arg0;
+- (id)initWithObjects:(NSArray*)objects;
+- (id)objectAtIndex:(NSUInteger)index;
+- (id)objectAtIndexedSubscript:(NSUInteger)index;
+@end
+
+@interface CKNull: NSObject
++ (id)null;
+@end
+
+@implementation CKPromiseArray
+
+- (id)initWithVaList:(va_list)valist arg0:(id)arg0{
+    NSMutableArray *objects = [NSMutableArray array];
+    if(arg0){
+        [objects addObject:arg0];
+        for(id obj; (obj = va_arg(valist, id));){
+            [objects addObject:obj];
+        }
+    }
+    return [self initWithObjects:objects];
+}
+
+- (id)initWithObjects:(NSArray*)objects{
+//    if(objects.count == 0) return nil;
+//    else if(objects.count == 1) return _objects[0];
+    if(self = [super init]){
+        _objects = objects;
+    }
+    return self;
+}
+
+- (id)objectAtIndex:(NSUInteger)index{
+    if(index >= _objects.count) return nil;
+    id result = _objects[index];
+    return result == [CKNull null] ? nil : result;
+}
+
+- (id)objectAtIndexedSubscript:(NSUInteger)index{
+    return [self objectAtIndex:index];
+}
+@end
+
+@implementation CKNull
++ (id)null{
+    static dispatch_once_t onceToken;
+    static CKNull *null = nil;
+    dispatch_once(&onceToken, ^{
+        null = [[CKNull alloc] init];
+    });
+    return null;
+}
+@end
+
 @implementation CKPromise{
     CKPromiseState _state;
     id _value;
@@ -105,29 +164,33 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 + (CKPromise*)when:(NSArray*)promises{
     CKPromise *promise = [self promise];
     NSMutableArray *values = [NSMutableArray arrayWithCapacity:promises.count];
-    NSMutableArray *reasons = [NSMutableArray arrayWithCapacity:promises.count];
     __block NSUInteger runningPromises = promises.count;
-    __block BOOL hadError = NO;
+
     void(^handler)(id, BOOL) = ^(id obj, BOOL resolved){
-        if(resolved && obj) [values addObject:obj];
-        else if(!resolved && obj) [reasons addObject:obj];
-        if(!resolved) hadError = YES;
-        runningPromises --;
-        if(runningPromises == 0){
-            if(hadError){
-                [promise reject:reasons];
-            }else{
-                [promise resolve:values];
+        if(!resolved) {
+            [promise reject:obj];
+        } else {
+            runningPromises--;
+            CKPromiseArray *arr = obj;
+            if(arr->_objects.count == 0) {
+                [values addObject:[CKNull null]];
+            } else if(arr->_objects.count == 1) {
+                [values addObject:arr[0]];
+            } else {
+                [values addObject:((CKPromiseArray*)obj)->_objects];
+            }
+            if(runningPromises == 0) {
+                [promise resolve:[[CKPromiseArray alloc] initWithObjects:values]];
             }
         }
-
     };
+    
     for(CKPromise *promise in promises){
         promise.then(^id(id value) {
-            handler(value, YES);
+            handler(promise->_value, YES);
             return nil;
         }, ^id(id reason) {
-            handler(reason, NO);
+            handler(promise->_reason, NO);
             return nil;
         });
     }
@@ -205,6 +268,10 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 }
 
 - (void)resolve:(id)value{
+    [self resolve2:value, nil];
+}
+
+- (void)resolve2:(id)value, ... NS_REQUIRES_NIL_TERMINATION{
     if(_state != CKPromiseStatePending){
         [CKHasResolutionException raise];
     }
@@ -235,7 +302,14 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     
     // 4. If x is not an object or function, fulfill promise with x.
     _state = CKPromiseStateResolved;
-    _value = value;
+    if([value isKindOfClass:[CKPromiseArray class]]){
+        _value = value;
+    } else {
+        va_list valist;
+        va_start(valist, value);
+        _value = [[CKPromiseArray alloc] initWithVaList:valist arg0:value];
+        va_end(valist);
+    }
     [self dispatch:^{
         for(dispatch_block_t resolveHandler in _resolveHandlers){
             resolveHandler();
@@ -246,11 +320,22 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 }
 
 - (void)reject:(id)reason{
+    [self reject2:reason, nil];
+}
+
+- (void)reject2:(id)reason, ... NS_REQUIRES_NIL_TERMINATION{
     if(_state != CKPromiseStatePending){
         [CKHasResolutionException raise];
     }
     _state = CKPromiseStateRejected;
-    _reason = reason;
+    if([reason isKindOfClass:[CKPromiseArray class]]){
+        _reason = reason;
+    } else {
+        va_list valist;
+        va_start(valist, reason);
+        _reason = [[CKPromiseArray alloc] initWithVaList:valist arg0:reason];
+        va_end(valist);
+    }
     [self dispatch:^{
         for(dispatch_block_t rejectHandler in _rejectHandlers){
             rejectHandler();
@@ -311,115 +396,135 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
                 return ((id(^)(void))block)();
             };
         }
-    }else if(blockArgumentCount == 2){
+    }else if(blockArgumentCount >= 2 && blockArgumentCount <= 6){
+        for(int i=2;i<blockArgumentCount;i++){
+            // check if the rest of the parameters are objects, we only allow
+            // those
+            if([blockSignature getArgumentTypeAtIndex:i][0] != '@'){
+                [CKInvalidHandlerException raise];
+                return nil;
+            }
+        }
+#define buildBlock(type, selector)\
+        if(blockReturnsVoid){\
+            return ^id(CKPromiseArray *arr) {\
+                type arg0 = [arr[0] selector];\
+                switch(blockArgumentCount) {\
+                    case 2:\
+                        ((void(^)(type))block)(arg0);\
+                        break;\
+                    case 3:\
+                        ((void(^)(type, id))block)(arg0, arr[1]);\
+                        break;\
+                    case 4:\
+                        ((void(^)(type, id, id))block)(arg0, arr[1], arr[2]);\
+                        break;\
+                    case 5:\
+                        ((void(^)(type, id, id, id))block)(arg0, arr[1],\
+                            arr[2], arr[3]);\
+                        break;\
+                    case 6:\
+                        ((void(^)(type, id, id, id, id))block)(arg0, arr[1],\
+                            arr[2], arr[3], arr[4]);\
+                        break;\
+                    case 7:\
+                        ((void(^)(type, id, id, id, id, id))block)(arg0,\
+                            arr[1], arr[2], arr[3], arr[4], arr[5]);\
+                        break;\
+                    case 8:\
+                        ((void(^)(type, id, id, id, id, id, id))block)(arg0,\
+                            arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]);\
+                        break;\
+                    case 9:\
+                        ((void(^)(type, id, id, id, id, id, id, id))block)(\
+                            arg0, arr[1], arr[2], arr[3], arr[4], arr[5],\
+                            arr[6], arr[7]);\
+                        break;\
+                    case 10:\
+                        ((void(^)(type, id, id, id, id, id, id, id, id))block)(\
+                            arg0, arr[1], arr[2], arr[3], arr[4], arr[5],\
+                            arr[6], arr[7], arr[8]);\
+                        break;\
+                    case 11:\
+                        ((void(^)(type, id, id, id, id, id, id, id, id, id))\
+                            block)(arg0, arr[1], arr[2], arr[3], arr[4],\
+                            arr[5], arr[6], arr[7], arr[8], arr[9]);\
+                        break;\
+                    default:\
+                        break;\
+                }\
+                return nil;\
+            };\
+        } else if(blockReturnsObject) {\
+            return ^id(CKPromiseArray *arr) {\
+                type arg0 = [arr[0] selector];\
+                switch(blockArgumentCount) {\
+                    case 2:\
+                        return ((id(^)(type))block)(arg0);\
+                    case 3:\
+                        return ((id(^)(type, id))block)(arg0, arr[1]);\
+                    case 4:\
+                        return ((id(^)(type, id, id))block)(arg0, arr[1],\
+                            arr[2]);\
+                    case 5:\
+                        return ((id(^)(type, id, id, id))block)(arg0, arr[1],\
+                            arr[2], arr[3]);\
+                    case 6:\
+                        return ((id(^)(type, id, id, id, id))block)(arg0,\
+                            arr[1], arr[2], arr[3], arr[4]);\
+                    case 7:\
+                        return ((id(^)(type, id, id, id, id, id))block)(arg0,\
+                            arr[1], arr[2], arr[3], arr[4], arr[5]);\
+                        break;\
+                    case 8:\
+                        return ((id(^)(type, id, id, id, id, id, id))block)(\
+                            arg0, arr[1], arr[2], arr[3], arr[4], arr[5],\
+                            arr[6]);\
+                        break;\
+                    case 9:\
+                        return ((id(^)(type, id, id, id, id, id, id, id))block)\
+                            (arg0, arr[1], arr[2], arr[3], arr[4], arr[5],\
+                            arr[6], arr[7]);\
+                        break;\
+                    case 10:\
+                        return ((id(^)(type, id, id, id, id, id, id, id, id))\
+                            block)(arg0, arr[1], arr[2], arr[3], arr[4],\
+                            arr[5], arr[6], arr[7], arr[8]);\
+                        break;\
+                    case 11:\
+                        return ((id(^)(type, id, id, id, id, id, id, id, id,\
+                            id))block)(arg0, arr[1], arr[2], arr[3], arr[4],\
+                            arr[5], arr[6], arr[7], arr[8], arr[9]);\
+                        break;\
+                    default:\
+                        return nil;\
+                }\
+            };\
+        }\
+        break;\
+
         switch([blockSignature getArgumentTypeAtIndex:1][0]){
             case 'c':
             case 'C':
-                if(blockReturnsVoid){
-                    return ^id(id arg){
-                        ((void(^)(char))block)([arg charValue]);
-                        return nil;
-                    };
-                }else if(blockReturnsObject){
-                    return ^id(id arg){
-                        return ((id(^)(char))block)([arg charValue]);
-                    };
-                }else{
-                    break;
-                }
+                buildBlock(char, charValue)
             case 'i':
             case 'I':
-                if(blockReturnsVoid){
-                    return ^id(id arg){
-                        ((void(^)(int))block)([arg intValue]);
-                        return nil;
-                    };
-                }else if(blockReturnsObject){
-                    return ^id(id arg){
-                        return ((id(^)(int))block)([arg intValue]);
-                    };
-                }else{
-                    break;
-                }
+                buildBlock(int, intValue)
             case 's':
             case 'S':
-                if(blockReturnsVoid){
-                    return ^id(id arg){
-                        ((void(^)(short))block)([arg shortValue]);
-                        return nil;
-                    };
-                }else if(blockReturnsObject){
-                    return ^id(id arg){
-                        return ((id(^)(short))block)([arg shortValue]);
-                    };
-                }else{
-                    break;
-                }
+                buildBlock(short, shortValue)
 //            case 'l':
 //            case 'L':
-//                if(blockReturnsVoid){
-//                    return ^id(id arg){
-//                        ((void(^)(long))block)([arg intValue]);
-//                        return nil;
-//                    };
-//                }else if(blockReturnsObject){
-//                    return ^id(id arg){
-//                        return ((id(^)(long))block)([arg intValue]);
-//                    };
-//                }else{
-//                    break;
-//                }
+//                buildBlock(long, longValue)
             case 'q':
             case 'Q':
-                if(blockReturnsVoid){
-                    return ^id(id arg){
-                        ((void(^)(long long))block)([arg longLongValue]);
-                        return nil;
-                    };
-                }else if(blockReturnsObject){
-                    return ^id(id arg){
-                        return ((id(^)(long long))block)([arg longLongValue]);
-                    };
-                }else{
-                    break;
-                }
+                buildBlock(long long, longLongValue)
             case 'f':
-                if(blockReturnsVoid){
-                    return ^id(id arg){
-                        ((void(^)(float))block)([arg floatValue]);
-                        return nil;
-                    };
-                }else if(blockReturnsObject){
-                    return ^id(id arg){
-                        return ((id(^)(float))block)([arg floatValue]);
-                    };
-                }else{
-                    break;
-                }
+                buildBlock(float, floatValue)
             case 'd':
-                if(blockReturnsVoid){
-                    return ^id(id arg){
-                        ((void(^)(double))block)([arg doubleValue]);
-                        return nil;
-                    };
-                }else if(blockReturnsObject){
-                    return ^id(id arg){
-                        return ((id(^)(double))block)([arg doubleValue]);
-                    };
-                }else{
-                    break;
-                }
+                buildBlock(double, doubleValue)
             case '@':
-                if(blockReturnsVoid){
-                    return ^id(id arg){
-                        ((void(^)(id))block)(arg);
-                        return nil;
-                    };
-                }else if(blockReturnsObject){
-                    return (id(^)(id))block;
-                }else{
-                    break;
-                }
+                buildBlock(id, self)
             default:
                 break;
                 
