@@ -173,14 +173,15 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
             runningPromises--;
             CKPromiseArray *arr = obj;
             if(arr->_objects.count == 0) {
-                [values addObject:[CKNull null]];
+                [values addObject:[NSNull null]];
             } else if(arr->_objects.count == 1) {
                 [values addObject:arr[0]];
             } else {
                 [values addObject:((CKPromiseArray*)obj)->_objects];
             }
             if(runningPromises == 0) {
-                [promise resolve:[[CKPromiseArray alloc] initWithObjects:values]];
+                id value = [[CKPromiseArray alloc] initWithObjects:@[values]];
+                [promise resolve:value];
             }
         }
     };
@@ -396,7 +397,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
                 return ((id(^)(void))block)();
             };
         }
-    }else if(blockArgumentCount >= 2 && blockArgumentCount <= 6){
+    }else if(blockArgumentCount >= 2 && blockArgumentCount <= 4){
         for(int i=2;i<blockArgumentCount;i++){
             // check if the rest of the parameters are objects, we only allow
             // those
@@ -419,37 +420,6 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
                     case 4:\
                         ((void(^)(type, id, id))block)(arg0, arr[1], arr[2]);\
                         break;\
-                    case 5:\
-                        ((void(^)(type, id, id, id))block)(arg0, arr[1],\
-                            arr[2], arr[3]);\
-                        break;\
-                    case 6:\
-                        ((void(^)(type, id, id, id, id))block)(arg0, arr[1],\
-                            arr[2], arr[3], arr[4]);\
-                        break;\
-                    case 7:\
-                        ((void(^)(type, id, id, id, id, id))block)(arg0,\
-                            arr[1], arr[2], arr[3], arr[4], arr[5]);\
-                        break;\
-                    case 8:\
-                        ((void(^)(type, id, id, id, id, id, id))block)(arg0,\
-                            arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]);\
-                        break;\
-                    case 9:\
-                        ((void(^)(type, id, id, id, id, id, id, id))block)(\
-                            arg0, arr[1], arr[2], arr[3], arr[4], arr[5],\
-                            arr[6], arr[7]);\
-                        break;\
-                    case 10:\
-                        ((void(^)(type, id, id, id, id, id, id, id, id))block)(\
-                            arg0, arr[1], arr[2], arr[3], arr[4], arr[5],\
-                            arr[6], arr[7], arr[8]);\
-                        break;\
-                    case 11:\
-                        ((void(^)(type, id, id, id, id, id, id, id, id, id))\
-                            block)(arg0, arr[1], arr[2], arr[3], arr[4],\
-                            arr[5], arr[6], arr[7], arr[8], arr[9]);\
-                        break;\
                     default:\
                         break;\
                 }\
@@ -466,36 +436,6 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
                     case 4:\
                         return ((id(^)(type, id, id))block)(arg0, arr[1],\
                             arr[2]);\
-                    case 5:\
-                        return ((id(^)(type, id, id, id))block)(arg0, arr[1],\
-                            arr[2], arr[3]);\
-                    case 6:\
-                        return ((id(^)(type, id, id, id, id))block)(arg0,\
-                            arr[1], arr[2], arr[3], arr[4]);\
-                    case 7:\
-                        return ((id(^)(type, id, id, id, id, id))block)(arg0,\
-                            arr[1], arr[2], arr[3], arr[4], arr[5]);\
-                        break;\
-                    case 8:\
-                        return ((id(^)(type, id, id, id, id, id, id))block)(\
-                            arg0, arr[1], arr[2], arr[3], arr[4], arr[5],\
-                            arr[6]);\
-                        break;\
-                    case 9:\
-                        return ((id(^)(type, id, id, id, id, id, id, id))block)\
-                            (arg0, arr[1], arr[2], arr[3], arr[4], arr[5],\
-                            arr[6], arr[7]);\
-                        break;\
-                    case 10:\
-                        return ((id(^)(type, id, id, id, id, id, id, id, id))\
-                            block)(arg0, arr[1], arr[2], arr[3], arr[4],\
-                            arr[5], arr[6], arr[7], arr[8]);\
-                        break;\
-                    case 11:\
-                        return ((id(^)(type, id, id, id, id, id, id, id, id,\
-                            id))block)(arg0, arr[1], arr[2], arr[3], arr[4],\
-                            arr[5], arr[6], arr[7], arr[8], arr[9]);\
-                        break;\
                     default:\
                         return nil;\
                 }\

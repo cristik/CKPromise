@@ -452,26 +452,6 @@
     wait(YES, 0.02);
 }
 
-- (void)test_allowsCallbacksWith4Arguments{
-    promise.then(^(float val1, id val2, id val3, id val4){
-        
-    }, ^(double val5, NSNumber *val6, NSString *val7, NSURL *val8){
-        
-    });
-    [promise resolve:@18];
-    wait(YES, 0.02);
-}
-
-- (void)test_allowsCallbacksWith5Arguments{
-    promise.then(^(long long val1, id val2, id val3, id val4, id val5){
-        
-    }, ^(NSError *val6, NSNumber *val7, NSString *val8, NSURL *val9, NSArray *val10){
-        
-    });
-    [promise resolve:@18];
-    wait(YES, 0.02);
-}
-
 - (void)test_resolve_2values{
     __block BOOL handlerExecuted = NO;
     __block int value1 = 0;
@@ -501,11 +481,9 @@
     promise = [CKPromise when:@[promise1, promise2, promise3]];
     __block BOOL succeeded = NO;
     __block BOOL failed = NO;
-    __block id value1 = nil, value2 = nil, value3 = nil;
-    promise.then(^(id val1, id val2, id val3){
-        value1 = val1;
-        value2 = val2;
-        value3 = val3;
+    __block id value = nil;
+    promise.then(^(id val){
+        value = val;
         succeeded = YES;
     }, ^{
         failed = YES;
@@ -516,9 +494,9 @@
     wait(!succeeded || !failed, 0.02);
     XCTAssertTrue(succeeded);
     XCTAssertFalse(failed);
-    XCTAssertEqualObjects(value1, @"promise1");
-    XCTAssertEqualObjects(value2, (@[@"promise2.1", @"promise2.2", @"promise2.3"]));
-    XCTAssertEqualObjects(value3, @"promise3");
+    XCTAssertEqualObjects(value, (@[@"promise1",
+                                    @[@"promise2.1", @"promise2.2",
+                                      @"promise2.3"],@"promise3"]));
 }
 
 - (void)test_when_nil_returnedAsNil{
@@ -528,11 +506,9 @@
     promise = [CKPromise when:@[promise1, promise2, promise3]];
     __block BOOL succeeded = NO;
     __block BOOL failed = NO;
-    __block id value1 = nil, value2 = nil, value3 = nil;
-    promise.then(^(id val1, id val2, id val3){
-        value1 = val1;
-        value2 = val2;
-        value3 = val3;
+    __block id value;
+    promise.then(^(id val){
+        value = val;
         succeeded = YES;
     }, ^{
         failed = YES;
@@ -543,9 +519,7 @@
     wait(!succeeded || !failed, 0.02);
     XCTAssertTrue(succeeded);
     XCTAssertFalse(failed);
-    XCTAssertEqualObjects(value1, @"promise1");
-    XCTAssertEqualObjects(value2, nil);
-    XCTAssertEqualObjects(value3, @"promise3");
+    XCTAssertEqualObjects(value, (@[@"promise1", [NSNull null], @"promise3"]));
 }
 
 @end
