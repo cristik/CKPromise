@@ -287,10 +287,10 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 }
 
 - (void)resolve:(id)value{
-    [self resolve2:value, nil];
+    [self resolveWith:value, nil];
 }
 
-- (void)resolve2:(id)value, ... NS_REQUIRES_NIL_TERMINATION{
+- (void)resolveWith:(id)value, ... {
     if(_state != CKPromiseStatePending){
         [CKHasResolutionException raise];
     }
@@ -339,10 +339,10 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 }
 
 - (void)reject:(id)reason{
-    [self reject2:reason, nil];
+    [self rejectWith:reason, nil];
 }
 
-- (void)reject2:(id)reason, ... NS_REQUIRES_NIL_TERMINATION{
+- (void)rejectWith:(id)reason, ... {
     if(_state != CKPromiseStatePending){
         [CKHasResolutionException raise];
     }

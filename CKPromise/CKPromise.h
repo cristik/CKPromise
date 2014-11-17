@@ -109,15 +109,17 @@
   * 
   * A valid promise callback handler is a block that has one of the following
   * signatures:
-  * - void(^)(void)
-  * - void(^)(int)
-  * - void(^)(double)
-  * - void(^)(id)
-  * - id(^)(void)
-  * - id(^)(int)
-  * - id(^)(double)
-  * - id(^)(id)
-  * the "id" type can be replaced by any other concrete class
+  * - void(^)(void) 
+  *   (no return value, nu arguments)
+  * - void(^)(char/short/int/long/long long/float/double/id_or_class)
+  *   (no return value, scalar or object to receive as promise value)
+  * - id_or_class(^)(void)
+  *   (with return value, no arguments)
+  * - id_or_class(^)(scalar/object)
+  *   (with return value, expects the promise value)
+  * - void/id_or_class(^)(scalar/id_or_class, id_or_class [, id_or_class])
+  *   (handler that accepts two or more values, for promises that resolve with 
+  *    multiple values)
   */
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then;
 
@@ -140,13 +142,23 @@
   * - If x is not a promise, resolve promise with x.
   */
 - (void)resolve:(id)value;
-- (void)resolve2:(id)value, ... NS_REQUIRES_NIL_TERMINATION;
+
+/**
+  * The variadic variant for promises that resolve with multiple values
+  * Altough this could also be achieved by resolving the promise with a NSArray,
+  * this approach allows the developer to directly cast to the desired value
+  */
+- (void)resolveWith:(id)value, ... NS_REQUIRES_NIL_TERMINATION;
 
 /**
   * Rejects the promise with the provided value
   */
 - (void)reject:(id)reason;
-- (void)reject2:(id)reason, ... NS_REQUIRES_NIL_TERMINATION;
+
+/**
+  * Rejects the promise with multiple values.
+  */
+- (void)rejectWith:(id)reason, ... NS_REQUIRES_NIL_TERMINATION;
 
 @end
 

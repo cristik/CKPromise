@@ -461,7 +461,7 @@
         value2 = val2;
         handlerExecuted = YES;
     });
-    [promise resolve2:@19, @20, nil];
+    [promise resolveWith:@19, @20, nil];
     wait(!handlerExecuted, 0.02);
     XCTAssertTrue(handlerExecuted);
     XCTAssertEqual(value1, 19);
@@ -489,7 +489,7 @@
         failed = YES;
     });
     [promise1 resolve:@"promise1"];
-    [promise2 resolve2:@"promise2.1", @"promise2.2", @"promise2.3", nil];
+    [promise2 resolveWith:@"promise2.1", @"promise2.2", @"promise2.3", nil];
     [promise3 resolve:@"promise3"];
     wait(!succeeded || !failed, 0.02);
     XCTAssertTrue(succeeded);
