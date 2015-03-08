@@ -24,7 +24,6 @@
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #import <XCTest/XCTest.h>
-#import "CKPromise.h"
 #include <sys/time.h>
 
 static inline double microtime(){

@@ -174,7 +174,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
             if(arr->_objects.count == 0) {
                 [values addObject:[NSNull null]];
             } else if(arr->_objects.count == 1) {
-                [values addObject:arr[0]];
+                [values addObject:arr->_objects[0]];
             } else {
                 BOOL hasCKNull = NO;
                 for(id val in arr->_objects){

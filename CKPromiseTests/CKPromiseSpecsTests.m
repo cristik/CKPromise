@@ -23,6 +23,8 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#import "CKPromise.h"
+
 @interface CKPromiseSpecsTests : XCTestCase
 @end
 
@@ -420,4 +422,28 @@
 
 // If a promise is resolved with a thenable that participates in a circular thenable chain, such that the recursive nature of [[Resolve]](promise, thenable) eventually causes [[Resolve]](promise, thenable) to be called again, following the above algorithm will lead to infinite recursion. Implementations are encouraged, but not required, to detect such recursion and reject promise with an informative TypeError as the reason. [3.6]
 
+
+- (void)test_resolve_transformResolvedInRejected {
+    __block BOOL rejected  = NO;
+    promise.then(^{
+        return [CKPromise rejected:nil];
+    }, nil).then(nil,^{
+        rejected = YES;
+    });
+    [promise resolve:nil];
+    wait(!rejected, 0.02);
+    XCTAssertTrue(rejected);
+}
+
+- (void)test_reject_transformRejectedInResolved {
+    __block BOOL resolved  = NO;
+    promise.then(nil, ^{
+        return [CKPromise resolved:nil];
+    }).then(^{
+        resolved = YES;
+    }, nil);
+    [promise resolve:nil];
+    wait(!resolved, 0.02);
+    XCTAssertTrue(resolved);
+}
 @end
