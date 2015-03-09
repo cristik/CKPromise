@@ -43,16 +43,16 @@
 
 - (void)test_chained_onePromiseFails{
     NSMutableArray *callbacksOrder = [NSMutableArray arrayWithCapacity:3];
-    promise.done(^id(id value){
+    promise.success(^id(id value){
         [callbacksOrder addObject:@1];
         return [CKPromise resolved:@1];
-    }).done(^id(id value){
+    }).success(^id(id value){
         [callbacksOrder addObject:@2];
         return [CKPromise rejected:@2];
-    }).done(^id(id value){
+    }).success(^id(id value){
         [callbacksOrder addObject:@3];
         return [CKPromise resolved:@3];
-    }).fail(^id(id reason){
+    }).failure(^id(id reason){
         [callbacksOrder addObject:@4];
         return nil;
     });

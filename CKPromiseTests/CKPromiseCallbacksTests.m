@@ -44,7 +44,7 @@
 // Callback types
 - (void)test_acceptsResolveHandlerVoidVoid{
     __block BOOL handlerExecuted = NO;
-    promise.done(^{
+    promise.success(^{
         handlerExecuted = YES;
     });
     [promise resolve:nil];
@@ -55,7 +55,7 @@
 - (void)test_acceptsResolveHandlerVoidId{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
-    promise.done(^(id val){
+    promise.success(^(id val){
         handlerExecuted = YES;
         resolveValue = val;
     });
@@ -68,7 +68,7 @@
 - (void)test_acceptsResolveHandlerVoidNSNumber{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
-    promise.done(^(NSNumber *val){
+    promise.success(^(NSNumber *val){
         handlerExecuted = YES;
         resolveValue = val;
     });
@@ -80,7 +80,7 @@
 
 - (void)test_acceptsResolveHandlerIdVoid{
     __block BOOL handlerExecuted = NO;
-    promise.done(^id{
+    promise.success(^id{
         handlerExecuted = YES;
         return nil;
     });
@@ -92,7 +92,7 @@
 - (void)test_acceptsResolveHandlerNSStringVoid{
     __block BOOL handlerExecuted = NO;
     __block id value = nil;
-    CKPromise *promise2 = promise.done(^NSString*{
+    CKPromise *promise2 = promise.success(^NSString*{
         return @"abc";
     });
     promise2.then(^(id val){
@@ -108,7 +108,7 @@
 - (void)test_acceptsResolveHandlerIdId{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
-    promise.done(^id(id val){
+    promise.success(^id(id val){
         handlerExecuted = YES;
         resolveValue = val;
         return nil;
@@ -129,7 +129,7 @@
 
 - (void)test_acceptsRejectHandlerVoidVoid{
     __block BOOL handlerExecuted = NO;
-    promise.fail(^{
+    promise.failure(^{
         handlerExecuted = YES;
     });
     [promise reject:nil];
@@ -140,7 +140,7 @@
 - (void)test_acceptsRejectHandlerVoidId{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
-    promise.fail(^(id val){
+    promise.failure(^(id val){
         handlerExecuted = YES;
         resolveValue = val;
     });
@@ -152,7 +152,7 @@
 
 - (void)test_acceptsRejectHandlerIdVoid{
     __block BOOL handlerExecuted = NO;
-    promise.fail(^id{
+    promise.failure(^id{
         handlerExecuted = YES;
         return nil;
     });
@@ -164,7 +164,7 @@
 - (void)test_acceptsRejectHandlerIdId{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
-    promise.fail(^id(id val){
+    promise.failure(^id(id val){
         handlerExecuted = YES;
         resolveValue = val;
         return nil;
@@ -458,7 +458,7 @@
     __block BOOL handlerExecuted = NO;
     __block int value1 = 0;
     __block id value2 = nil;
-    promise.done(^(int val1, id val2){
+    promise.success(^(int val1, id val2){
         value1 = val1;
         value2 = val2;
         handlerExecuted = YES;

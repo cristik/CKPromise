@@ -187,12 +187,12 @@
 /**
   * Alias for then(resolveHandler, nil)
   */
-- (CKPromise*(^)(id resolveHandler))done;
+- (CKPromise*(^)(id resolveHandler))success;
 
 /** 
   * Alias for then(nil, rejectHandler)
   */
-- (CKPromise*(^)(id rejectHandler))fail;
+- (CKPromise*(^)(id rejectHandler))failure;
 
 /**
   * Alias for then(handler, handler)

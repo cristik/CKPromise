@@ -268,13 +268,13 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     };
 }
 
-- (CKPromise*(^)(id resolveHandler))done{
+- (CKPromise*(^)(id resolveHandler))success{
     return ^CKPromise*(id resolveHandler){
         return self.then(resolveHandler, nil);
     };
 }
 
-- (CKPromise*(^)(id rejectHandler))fail{
+- (CKPromise*(^)(id rejectHandler))failure{
     return ^CKPromise*(id rejectHandler){
         return self.then(nil, rejectHandler);
     };
