@@ -122,6 +122,9 @@
   *    multiple values)
   */
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then;
+- (CKPromise*)then:(id)resolveHandler;
+- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler;
+- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler :(id)anyHandler;
 
 /**
   * Resolves the promise with the provided value

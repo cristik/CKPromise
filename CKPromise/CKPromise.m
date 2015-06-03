@@ -231,41 +231,55 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then{
     return ^CKPromise*(id resolveHandler, id rejectHandler){
-        id (^actualResolveHandler)(id) = [CKPromise transformHandler:resolveHandler];
-        id (^actualRejectHandler)(id) = [CKPromise transformHandler:rejectHandler];
-        CKPromise *resultPromise = [CKPromise promise];
-        dispatch_block_t successHandlerWrapper = ^{
-            @try{
-                if(actualResolveHandler){
-                    [resultPromise resolve:actualResolveHandler(_value)];
-                }else{
-                    [resultPromise resolve:_value];
-                }
-            }@catch (NSException *ex) {
-                [resultPromise reject:ex];
-            }
-        };
-        dispatch_block_t errorHandlerWrapper = ^{
-            @try{
-                if(actualRejectHandler){
-                    [resultPromise resolve:actualRejectHandler(_reason)];
-                }else{
-                    [resultPromise reject:_reason];
-                }
-            }@catch (NSException *ex) {
-                [resultPromise reject:ex];
-            }
-        };
-        if(_state == CKPromiseStateResolved){
-            [self dispatch:successHandlerWrapper];
-        }else if(_state == CKPromiseStateRejected){
-            [self dispatch:errorHandlerWrapper];
-        }else{
-            [_resolveHandlers addObject:successHandlerWrapper];
-            [_rejectHandlers addObject:errorHandlerWrapper];
-        }
-        return resultPromise;
+        return [self then:resolveHandler :rejectHandler];
     };
+}
+
+- (CKPromise*)then:(id)resolveHandler {
+    return [self then:resolveHandler :nil];
+}
+
+- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler {
+    id (^actualResolveHandler)(id) = [CKPromise transformHandler:resolveHandler];
+    id (^actualRejectHandler)(id) = [CKPromise transformHandler:rejectHandler];
+    CKPromise *resultPromise = [CKPromise promise];
+    dispatch_block_t successHandlerWrapper = ^{
+        @try{
+            if(actualResolveHandler){
+                [resultPromise resolve:actualResolveHandler(_value)];
+            }else{
+                [resultPromise resolve:_value];
+            }
+        }@catch (NSException *ex) {
+            [resultPromise reject:ex];
+        }
+    };
+    dispatch_block_t errorHandlerWrapper = ^{
+        @try{
+            if(actualRejectHandler){
+                [resultPromise resolve:actualRejectHandler(_reason)];
+            }else{
+                [resultPromise reject:_reason];
+            }
+        }@catch (NSException *ex) {
+            [resultPromise reject:ex];
+        }
+    };
+    if(_state == CKPromiseStateResolved){
+        [self dispatch:successHandlerWrapper];
+    }else if(_state == CKPromiseStateRejected){
+        [self dispatch:errorHandlerWrapper];
+    }else{
+        [_resolveHandlers addObject:successHandlerWrapper];
+        [_rejectHandlers addObject:errorHandlerWrapper];
+    }
+    return resultPromise;
+}
+
+- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler :(id)anyHandler {
+    CKPromise *result = [self then:resolveHandler :rejectHandler];
+    [result then:anyHandler :anyHandler];
+    return result;
 }
 
 - (CKPromise*(^)(id resolveHandler))success{

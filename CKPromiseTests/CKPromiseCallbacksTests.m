@@ -41,6 +41,55 @@
     [super tearDown];
 }
 
+// then variants equivalence
+- (void)test_thenMethodWhenPromiseSucceedsExecutesOnlyTheSuccessCallback {
+    __block BOOL successCalled = NO;
+    __block BOOL failureCalled = NO;
+    [promise then:^{
+        successCalled = YES;
+    } :^{
+        failureCalled = YES;
+    }];
+    [promise resolve:@19];
+    wait(!successCalled, 0.02);
+    XCTAssertTrue(successCalled);
+    XCTAssertFalse(failureCalled);
+}
+
+- (void)test_thenMethodWhenPromiseFailsExecutesOnlyTheFailureCallback {
+    __block BOOL successCalled = NO;
+    __block BOOL failureCalled = NO;
+    [promise then:^{
+        successCalled = YES;
+    } :^{
+        failureCalled = YES;
+    }];
+    [promise reject:@291];
+    wait(!failureCalled, 0.02);
+    XCTAssertFalse(successCalled);
+    XCTAssertTrue(failureCalled);
+}
+
+- (void)test_thenMethodWhenPromiseFailsExecutesAlsoTheAnyCallback {
+    __block BOOL anyCalled = NO;
+    [promise then:nil :nil :^{
+        anyCalled = YES;
+    }];
+    [promise reject:@129];
+    wait(!anyCalled, 0.02);
+    XCTAssertTrue(anyCalled);
+}
+
+- (void)test_thenMethodWhenPromiseSucceedsExecutesAlsoTheAnyCallback {
+    __block BOOL anyCalled = NO;
+    [promise then:nil :nil :^{
+        anyCalled = YES;
+    }];
+    [promise resolve:@119];
+    wait(!anyCalled, 0.02);
+    XCTAssertTrue(anyCalled);
+}
+
 // Callback types
 - (void)test_acceptsResolveHandlerVoidVoid{
     __block BOOL handlerExecuted = NO;
