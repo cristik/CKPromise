@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name            = 'CKPromise'
-  s.version         = '1.0.0'
+  s.version         = '1.0.1'
   s.summary         = 'An implementation of Promises/A+ specification for ObjectiveC'
   s.homepage        = 'https://github.com/cristik/CKPromise'
   s.source          = { :git => 'https://github.com/cristik/CKPromise.git', :tag => s.version.to_s }
