@@ -1,4 +1,4 @@
-// Copyright (c) 2014, Cristian Kocza
+// Copyright (c) 2014-2015, Cristian Kocza
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,17 @@
 
 #import "CKPromise.h"
 
-@interface CKPromiseCallbacksTests : XCTestCase
-@end
-
-@implementation CKPromiseCallbacksTests{
+@interface CKPromiseCallbacksTests : XCTestCase {
     CKPromise *promise;
 }
+
+@end
+
+@implementation CKPromiseCallbacksTests
 
 - (void)setUp{
     [super setUp];
     promise = [CKPromise promise];
-}
-
-- (void)tearDown{
-    [super tearDown];
 }
 
 // then variants equivalence

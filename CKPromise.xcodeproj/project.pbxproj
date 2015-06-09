@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0FCC9B6019FF245A00292330 /* CKPromiseCallbacksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */; };
 		0FCC9B6319FF27C900292330 /* CKPromiseAggregateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */; };
+		0FD801EE1B276220007F9B3B /* CKPromiseQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD801ED1B276220007F9B3B /* CKPromiseQueueTests.m */; };
 		AA4D462219C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
 		AA4D462C19C8AB470010D0EE /* CKPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.m */; };
 		AA4D463519C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
@@ -31,6 +32,7 @@
 		0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseCallbacksTests.m; sourceTree = "<group>"; };
 		0FCC9B6119FF24BD00292330 /* CKPromiseTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CKPromiseTests-Prefix.pch"; sourceTree = "<group>"; };
 		0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseAggregateTests.m; sourceTree = "<group>"; };
+		0FD801ED1B276220007F9B3B /* CKPromiseQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseQueueTests.m; sourceTree = "<group>"; };
 		AA4D461E19C8AB460010D0EE /* libCKPromise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCKPromise.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4D462119C8AB470010D0EE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		AA4D462419C8AB470010D0EE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -128,6 +130,7 @@
 				AA4D464019C8AB470010D0EE /* CKPromiseSpecsTests.m */,
 				0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */,
 				0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */,
+				0FD801ED1B276220007F9B3B /* CKPromiseQueueTests.m */,
 				AA4D463A19C8AB470010D0EE /* Supporting Files */,
 			);
 			path = CKPromiseTests;
@@ -261,6 +264,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0FCC9B6319FF27C900292330 /* CKPromiseAggregateTests.m in Sources */,
+				0FD801EE1B276220007F9B3B /* CKPromiseQueueTests.m in Sources */,
 				0FCC9B6019FF245A00292330 /* CKPromiseCallbacksTests.m in Sources */,
 				AA4D464119C8AB470010D0EE /* CKPromiseSpecsTests.m in Sources */,
 			);

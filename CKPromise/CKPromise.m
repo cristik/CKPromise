@@ -1,4 +1,4 @@
-// Copyright (c) 2014, Cristian Kocza
+// Copyright (c) 2014-2015, Cristian Kocza
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -229,6 +229,10 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     dispatch_async(dispatch_get_main_queue(), block);
 }
 
+- (void)dispatch:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue{
+    dispatch_async(queue, block);
+}
+
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then{
     return ^CKPromise*(id resolveHandler, id rejectHandler){
         return [self then:resolveHandler :rejectHandler];
@@ -236,49 +240,70 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 }
 
 - (CKPromise*)then:(id)resolveHandler {
-    return [self then:resolveHandler :nil];
+    return [self queuedThen:dispatch_get_main_queue() :resolveHandler];
 }
 
 - (CKPromise*)then:(id)resolveHandler :(id)rejectHandler {
+    return [self queuedThen:dispatch_get_main_queue() :resolveHandler :rejectHandler];
+}
+
+- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler :(id)anyHandler {
+    return [self queuedThen:dispatch_get_main_queue() :resolveHandler :rejectHandler :anyHandler];
+}
+
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler {
+    return [self queuedThen:queue :resolveHandler :nil];
+}
+
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler {
     id (^actualResolveHandler)(id) = [CKPromise transformHandler:resolveHandler];
     id (^actualRejectHandler)(id) = [CKPromise transformHandler:rejectHandler];
     CKPromise *resultPromise = [CKPromise promise];
+    
     dispatch_block_t successHandlerWrapper = ^{
-        @try{
-            if(actualResolveHandler){
-                [resultPromise resolve:actualResolveHandler(_value)];
-            }else{
-                [resultPromise resolve:_value];
+        dispatch_async(queue, ^{
+            @try{
+                
+                if(actualResolveHandler){
+                    [resultPromise resolve:actualResolveHandler(_value)];
+                }else{
+                    [resultPromise resolve:_value];
+                }
+                
+            }@catch (NSException *ex) {
+                [resultPromise reject:ex];
             }
-        }@catch (NSException *ex) {
-            [resultPromise reject:ex];
-        }
+        });
     };
-    dispatch_block_t errorHandlerWrapper = ^{
-        @try{
-            if(actualRejectHandler){
-                [resultPromise resolve:actualRejectHandler(_reason)];
-            }else{
-                [resultPromise reject:_reason];
+    
+    dispatch_block_t rejectHandlerWrapper = ^{
+        dispatch_async(queue, ^{
+            @try{
+                if(actualRejectHandler){
+                    [resultPromise resolve:actualRejectHandler(_reason)];
+                    
+                }else{
+                    [resultPromise reject:_reason];
+                }
+            }@catch (NSException *ex) {
+                [resultPromise reject:ex];
             }
-        }@catch (NSException *ex) {
-            [resultPromise reject:ex];
-        }
+        });
     };
     if(_state == CKPromiseStateResolved){
-        [self dispatch:successHandlerWrapper];
+        [self dispatch:successHandlerWrapper onQueue:queue];
     }else if(_state == CKPromiseStateRejected){
-        [self dispatch:errorHandlerWrapper];
+        [self dispatch:rejectHandlerWrapper onQueue:queue];
     }else{
         [_resolveHandlers addObject:successHandlerWrapper];
-        [_rejectHandlers addObject:errorHandlerWrapper];
+        [_rejectHandlers addObject:rejectHandlerWrapper];
     }
     return resultPromise;
 }
 
-- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler :(id)anyHandler {
-    CKPromise *result = [self then:resolveHandler :rejectHandler];
-    [result then:anyHandler :anyHandler];
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler :(id)anyHandler {
+    CKPromise *result = [self queuedThen:queue :resolveHandler :rejectHandler];
+    [result queuedThen:queue :anyHandler :anyHandler];
     return result;
 }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2014, Cristian Kocza
+// Copyright (c) 2014-2015, Cristian Kocza
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -125,6 +125,9 @@
 - (CKPromise*)then:(id)resolveHandler;
 - (CKPromise*)then:(id)resolveHandler :(id)rejectHandler;
 - (CKPromise*)then:(id)resolveHandler :(id)rejectHandler :(id)anyHandler;
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler;
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler;
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler :(id)anyHandler;
 
 /**
   * Resolves the promise with the provided value

@@ -1,4 +1,4 @@
-// Copyright (c) 2014, Cristian Kocza
+// Copyright (c) 2014-2015, Cristian Kocza
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,18 @@
 
 #import "CKPromise.h"
 
-@interface CKPromiseAggregateTests : XCTestCase
-@end
-
-@implementation CKPromiseAggregateTests{
+@interface CKPromiseAggregateTests : XCTestCase {
     CKPromise *promise;
 }
+@end
+
+@implementation CKPromiseAggregateTests
 
 - (void)setUp{
     [super setUp];
     promise = [CKPromise promise];
 }
 
-- (void)tearDown{
-    [super tearDown];
-}
 
 - (void)test_chained_onePromiseFails{
     NSMutableArray *callbacksOrder = [NSMutableArray arrayWithCapacity:3];
