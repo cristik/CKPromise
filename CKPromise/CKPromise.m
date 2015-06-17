@@ -25,7 +25,7 @@
 
 #import "CKPromise.h"
 
-struct CKBlockLiteral{
+struct CKBlockLiteral {
     void *isa;
     int flags;
     int reserved;
@@ -46,7 +46,7 @@ typedef NS_OPTIONS(NSUInteger, CKBlockDescriptionFlags) {
     CKBlockDescriptionFlagsHasSignature = (1 << 30)
 };
 
-typedef NS_ENUM(NSUInteger, CKPromiseState){
+typedef NS_ENUM(NSUInteger, CKPromiseState) {
     CKPromiseStatePending,
     CKPromiseStateResolved,
     CKPromiseStateRejected
@@ -54,7 +54,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 
 
 @implementation CKTypeErrorException
-+ (void)raise{
++ (void)raise {
     [[self exceptionWithName:@"TypeError"
                       reason:@"TypeError"
                     userInfo:nil] raise];
@@ -63,7 +63,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 
 
 @implementation CKHasResolutionException
-+ (void)raise{
++ (void)raise {
     [[self exceptionWithName:@"HasResolution"
                       reason:@"Already resolved/rejected"
                     userInfo:nil] raise];
@@ -71,14 +71,14 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 @end
 
 @implementation CKInvalidHandlerException
-+ (void)raise{
++ (void)raise {
     [[self exceptionWithName:@"InvalidHandler"
                       reason:@"Passed handler is not a valid promise handler"
                     userInfo:nil] raise];
 }
 @end
 
-@interface CKPromiseArray: NSObject{
+@interface CKPromiseArray: NSObject {
 @public
     NSArray *_objects;
 }
@@ -95,39 +95,39 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 
 @implementation CKPromiseArray
 
-- (id)initWithVaList:(va_list)valist arg0:(id)arg0{
+- (id)initWithVaList:(va_list)valist arg0:(id)arg0 {
     NSMutableArray *objects = [NSMutableArray array];
-    if(arg0){
+    if(arg0) {
         [objects addObject:arg0];
-        for(id obj; (obj = va_arg(valist, id));){
+        for(id obj; (obj = va_arg(valist, id));) {
             [objects addObject:obj];
         }
     }
     return [self initWithObjects:objects];
 }
 
-- (id)initWithObjects:(NSArray*)objects{
+- (id)initWithObjects:(NSArray*)objects {
 //    if(objects.count == 0) return nil;
 //    else if(objects.count == 1) return _objects[0];
-    if(self = [super init]){
+    if(self = [super init]) {
         _objects = objects;
     }
     return self;
 }
 
-- (id)objectAtIndex:(NSUInteger)index{
+- (id)objectAtIndex:(NSUInteger)index {
     if(index >= _objects.count) return nil;
     id result = _objects[index];
     return result == [CKNull null] ? nil : result;
 }
 
-- (id)objectAtIndexedSubscript:(NSUInteger)index{
+- (id)objectAtIndexedSubscript:(NSUInteger)index {
     return [self objectAtIndex:index];
 }
 @end
 
 @implementation CKNull
-+ (id)null{
++ (id)null {
     static dispatch_once_t onceToken;
     static CKNull *null = nil;
     dispatch_once(&onceToken, ^{
@@ -137,7 +137,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 }
 @end
 
-@implementation CKPromise{
+@implementation CKPromise {
     CKPromiseState _state;
     id _value;
     id _reason;
@@ -145,28 +145,28 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     NSMutableArray *_rejectHandlers;
 }
 
-+ (CKPromise*)promise{
++ (CKPromise*)promise {
     return [[self alloc] init];
 }
 
-+ (CKPromise*)resolved:(id)value{
++ (CKPromise*)resolved:(id)value {
     CKPromise *promise = [self promise];
     [promise resolve:value];
     return promise;
 }
 
-+ (CKPromise*)rejected:(id)reason{
++ (CKPromise*)rejected:(id)reason {
     CKPromise *promise = [self promise];
     [promise reject:reason];
     return promise;
 }
 
-+ (CKPromise*)when:(NSArray*)promises{
++ (CKPromise*)when:(NSArray*)promises {
     CKPromise *promise = [self promise];
     NSMutableArray *values = [NSMutableArray arrayWithCapacity:promises.count];
     __block NSUInteger runningPromises = promises.count;
 
-    void(^handler)(id, BOOL) = ^(CKPromiseArray *arr, BOOL resolved){
+    void(^handler)(id, BOOL) = ^(CKPromiseArray *arr, BOOL resolved) {
         if(!resolved) {
             [promise reject:arr];
         } else {
@@ -177,8 +177,8 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
                 [values addObject:arr->_objects[0]];
             } else {
                 BOOL hasCKNull = NO;
-                for(id val in arr->_objects){
-                    if(val == [CKNull null]){
+                for(id val in arr->_objects) {
+                    if(val == [CKNull null]) {
                         hasCKNull = YES;
                         break;
                     }
@@ -217,7 +217,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
 }
 
 - (id)init{
-    if(self = [super init]){
+    if(self = [super init]) {
         _resolveHandlers = [[NSMutableArray alloc] init];
         _rejectHandlers = [[NSMutableArray alloc] init];
         _state = CKPromiseStatePending;
@@ -225,16 +225,16 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     return self;
 }
 
-- (void)dispatch:(dispatch_block_t)block{
+- (void)dispatch:(dispatch_block_t)block {
     dispatch_async(dispatch_get_main_queue(), block);
 }
 
-- (void)dispatch:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue{
+- (void)dispatch:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue {
     dispatch_async(queue, block);
 }
 
-- (CKPromise*(^)(id resolveHandler, id rejectHandler))then{
-    return ^CKPromise*(id resolveHandler, id rejectHandler){
+- (CKPromise*(^)(id resolveHandler, id rejectHandler))then {
+    return ^CKPromise*(id resolveHandler, id rejectHandler) {
         return [self then:resolveHandler :rejectHandler];
     };
 }
@@ -279,22 +279,22 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     dispatch_block_t rejectHandlerWrapper = ^{
         dispatch_async(queue, ^{
             @try{
-                if(actualRejectHandler){
+                if(actualRejectHandler) {
                     [resultPromise resolve:actualRejectHandler(_reason)];
                     
-                }else{
+                } else {
                     [resultPromise reject:_reason];
                 }
-            }@catch (NSException *ex) {
+            } @catch (NSException *ex) {
                 [resultPromise reject:ex];
             }
         });
     };
-    if(_state == CKPromiseStateResolved){
+    if(_state == CKPromiseStateResolved) {
         [self dispatch:successHandlerWrapper onQueue:queue];
-    }else if(_state == CKPromiseStateRejected){
+    } else if(_state == CKPromiseStateRejected) {
         [self dispatch:rejectHandlerWrapper onQueue:queue];
-    }else{
+    } else {
         [_resolveHandlers addObject:successHandlerWrapper];
         [_rejectHandlers addObject:rejectHandlerWrapper];
     }
@@ -307,40 +307,40 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     return result;
 }
 
-- (CKPromise*(^)(id resolveHandler))success{
-    return ^CKPromise*(id resolveHandler){
+- (CKPromise*(^)(id resolveHandler))success {
+    return ^CKPromise*(id resolveHandler) {
         return self.then(resolveHandler, nil);
     };
 }
 
-- (CKPromise*(^)(id rejectHandler))failure{
-    return ^CKPromise*(id rejectHandler){
+- (CKPromise*(^)(id rejectHandler))failure {
+    return ^CKPromise*(id rejectHandler) {
         return self.then(nil, rejectHandler);
     };
 }
 
-- (CKPromise*(^)(id handler))always{
+- (CKPromise*(^)(id handler))always {
     return ^CKPromise*(id handler){
         return self.then(handler, handler);
     };
 }
 
-- (void)resolve:(id)value{
+- (void)resolve:(id)value {
     [self resolveWith:value, nil];
 }
 
 - (void)resolveWith:(id)value, ... {
-    if(_state != CKPromiseStatePending){
+    if(_state != CKPromiseStatePending) {
         [CKHasResolutionException raise];
     }
     // 1. If promise and x refer to the same object, reject promise with a
     //    TypeError as the reason.
-    if(value == self){
+    if(value == self) {
         [CKTypeErrorException raise];
     }
     
     //2. If x is a promise, adopt its state [3.4]:
-    if([value isKindOfClass:[CKPromise class]]){
+    if([value isKindOfClass:CKPromise.class]) {
         //   i. If x is pending, promise must remain pending until x is fulfilled
         //      or rejected.
         //  ii. If/when x is fulfilled, fulfill promise with the same value.
@@ -348,7 +348,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         ((CKPromise*)value).then(^id(id value) {
             [self resolve:value];
             return nil;
-        }, ^id(id reason){
+        }, ^id(id reason) {
             [self reject:reason];
             return nil;
         });
@@ -360,7 +360,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     
     // 4. If x is not an object or function, fulfill promise with x.
     _state = CKPromiseStateResolved;
-    if([value isKindOfClass:[CKPromiseArray class]]){
+    if([value isKindOfClass:CKPromiseArray.class]){
         _value = value;
     } else {
         va_list valist;
@@ -377,7 +377,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     }];
 }
 
-- (void)reject:(id)reason{
+- (void)reject:(id)reason {
     [self rejectWith:reason, nil];
 }
 
@@ -403,11 +403,9 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     }];
 }
 
-#pragma mark -
-#pragma mark Privates
-#pragma mark -
+#pragma mark - Privates -
 
-+ (NSMethodSignature*)methodSignatureForBlock:(id)block{
++ (NSMethodSignature*)methodSignatureForBlock:(id)block {
     if (![block isKindOfClass:NSClassFromString(@"__NSGlobalBlock__")] &&
         ![block isKindOfClass:NSClassFromString(@"__NSStackBlock__")] &&
         ![block isKindOfClass:NSClassFromString(@"__NSMallocBlock__")]) return nil;
@@ -432,7 +430,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     return signature;
 }
 
-+ (id(^)(id))transformHandler:(id)block{
++ (id(^)(id))transformHandler:(id)block {
     if(!block) return nil;
     
     NSMethodSignature *blockSignature = [self methodSignatureForBlock:block];
@@ -443,22 +441,22 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
     BOOL blockReturnsVoid = blockReturnType[0] == 'v';
     BOOL blockReturnsObject = blockReturnType[0] == '@';
     
-    if(blockArgumentCount == 1){
-        if(blockReturnsVoid){
-            return ^id(id arg){
+    if(blockArgumentCount == 1) {
+        if(blockReturnsVoid) {
+            return ^id(id arg) {
                 ((void(^)(void))block)();
                 return nil;
             };
-        } else if(blockReturnsObject){
-            return ^id(id arg){
+        } else if(blockReturnsObject) {
+            return ^id(id arg) {
                 return ((id(^)(void))block)();
             };
         }
-    }else if(blockArgumentCount >= 2 && blockArgumentCount <= 4){
-        for(int i=2;i<blockArgumentCount;i++){
+    } else if(blockArgumentCount >= 2 && blockArgumentCount <= 4) {
+        for(int i=2; i<blockArgumentCount; i++) {
             // check if the rest of the parameters are objects, we only allow
             // those
-            if([blockSignature getArgumentTypeAtIndex:i][0] != '@'){
+            if([blockSignature getArgumentTypeAtIndex:i][0] != '@') {
                 [CKInvalidHandlerException raise];
                 return nil;
             }
@@ -500,7 +498,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState){
         }\
         break;\
 
-        switch([blockSignature getArgumentTypeAtIndex:1][0]){
+        switch([blockSignature getArgumentTypeAtIndex:1][0]) {
             case 'c':
             case 'C':
                 buildBlock(char, charValue)
