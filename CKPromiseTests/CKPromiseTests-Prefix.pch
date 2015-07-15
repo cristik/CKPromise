@@ -25,6 +25,7 @@
 
 #import <XCTest/XCTest.h>
 #include <sys/time.h>
+#include "CKPromise.h"
 
 static inline double microtime(){
     struct timeval time;
@@ -39,3 +40,8 @@ while((condition) && microtime() - start < timeout){\
 [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];\
 }\
 }
+
+@interface CKPromiseTestsBase : XCTestCase {
+    CKPromise *promise;
+}
+@end

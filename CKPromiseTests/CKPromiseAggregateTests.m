@@ -23,20 +23,10 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#import "CKPromise.h"
-
-@interface CKPromiseAggregateTests : XCTestCase {
-    CKPromise *promise;
-}
+@interface CKPromiseAggregateTests : CKPromiseTestsBase
 @end
 
 @implementation CKPromiseAggregateTests
-
-- (void)setUp{
-    [super setUp];
-    promise = [CKPromise promise];
-}
-
 
 - (void)test_chained_onePromiseFails{
     NSMutableArray *callbacksOrder = [NSMutableArray arrayWithCapacity:3];

@@ -23,19 +23,10 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#import "CKPromise.h"
-
-@interface CKPromiseSpecsTests : XCTestCase {
-    CKPromise *promise;
-}
+@interface CKPromiseSpecsTests : CKPromiseTestsBase
 @end
 
 @implementation CKPromiseSpecsTests
-
-- (void)setUp{
-    [super setUp];
-    promise = [CKPromise promise];
-}
 
 // # Promise States
 

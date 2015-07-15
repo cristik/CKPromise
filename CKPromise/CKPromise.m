@@ -239,6 +239,12 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
     };
 }
 
+- (CKPromise*(^)(dispatch_queue_t queue, id resolveHandler, id rejectHandler))queuedThen {
+    return ^CKPromise*(dispatch_queue_t queue, id resolveHandler, id rejectHandler) {
+        return [self queuedThen:queue :resolveHandler :rejectHandler];
+    };
+}
+
 - (CKPromise*)then:(id)resolveHandler {
     return [self queuedThen:dispatch_get_main_queue() :resolveHandler];
 }

@@ -23,19 +23,10 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#import "CKPromise.h"
-
-@interface CKPromiseQueueTests : XCTestCase {
-    CKPromise *promise;
-}
+@interface CKPromiseQueueTests : CKPromiseTestsBase
 @end
 
 @implementation CKPromiseQueueTests
-
-- (void)setUp {
-    [super setUp];
-    promise = [CKPromise promise];
-}
 
 - (void)test_resolvedPromiseRunsResolveCallbackOnTheSpecifiedQueue {
     dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);

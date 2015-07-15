@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F2EB2FB1B56D7EF006C3A8C /* CKPromisePerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F2EB2FA1B56D7EF006C3A8C /* CKPromisePerformanceTests.m */; };
+		0F2EB2FE1B570649006C3A8C /* CKPromiseTestsBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */; };
 		0FCC9B6019FF245A00292330 /* CKPromiseCallbacksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */; };
 		0FCC9B6319FF27C900292330 /* CKPromiseAggregateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */; };
 		0FD801EE1B276220007F9B3B /* CKPromiseQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD801ED1B276220007F9B3B /* CKPromiseQueueTests.m */; };
@@ -29,6 +31,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0F2EB2FA1B56D7EF006C3A8C /* CKPromisePerformanceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromisePerformanceTests.m; sourceTree = "<group>"; };
+		0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseTestsBase.m; sourceTree = "<group>"; };
+		0F2EB2FF1B5706D5006C3A8C /* CKPromise.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CKPromise.podspec; sourceTree = "<group>"; };
 		0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseCallbacksTests.m; sourceTree = "<group>"; };
 		0FCC9B6119FF24BD00292330 /* CKPromiseTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CKPromiseTests-Prefix.pch"; sourceTree = "<group>"; };
 		0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseAggregateTests.m; sourceTree = "<group>"; };
@@ -71,6 +76,7 @@
 		AA4D461519C8AB460010D0EE = {
 			isa = PBXGroup;
 			children = (
+				0F2EB2FF1B5706D5006C3A8C /* CKPromise.podspec */,
 				AA4D462719C8AB470010D0EE /* CKPromise */,
 				AA4D463919C8AB470010D0EE /* CKPromiseTests */,
 				AA4D462019C8AB460010D0EE /* Frameworks */,
@@ -131,6 +137,7 @@
 				0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */,
 				0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */,
 				0FD801ED1B276220007F9B3B /* CKPromiseQueueTests.m */,
+				0F2EB2FA1B56D7EF006C3A8C /* CKPromisePerformanceTests.m */,
 				AA4D463A19C8AB470010D0EE /* Supporting Files */,
 			);
 			path = CKPromiseTests;
@@ -142,6 +149,7 @@
 				AA4D463B19C8AB470010D0EE /* CKPromiseTests-Info.plist */,
 				AA4D463C19C8AB470010D0EE /* InfoPlist.strings */,
 				0FCC9B6119FF24BD00292330 /* CKPromiseTests-Prefix.pch */,
+				0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -267,6 +275,8 @@
 				0FD801EE1B276220007F9B3B /* CKPromiseQueueTests.m in Sources */,
 				0FCC9B6019FF245A00292330 /* CKPromiseCallbacksTests.m in Sources */,
 				AA4D464119C8AB470010D0EE /* CKPromiseSpecsTests.m in Sources */,
+				0F2EB2FE1B570649006C3A8C /* CKPromiseTestsBase.m in Sources */,
+				0F2EB2FB1B56D7EF006C3A8C /* CKPromisePerformanceTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

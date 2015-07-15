@@ -122,6 +122,7 @@
   *    multiple values)
   */
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then;
+- (CKPromise*(^)(dispatch_queue_t queue, id resolveHandler, id rejectHandler))queuedThen;
 - (CKPromise*)then:(id)resolveHandler;
 - (CKPromise*)then:(id)resolveHandler :(id)rejectHandler;
 - (CKPromise*)then:(id)resolveHandler :(id)rejectHandler :(id)anyHandler;

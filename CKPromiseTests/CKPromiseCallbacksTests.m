@@ -23,20 +23,10 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#import "CKPromise.h"
-
-@interface CKPromiseCallbacksTests : XCTestCase {
-    CKPromise *promise;
-}
-
+@interface CKPromiseCallbacksTests : CKPromiseTestsBase
 @end
 
 @implementation CKPromiseCallbacksTests
-
-- (void)setUp{
-    [super setUp];
-    promise = [CKPromise promise];
-}
 
 // then variants equivalence
 - (void)test_thenMethodWhenPromiseSucceedsExecutesOnlyTheSuccessCallback {
@@ -516,13 +506,13 @@
     XCTAssertEqualObjects(value2, @20);
 }
 
-- (void)test_acceptsOnlyIdForOtherArguments{
+- (void)test_acceptsOnlyIdForOtherArguments {
     XCTAssertThrowsSpecific((promise.then(^(int val1, int val2){
         
     }, nil)), CKInvalidHandlerException);
 }
 
-- (void)test_when_multipleValues_returnedAsArray{
+- (void)test_when_multipleValues_returnedAsArray {
     CKPromise *promise1 = [CKPromise promise];
     CKPromise *promise2 = [CKPromise promise];
     CKPromise *promise3 = [CKPromise promise];
