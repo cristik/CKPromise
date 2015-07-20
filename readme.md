@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cristik/CKPromise.svg?branch=develop)](https://travis-ci.org/cristik/CKPromise)
+
 # KCPromise
 
 An ObjectiveC implementation of the Promises/A+ proposal.
