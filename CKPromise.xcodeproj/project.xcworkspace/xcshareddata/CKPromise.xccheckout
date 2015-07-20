@@ -7,21 +7,21 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>58D498CF-547C-4BE9-9480-22C1AD0D7E58</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>CKPromise</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>065E24FBB22A65AD4F6D1A7680B825779B43BC31</key>
-		<string>ssh://github.com/cristik/CKPromise.git</string>
+		<string>github.com:cristik/CKPromise.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>CKPromise.xcodeproj/project.xcworkspace</string>
+	<string>CKPromise.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>065E24FBB22A65AD4F6D1A7680B825779B43BC31</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/cristik/CKPromise.git</string>
+	<string>github.com:cristik/CKPromise.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>

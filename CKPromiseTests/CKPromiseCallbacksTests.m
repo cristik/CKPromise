@@ -560,4 +560,24 @@
     XCTAssertEqualObjects(value, (@[@"promise1", [NSNull null], @"promise3"]));
 }
 
+- (void)test_when_emptyArrayReturnsAResolvedPromise {
+    promise = [CKPromise when: @[]];
+    __block BOOL succeeded = NO;
+    promise.success(^{
+        succeeded = YES;
+    });
+    wait(!succeeded, 0.02);
+    XCTAssertTrue(succeeded);
+}
+
+- (void)test_when_nilArrayReturnsAResolvedPromise {
+    promise = [CKPromise when: nil];
+    __block BOOL succeeded = NO;
+    promise.success(^{
+        succeeded = YES;
+    });
+    wait(!succeeded, 0.02);
+    XCTAssertTrue(succeeded);
+}
+
 @end

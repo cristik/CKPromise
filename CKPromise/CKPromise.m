@@ -162,6 +162,8 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
 }
 
 + (CKPromise*)when:(NSArray*)promises {
+    if(!promises.count) return [CKPromise resolved:nil];
+    
     CKPromise *promise = [self promise];
     NSMutableArray *values = [NSMutableArray arrayWithCapacity:promises.count];
     __block NSUInteger runningPromises = promises.count;
