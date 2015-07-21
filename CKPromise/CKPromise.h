@@ -27,6 +27,11 @@
 #import <Foundation/Foundation.h>
 
 /**
+  * Promise resolution callback scheduler
+  */
+typedef void(^CKPromiseDispatcher)(dispatch_block_t block);
+
+/**
   * A promise represents the eventual result of an asynchronous operation. The
   * primary way of interacting with a promise is through its "then" method, 
   * which registers callbacks to receive either a promise’s eventual value or 
@@ -66,6 +71,18 @@
   * change the promise state
   */
 + (CKPromise*)promise;
+
+/**
+  * Returns a promise tied to the specified queue. Resolution handlers that
+  * don't specify a queue to run into (see queuedThen) will run on this queue
+  */
++ (CKPromise*)queuedPromise:(dispatch_queue_t)queue;
+
+/**
+  * Returns a promise that dispatches the resolution handlers via the custom
+  * provided block. Useful when creating custom type of promises
+  */
++ (CKPromise*)promiseWithDispatcher:(CKPromiseDispatcher)dispatcher;
 
 /** 
   * A promise provides a "then" method to access its current or eventual value 
@@ -122,13 +139,7 @@
   *    multiple values)
   */
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then;
-- (CKPromise*(^)(dispatch_queue_t queue, id resolveHandler, id rejectHandler))queuedThen;
-- (CKPromise*)then:(id)resolveHandler;
 - (CKPromise*)then:(id)resolveHandler :(id)rejectHandler;
-- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler :(id)anyHandler;
-- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler;
-- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler;
-- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler :(id)anyHandler;
 
 /**
   * Resolves the promise with the provided value
@@ -195,16 +206,19 @@
   * Alias for then(resolveHandler, nil)
   */
 - (CKPromise*(^)(id resolveHandler))success;
+- (CKPromise*)success:(id)resolveHandler;
 
 /** 
   * Alias for then(nil, rejectHandler)
   */
 - (CKPromise*(^)(id rejectHandler))failure;
+- (CKPromise*)failure:(id)rejectHandler;
 
 /**
   * Alias for then(handler, handler)
   */
 - (CKPromise*(^)(id handler))always;
+- (CKPromise*)always:(id)handler;
 
 @end
 

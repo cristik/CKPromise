@@ -59,7 +59,7 @@
 
 - (void)test_thenMethodWhenPromiseFailsExecutesAlsoTheAnyCallback {
     __block BOOL anyCalled = NO;
-    [promise then:nil :nil :^{
+    [promise always:^{
         anyCalled = YES;
     }];
     [promise reject:@129];
@@ -69,7 +69,7 @@
 
 - (void)test_thenMethodWhenPromiseSucceedsExecutesAlsoTheAnyCallback {
     __block BOOL anyCalled = NO;
-    [promise then:nil :nil :^{
+    [promise always:^{
         anyCalled = YES;
     }];
     [promise resolve:@119];

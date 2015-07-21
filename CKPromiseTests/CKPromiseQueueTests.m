@@ -31,10 +31,11 @@
 - (void)test_resolvedPromiseRunsResolveCallbackOnTheSpecifiedQueue {
     dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
     __block dispatch_queue_t callbackQueue = NULL;
-    promise = [CKPromise resolved:@12];
-    [promise queuedThen:queue :^{
+    promise = [CKPromise queuedPromise:queue];
+    promise.success(^{
         callbackQueue = dispatch_get_current_queue();
-    }];
+    });
+    [promise resolve:@12];
     wait(!callbackQueue, 0.02);
     XCTAssertEqual(callbackQueue, queue);
 }
@@ -42,21 +43,11 @@
 - (void)test_resolvedPromiseRunsResolveCallbackOnTheSpecifiedQueue_2nd {
     dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
     __block dispatch_queue_t callbackQueue = NULL;
-    promise = [CKPromise resolved:@12];
-    [promise queuedThen:queue :^{
+    promise = [CKPromise queuedPromise:queue];
+    promise.then(^{
         callbackQueue = dispatch_get_current_queue();
-    } :nil];
-    wait(!callbackQueue, 0.02);
-    XCTAssertEqual(callbackQueue, queue);
-}
-
-- (void)test_resolvedPromiseRunsResolveCallbackOnTheSpecifiedQueue_3nd {
-    dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
-    __block dispatch_queue_t callbackQueue = NULL;
-    promise = [CKPromise resolved:@12];
-    [promise queuedThen:queue :^{
-        callbackQueue = dispatch_get_current_queue();
-    } :nil :nil];
+    }, nil);
+    [promise resolve:@12];
     wait(!callbackQueue, 0.02);
     XCTAssertEqual(callbackQueue, queue);
 }
@@ -64,10 +55,11 @@
 - (void)test_resolvedPromiseRunsAnyCallbackOnTheSpecifiedQueue {
     dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
     __block dispatch_queue_t callbackQueue = NULL;
-    promise = [CKPromise resolved:@12];
-    [promise queuedThen:queue :nil :nil :^{
+    promise = [CKPromise queuedPromise:queue];
+    [promise always:^{
         callbackQueue = dispatch_get_current_queue();
     }];
+    [promise  resolve:@12];
     wait(!callbackQueue, 0.02);
     XCTAssertEqual(callbackQueue, queue);
 }
@@ -75,10 +67,11 @@
 - (void)test_rejectedPromiseRunsRejectCallbackOnTheSpecifiedQueue {
     dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
     __block dispatch_queue_t callbackQueue = NULL;
-    promise = [CKPromise rejected:@123];
-    [promise queuedThen:queue :nil :^{
+    promise = [CKPromise queuedPromise:queue];
+    [promise then:nil :^{
         callbackQueue = dispatch_get_current_queue();
     }];
+    [promise reject:@123];
     wait(!callbackQueue, 0.02);
     XCTAssertEqual(callbackQueue, queue);
 }
@@ -86,7 +79,8 @@
 - (void)test_resolvingPromiseRunsResolveCallbackOnTheSpecifiedQueue {
     dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
     __block dispatch_queue_t callbackQueue = NULL;
-    [promise queuedThen:queue :^{
+    promise = [CKPromise queuedPromise:queue];
+    [promise success:^{
         callbackQueue = dispatch_get_current_queue();
     }];
     [promise resolve:@1234];
@@ -97,7 +91,8 @@
 - (void)test_rejectingPromiseRunsRejectCallbackOnTheSpecifiedQueue {
     dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
     __block dispatch_queue_t callbackQueue = NULL;
-    [promise queuedThen:queue :nil :^{
+    promise = [CKPromise queuedPromise:queue];
+    [promise then:nil :^{
         callbackQueue = dispatch_get_current_queue();
     }];
     [promise reject:@12345];
@@ -105,15 +100,31 @@
     XCTAssertEqual(callbackQueue, queue);
 }
 
-- (void)test_rejectingPromiseRunsRejectCallbackOnTheSpecifiedQueue_3rd {
+- (void)test_chainedPromise_resolvesOnSameQueue {
     dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
     __block dispatch_queue_t callbackQueue = NULL;
-    [promise queuedThen:queue :nil :^{
+    promise = [CKPromise queuedPromise:queue];
+    CKPromise *chainedPromise = promise.then(nil, nil);
+    chainedPromise.then(^{
         callbackQueue = dispatch_get_current_queue();
-    } :nil];
-    [promise reject:@12345];
+    }, nil);
+    [promise resolve:@12345];
     wait(!callbackQueue, 0.02);
     XCTAssertEqual(callbackQueue, queue);
 }
 
+- (void)test_chainedPromise_rejectsOnSameQueue {
+    dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
+    __block dispatch_queue_t callbackQueue = NULL;
+    promise = [CKPromise queuedPromise:queue];
+    CKPromise *chainedPromise = promise.then(nil, ^{
+        return [CKPromise rejected:@123];
+    });
+    chainedPromise.then(nil, ^{
+        callbackQueue = dispatch_get_current_queue();
+    });
+    [promise reject:@12345];
+    wait(!callbackQueue, 0.02);
+    XCTAssertEqual(callbackQueue, queue);
+}
 @end
