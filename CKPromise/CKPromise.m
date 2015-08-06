@@ -54,27 +54,27 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
 
 
 @implementation CKTypeErrorException
-+ (void)raise {
-    [[self exceptionWithName:@"TypeError"
++ (instancetype)exception {
+    return [[self alloc] initWithName:@"TypeError"
                       reason:@"TypeError"
-                    userInfo:nil] raise];
+                    userInfo:nil];
 }
 @end
 
 
 @implementation CKHasResolutionException
-+ (void)raise {
-    [[self exceptionWithName:@"HasResolution"
++ (instancetype)exception {
+    return [[self alloc] initWithName:@"HasResolution"
                       reason:@"Already resolved/rejected"
-                    userInfo:nil] raise];
+                    userInfo:nil];
 }
 @end
 
 @implementation CKInvalidHandlerException
-+ (void)raise {
-    [[self exceptionWithName:@"InvalidHandler"
++ (instancetype)exception {
+    return [[self alloc] initWithName:@"InvalidHandler"
                       reason:@"Passed handler is not a valid promise handler"
-                    userInfo:nil] raise];
+                    userInfo:nil];
 }
 @end
 
@@ -144,6 +144,15 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
     id _reason;
     NSMutableArray *_resolveHandlers;
     NSMutableArray *_rejectHandlers;
+}
+
++ (dispatch_queue_t)sharedQueue {
+    static dispatch_queue_t sharedQueue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedQueue = dispatch_queue_create("CKPromise", NULL);
+    });
+    return sharedQueue;
 }
 
 + (CKPromise*)promise {
@@ -243,51 +252,70 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
 
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then {
     return ^CKPromise*(id resolveHandler, id rejectHandler) {
-        return [self then:resolveHandler :rejectHandler];
+        return [self queuedThen:nil :resolveHandler :rejectHandler];
     };
 }
 
 - (CKPromise*)then:(id)resolveHandler :(id)rejectHandler {
+    return [self queuedThen:nil :resolveHandler :rejectHandler];
+}
+
+- (CKPromise*(^)(dispatch_queue_t queue, id resolveHandler, id rejectHandler))queuedThen
+{
+    return ^CKPromise*(dispatch_queue_t queue, id resolveHandler, id rejectHandler) {
+        return [self queuedThen:queue :resolveHandler :rejectHandler];
+    };
+}
+
+
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler {
     id (^actualResolveHandler)(id) = [CKPromise transformHandler:resolveHandler];
     id (^actualRejectHandler)(id) = [CKPromise transformHandler:rejectHandler];
     CKPromise *resultPromise = [CKPromise promiseWithDispatcher:_dispatcher];
     
     dispatch_block_t successHandlerWrapper = ^{
-        @try{
-            
-            if(actualResolveHandler){
-                [resultPromise resolve:actualResolveHandler(_value)];
-            }else{
-                [resultPromise resolve:_value];
+        dispatch_block_t blk = ^{
+            @try{
+                
+                if(actualResolveHandler) {
+                    [resultPromise resolve:actualResolveHandler(_value)];
+                }else {
+                    [resultPromise resolve:_value];
+                }
+            }@catch (NSException *ex) {
+                [resultPromise reject:ex];
             }
-            
-        }@catch (NSException *ex) {
-            [resultPromise reject:ex];
-        }
+        };
+        if(queue) dispatch_async(queue, blk);
+        else blk();
     };
     
     dispatch_block_t rejectHandlerWrapper = ^{
-        @try{
-            if(actualRejectHandler) {
-                [resultPromise resolve:actualRejectHandler(_reason)];
-                
-            } else {
-                [resultPromise reject:_reason];
+        dispatch_block_t blk = ^{
+            @try{
+                if(actualRejectHandler) {
+                    [resultPromise resolve:actualRejectHandler(_reason)];
+                } else {
+                    [resultPromise reject:_reason];
+                }
+            } @catch (NSException *ex) {
+                [resultPromise reject:ex];
             }
-        } @catch (NSException *ex) {
-            [resultPromise reject:ex];
-        }
-
+        };
+        if(queue) dispatch_async(queue, blk);
+        else blk();
     };
     
-    if(_state == CKPromiseStateResolved) {
-        _dispatcher(successHandlerWrapper);
-    } else if(_state == CKPromiseStateRejected) {
-        _dispatcher(rejectHandlerWrapper);
-    } else {
-        [_resolveHandlers addObject:successHandlerWrapper];
-        [_rejectHandlers addObject:rejectHandlerWrapper];
-    }
+    dispatch_async(CKPromise.sharedQueue, ^{
+        if(_state == CKPromiseStateResolved) {
+            _dispatcher(successHandlerWrapper);
+        } else if(_state == CKPromiseStateRejected) {
+            _dispatcher(rejectHandlerWrapper);
+        } else {
+            [_resolveHandlers addObject:successHandlerWrapper];
+            [_rejectHandlers addObject:rejectHandlerWrapper];
+        }
+    });
     return resultPromise;
 }
 
@@ -326,51 +354,58 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
 }
 
 - (void)resolveWith:(id)value, ... {
-    if(_state != CKPromiseStatePending) {
-        [CKHasResolutionException raise];
-    }
-    // 1. If promise and x refer to the same object, reject promise with a
-    //    TypeError as the reason.
-    if(value == self) {
-        [CKTypeErrorException raise];
-    }
-    
-    //2. If x is a promise, adopt its state [3.4]:
-    if([value isKindOfClass:CKPromise.class]) {
-        //   i. If x is pending, promise must remain pending until x is fulfilled
-        //      or rejected.
-        //  ii. If/when x is fulfilled, fulfill promise with the same value.
-        // iii. If/when x is rejected, reject promise with the same reason.
-        ((CKPromise*)value).then(^id(id value) {
-            [self resolve:value];
-            return nil;
-        }, ^id(id reason) {
-            [self reject:reason];
-            return nil;
-        });
-        return;
-    }
-    
-    // 3. Otherwise, if x is an object or function,
-    // (this doesn't apply to Objective-C)
-    
-    // 4. If x is not an object or function, fulfill promise with x.
-    _state = CKPromiseStateResolved;
+    id valueToResolveWith = nil;
     if([value isKindOfClass:CKPromiseArray.class]){
-        _value = value;
+        valueToResolveWith = value;
     } else {
         va_list valist;
         va_start(valist, value);
-        _value = [[CKPromiseArray alloc] initWithVaList:valist arg0:value];
+        valueToResolveWith = [[CKPromiseArray alloc] initWithVaList:valist arg0:value];
         va_end(valist);
     }
-    _dispatcher(^{
+    __block NSException *ex = nil;
+    dispatch_sync(CKPromise.sharedQueue, ^{
+        if(_state != CKPromiseStatePending) {
+            ex = [CKHasResolutionException exception];
+            return;
+        }
+        // 1. If promise and x refer to the same object, reject promise with a
+        //    TypeError as the reason.
+        if(value == self) {
+            ex = [CKTypeErrorException exception];
+            return;
+        }
+        
+        //2. If x is a promise, adopt its state [3.4]:
+        if([value isKindOfClass:CKPromise.class]) {
+            //   i. If x is pending, promise must remain pending until x is fulfilled
+            //      or rejected.
+            //  ii. If/when x is fulfilled, fulfill promise with the same value.
+            // iii. If/when x is rejected, reject promise with the same reason.
+            ((CKPromise*)value).then(^(id value) {
+                [self resolve:value];
+            }, ^(id reason) {
+                [self reject:reason];
+            });
+            return;
+        }
+        
+        // 3. Otherwise, if x is an object or function,
+        // (this doesn't apply to Objective-C)
+        
+        // 4. If x is not an object or function, fulfill promise with x.
+        _state = CKPromiseStateResolved;
+        _value = valueToResolveWith;
+    
         for(dispatch_block_t resolveHandler in _resolveHandlers){
-            resolveHandler();
+            _dispatcher(resolveHandler);
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
     });
+    if(ex) {
+        [ex raise];
+    }
 }
 
 - (void)reject:(id)reason {
@@ -378,25 +413,32 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
 }
 
 - (void)rejectWith:(id)reason, ... {
-    if(_state != CKPromiseStatePending){
-        [CKHasResolutionException raise];
-    }
-    _state = CKPromiseStateRejected;
+    id valueToRejectWith = nil;
     if([reason isKindOfClass:[CKPromiseArray class]]){
-        _reason = reason;
+        valueToRejectWith = reason;
     } else {
         va_list valist;
         va_start(valist, reason);
-        _reason = [[CKPromiseArray alloc] initWithVaList:valist arg0:reason];
+        valueToRejectWith = [[CKPromiseArray alloc] initWithVaList:valist arg0:reason];
         va_end(valist);
     }
-    _dispatcher(^{
+    
+    __block NSException *ex = nil;
+    dispatch_sync(CKPromise.sharedQueue, ^{
+        if(_state != CKPromiseStatePending){
+            ex = [CKHasResolutionException exception];
+        }
+        _state = CKPromiseStateRejected;
+        _reason = valueToRejectWith;
         for(dispatch_block_t rejectHandler in _rejectHandlers){
-            rejectHandler();
+            _dispatcher(rejectHandler);
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
     });
+    if(ex) {
+        [ex raise];
+    }
 }
 
 #pragma mark - Privates -
@@ -453,7 +495,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
             // check if the rest of the parameters are objects, we only allow
             // those
             if([blockSignature getArgumentTypeAtIndex:i][0] != '@') {
-                [CKInvalidHandlerException raise];
+                [[CKInvalidHandlerException exception] raise];
                 return nil;
             }
         }
@@ -524,7 +566,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
     
     // The block doesn't match any of the supported ones,
     // raise an exception
-    [CKInvalidHandlerException raise];
+    [[CKInvalidHandlerException exception] raise];
     return nil;
 }
 

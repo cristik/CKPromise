@@ -163,14 +163,12 @@
     __block BOOL resolvedExecuted = NO;
     __block int executeCount = 0;
     __block id reason = nil;
-    promise.then(^id(id value){
+    promise.then(^(id value){
         resolvedExecuted = YES;
-        return nil;
-    }, ^id(id aReason) {
+    }, ^(id aReason) {
         executed = YES;
         reason = aReason;
         executeCount++;
-        return nil;
     });
     XCTAssertFalse(executed, @"Callback should not be executed before resolving");
     [promise reject:@13];
