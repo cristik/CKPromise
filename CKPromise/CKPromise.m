@@ -161,12 +161,6 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
     }];
 }
 
-+ (CKPromise*)queuedPromise:(dispatch_queue_t)queue {
-    return [[self alloc] initWithDispatcher:^(dispatch_block_t block) {
-        dispatch_async(queue, block);
-    }];
-}
-
 + (CKPromise*)promiseWithDispatcher:(CKPromiseDispatcher)dispatcher {
     return [[self alloc] initWithDispatcher:dispatcher];
 }
@@ -240,7 +234,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
     return promise;
 }
 
-- (id)initWithDispatcher:(CKPromiseDispatcher)dispatcher {
+- (instancetype)initWithDispatcher:(CKPromiseDispatcher)dispatcher {
     if(self = [super init]) {
         _dispatcher = dispatcher;
         _resolveHandlers = [[NSMutableArray alloc] init];
@@ -286,8 +280,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
                 [resultPromise reject:ex];
             }
         };
-        if(queue) dispatch_async(queue, blk);
-        else blk();
+        dispatch_async(queue ? queue : dispatch_get_main_queue(), blk);
     };
     
     dispatch_block_t rejectHandlerWrapper = ^{
@@ -302,8 +295,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
                 [resultPromise reject:ex];
             }
         };
-        if(queue) dispatch_async(queue, blk);
-        else blk();
+        dispatch_async(queue ? queue : dispatch_get_main_queue(), blk);
     };
     
     dispatch_async(CKPromise.sharedQueue, ^{

@@ -68,21 +68,17 @@ typedef void(^CKPromiseDispatcher)(dispatch_block_t block);
 
 /**
   * Designated initializer. Returns a pending promise. Call resolve or reject to 
-  * change the promise state
+  * change the promise state. Callbacks are scheduled on the main queue.
   */
 + (CKPromise*)promise;
 
-/**
-  * Returns a promise tied to the specified queue. Resolution handlers that
-  * don't specify a queue to run into (see queuedThen) will run on this queue
-  */
-+ (CKPromise*)queuedPromise:(dispatch_queue_t)queue;
 
 /**
   * Returns a promise that dispatches the resolution handlers via the custom
   * provided block. Useful when creating custom type of promises
   */
 + (CKPromise*)promiseWithDispatcher:(CKPromiseDispatcher)dispatcher;
+- (instancetype)initWithDispatcher:(CKPromiseDispatcher)dispatcher;
 
 /** 
   * A promise provides a "then" method to access its current or eventual value 
