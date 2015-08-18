@@ -23,10 +23,10 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@interface CKPromiseQueueTests : CKPromiseTestsBase
+@interface CKPromiseDispatcherTests : CKPromiseTestsBase
 @end
 
-@implementation CKPromiseQueueTests
+@implementation CKPromiseDispatcherTests
 
 - (void)test_resolvedPromiseRunsResolveCallbackOnTheSpecifiedQueue {
     dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
@@ -83,6 +83,18 @@
     [promise resolve: nil];
     wait(!callbackCalled, 0.02);
     XCTAssertTrue(callbackCalled);
+}
+
+- (void)test_syncDispatcherStillExecutesAfterTheCurrentScope {
+    promise = [CKPromise promiseWithDispatcher:^(dispatch_block_t block) {
+        block();
+    }];
+    __block BOOL callbackCalled = NO;
+    promise.then(^{
+        callbackCalled = YES;
+    }, nil);
+    [promise resolve: nil];
+    XCTAssertFalse(callbackCalled);
 }
 
 - (void)test_chainedPromise_resolvesWithTheSameDispatcher {
