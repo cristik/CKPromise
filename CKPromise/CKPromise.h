@@ -135,9 +135,11 @@ typedef void(^CKPromiseDispatcher)(dispatch_block_t block);
   *    multiple values)
   */
 - (CKPromise*(^)(id resolveHandler, id rejectHandler))then;
+- (CKPromise*)then:(id)resolveHandler;
 - (CKPromise*)then:(id)resolveHandler :(id)rejectHandler;
 
 - (CKPromise*(^)(dispatch_queue_t queue, id resolveHandler, id rejectHandler))queuedThen;
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler;
 - (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler;
 
 /**

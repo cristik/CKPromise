@@ -28,6 +28,26 @@
 
 @implementation CKPromiseDispatcherTests
 
+- (void)test_defaultPromiseExecutesResolveOnMainQueue {
+    __block dispatch_queue_t queue = nil;
+    [promise then:^{
+        queue = dispatch_get_current_queue();
+    }];
+    [promise resolve:@17];
+    wait(!queue, 0.02);
+    XCTAssertEqual(queue, dispatch_get_main_queue());
+}
+
+- (void)test_defaultPromiseExecutesRejectOnMainQueue {
+    __block dispatch_queue_t queue = nil;
+    [promise then:nil :^{
+        queue = dispatch_get_current_queue();
+    }];
+    [promise reject:@2];
+    wait(!queue, 0.02);
+    XCTAssertEqual(queue, dispatch_get_main_queue());
+}
+
 - (void)test_resolvedPromiseRunsResolveCallbackOnTheSpecifiedQueue {
     dispatch_queue_t queue = dispatch_queue_create(sel_getName(_cmd), NULL);
     __block dispatch_queue_t callbackQueue = NULL;
@@ -154,16 +174,20 @@
 - (void)test_CoreData_Dispatcher {
     NSManagedObjectContext *ctx = self.managedContext;
     __block NSManagedObjectID *personId = nil;
-    __block dispatch_queue_t queue = nil;
+    __block dispatch_queue_t callbackQueue = nil;
+    __block dispatch_queue_t ctxQueue = nil;
+    
     promise = [CKPromise promiseWithDispatcher:^(dispatch_block_t block) {
         [ctx performBlock:block];
     }];
+    
     promise.then(^(NSManagedObject *p){
-        queue = dispatch_get_current_queue();
+        callbackQueue = dispatch_get_current_queue();
         personId = p.objectID;
     }, nil);
     
     [ctx performBlock:^{
+        ctxQueue = dispatch_get_current_queue();
         NSManagedObject *p = [NSEntityDescription insertNewObjectForEntityForName:@"Person"
                                                            inManagedObjectContext: ctx];
         [p setValue:@"name1" forKey:@"name"];
@@ -172,7 +196,6 @@
     
     wait(!personId, 0.02);
     XCTAssertNotNil(personId);
-    XCTAssertFalse(queue == nil);
-    XCTAssertNotEqual(queue, dispatch_get_current_queue());
+    XCTAssertEqual(callbackQueue, ctxQueue);
 }
 @end

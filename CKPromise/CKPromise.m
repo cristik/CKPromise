@@ -245,6 +245,10 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
     };
 }
 
+- (CKPromise*)then:(id)resolveHandler {
+    return [self then:resolveHandler :nil];
+}
+
 - (CKPromise*)then:(id)resolveHandler :(id)rejectHandler {
     return [self queuedThen:nil :resolveHandler :rejectHandler];
 }
@@ -256,6 +260,9 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
     };
 }
 
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler {
+    return [self queuedThen:queue :resolveHandler :nil];
+}
 
 - (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler {
     id (^actualResolveHandler)(id) = [CKPromise transformHandler:resolveHandler];
