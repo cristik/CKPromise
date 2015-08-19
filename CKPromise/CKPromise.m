@@ -138,21 +138,14 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
 @end
 
 @implementation CKPromise {
+    dispatch_queue_t _lockQueue;
+    dispatch_queue_t _callbackQueue;
     CKPromiseDispatcher _dispatcher;
     CKPromiseState _state;
     id _value;
     id _reason;
     NSMutableArray *_resolveHandlers;
     NSMutableArray *_rejectHandlers;
-}
-
-+ (dispatch_queue_t)sharedQueue {
-    static dispatch_queue_t sharedQueue;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedQueue = dispatch_queue_create("CKPromise", NULL);
-    });
-    return sharedQueue;
 }
 
 + (CKPromise*)promise {
@@ -236,6 +229,8 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
 
 - (instancetype)initWithDispatcher:(CKPromiseDispatcher)dispatcher {
     if(self = [super init]) {
+        _lockQueue = dispatch_queue_create("CKPromiseLockQueue", NULL);
+        _callbackQueue = dispatch_queue_create("CKPromiseCallbackQueue", NULL);
         _dispatcher = dispatcher;
         _resolveHandlers = [[NSMutableArray alloc] init];
         _rejectHandlers = [[NSMutableArray alloc] init];
@@ -280,7 +275,8 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
                 [resultPromise reject:ex];
             }
         };
-        dispatch_async(queue ? queue : dispatch_get_main_queue(), blk);
+        if(queue) dispatch_async(queue, blk);
+        else blk();
     };
     
     dispatch_block_t rejectHandlerWrapper = ^{
@@ -295,14 +291,19 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
                 [resultPromise reject:ex];
             }
         };
-        dispatch_async(queue ? queue : dispatch_get_main_queue(), blk);
+        if(queue) dispatch_async(queue, blk);
+        else blk();
     };
     
-    dispatch_async(CKPromise.sharedQueue, ^{
+    dispatch_async(_lockQueue, ^{
         if(_state == CKPromiseStateResolved) {
-            _dispatcher(successHandlerWrapper);
+            dispatch_async(_callbackQueue, ^{
+                _dispatcher(successHandlerWrapper);
+            });
         } else if(_state == CKPromiseStateRejected) {
-            _dispatcher(rejectHandlerWrapper);
+            dispatch_async(_callbackQueue, ^{
+                _dispatcher(rejectHandlerWrapper);
+            });
         } else {
             [_resolveHandlers addObject:successHandlerWrapper];
             [_rejectHandlers addObject:rejectHandlerWrapper];
@@ -356,7 +357,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
         va_end(valist);
     }
     __block NSException *ex = nil;
-    dispatch_sync(CKPromise.sharedQueue, ^{
+    dispatch_sync(_lockQueue, ^{
         if(_state != CKPromiseStatePending) {
             ex = [CKHasResolutionException exception];
             return;
@@ -390,7 +391,9 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
         _value = valueToResolveWith;
     
         for(dispatch_block_t resolveHandler in _resolveHandlers){
-            _dispatcher(resolveHandler);
+            dispatch_async(_callbackQueue, ^{
+                _dispatcher(resolveHandler);
+            });
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];
@@ -416,14 +419,16 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
     }
     
     __block NSException *ex = nil;
-    dispatch_sync(CKPromise.sharedQueue, ^{
+    dispatch_sync(_lockQueue, ^{
         if(_state != CKPromiseStatePending){
             ex = [CKHasResolutionException exception];
         }
         _state = CKPromiseStateRejected;
         _reason = valueToRejectWith;
-        for(dispatch_block_t rejectHandler in _rejectHandlers){
-            _dispatcher(rejectHandler);
+        for(dispatch_block_t rejectHandler in _rejectHandlers) {
+            dispatch_async(_callbackQueue, ^{
+                _dispatcher(rejectHandler);
+            });
         }
         [_resolveHandlers removeAllObjects];
         [_rejectHandlers removeAllObjects];

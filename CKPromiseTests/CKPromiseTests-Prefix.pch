@@ -24,6 +24,7 @@
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #import <XCTest/XCTest.h>
+#import <CoreData/CoreData.h>
 #include <sys/time.h>
 #include "CKPromise.h"
 
@@ -44,4 +45,5 @@ while((condition) && microtime() - start < timeout){\
 @interface CKPromiseTestsBase : XCTestCase {
     CKPromise *promise;
 }
+- (NSManagedObjectContext*)managedContext;
 @end

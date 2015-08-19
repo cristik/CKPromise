@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0F2EB2FB1B56D7EF006C3A8C /* CKPromisePerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F2EB2FA1B56D7EF006C3A8C /* CKPromisePerformanceTests.m */; };
 		0F2EB2FE1B570649006C3A8C /* CKPromiseTestsBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */; };
+		0F744D481B83A13E00C7F99F /* ckpromisetests.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0F744D461B83A13E00C7F99F /* ckpromisetests.xcdatamodeld */; };
 		0FCC9B6019FF245A00292330 /* CKPromiseCallbacksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */; };
 		0FCC9B6319FF27C900292330 /* CKPromiseAggregateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */; };
 		0FD801EE1B276220007F9B3B /* CKPromiseDispatcherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD801ED1B276220007F9B3B /* CKPromiseDispatcherTests.m */; };
@@ -34,6 +35,7 @@
 		0F2EB2FA1B56D7EF006C3A8C /* CKPromisePerformanceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromisePerformanceTests.m; sourceTree = "<group>"; };
 		0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseTestsBase.m; sourceTree = "<group>"; };
 		0F2EB2FF1B5706D5006C3A8C /* CKPromise.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CKPromise.podspec; sourceTree = "<group>"; };
+		0F744D471B83A13E00C7F99F /* ckpromisetests.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ckpromisetests.xcdatamodel; sourceTree = "<group>"; };
 		0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseCallbacksTests.m; sourceTree = "<group>"; };
 		0FCC9B6119FF24BD00292330 /* CKPromiseTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CKPromiseTests-Prefix.pch"; sourceTree = "<group>"; };
 		0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseAggregateTests.m; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				AA4D463C19C8AB470010D0EE /* InfoPlist.strings */,
 				0FCC9B6119FF24BD00292330 /* CKPromiseTests-Prefix.pch */,
 				0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */,
+				0F744D461B83A13E00C7F99F /* ckpromisetests.xcdatamodeld */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -272,6 +275,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0FCC9B6319FF27C900292330 /* CKPromiseAggregateTests.m in Sources */,
+				0F744D481B83A13E00C7F99F /* ckpromisetests.xcdatamodeld in Sources */,
 				0FD801EE1B276220007F9B3B /* CKPromiseDispatcherTests.m in Sources */,
 				0FCC9B6019FF245A00292330 /* CKPromiseCallbacksTests.m in Sources */,
 				AA4D464119C8AB470010D0EE /* CKPromiseSpecsTests.m in Sources */,
@@ -449,6 +453,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		0F744D461B83A13E00C7F99F /* ckpromisetests.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				0F744D471B83A13E00C7F99F /* ckpromisetests.xcdatamodel */,
+			);
+			currentVersion = 0F744D471B83A13E00C7F99F /* ckpromisetests.xcdatamodel */;
+			path = ckpromisetests.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = AA4D461619C8AB460010D0EE /* Project object */;
 }

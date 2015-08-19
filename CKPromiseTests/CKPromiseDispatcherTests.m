@@ -90,7 +90,7 @@
         block();
     }];
     __block BOOL callbackCalled = NO;
-    promise.then(^{
+    promise.queuedThen(dispatch_get_main_queue(), ^{
         callbackCalled = YES;
     }, nil);
     [promise resolve: nil];
@@ -126,5 +126,53 @@
     [promise reject:@12345];
     wait(counter != 2, 0.02);
     XCTAssertEqual(counter, 2);
+}
+
+- (void)test_addingCallbacksFromMultipleQueuesWorksAsExpected {
+    __block int counter = 0;\
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        for(int i=0;i<10000;i++) {
+            promise.then(^{
+                counter++;
+            }, nil);
+        }
+    });
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [promise resolve:@1];
+    });
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        for(int i=0;i<10000;i++) {
+            promise.then(^{
+                counter++;
+            }, nil);
+        }
+    });
+    wait(counter < 20000, 0.5);
+    XCTAssertEqual(counter, 20000);
+}
+
+- (void)test_CoreData_Dispatcher {
+    NSManagedObjectContext *ctx = self.managedContext;
+    __block NSManagedObjectID *personId = nil;
+    __block dispatch_queue_t queue = nil;
+    promise = [CKPromise promiseWithDispatcher:^(dispatch_block_t block) {
+        [ctx performBlock:block];
+    }];
+    promise.then(^(NSManagedObject *p){
+        queue = dispatch_get_current_queue();
+        personId = p.objectID;
+    }, nil);
+    
+    [ctx performBlock:^{
+        NSManagedObject *p = [NSEntityDescription insertNewObjectForEntityForName:@"Person"
+                                                           inManagedObjectContext: ctx];
+        [p setValue:@"name1" forKey:@"name"];
+        [promise resolve: p];
+    }];
+    
+    wait(!personId, 0.02);
+    XCTAssertNotNil(personId);
+    XCTAssertFalse(queue == nil);
+    XCTAssertNotEqual(queue, dispatch_get_current_queue());
 }
 @end
