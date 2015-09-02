@@ -543,6 +543,7 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
         switch([blockSignature getArgumentTypeAtIndex:1][0]) {
             case 'c':
             case 'C':
+            case 'B':
                 buildBlock(char, charValue)
             case 'i':
             case 'I':
@@ -561,7 +562,15 @@ typedef NS_ENUM(NSUInteger, CKPromiseState) {
             case 'd':
                 buildBlock(double, doubleValue)
             case '@':
+            case '#':
                 buildBlock(id, self)
+            // the following types are not currently supported
+            case '*':
+            case ':':
+            case '[':
+            case '{':
+            case 'b':
+            case '^':
             default:
                 break;
                 

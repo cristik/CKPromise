@@ -101,6 +101,32 @@
     XCTAssertEqualObjects(resolveValue, @15, @"Incorrect resolve value");
 }
 
+- (void)test_acceptsResolveHandlerVoidBOOL{
+    __block BOOL handlerExecuted = NO;
+    __block BOOL resolveValue = NO;
+    promise.success(^(BOOL val){
+        handlerExecuted = YES;
+        resolveValue = val;
+    });
+    [promise resolve:@15];
+    wait(!handlerExecuted, 0.02);
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertTrue(resolveValue, @"Incorrect resolve value");
+}
+
+- (void)test_acceptsResolveHandlerVoidClass{
+    __block BOOL handlerExecuted = NO;
+    __block Class resolveValue = NO;
+    promise.success(^(Class val){
+        handlerExecuted = YES;
+        resolveValue = val;
+    });
+    [promise resolve:XCTestCase.class];
+    wait(!handlerExecuted, 0.02);
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertEqualObjects(resolveValue, XCTestCase.class, @"Incorrect resolve value");
+}
+
 - (void)test_acceptsResolveHandlerVoidNSNumber{
     __block BOOL handlerExecuted = NO;
     __block id resolveValue = nil;
@@ -153,6 +179,34 @@
     wait(!handlerExecuted, 0.02);
     XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
     XCTAssertEqualObjects(resolveValue, @16, @"Incorrect resolve value");
+}
+
+- (void)test_acceptsResolveHandlerIdBOOL{
+    __block BOOL handlerExecuted = NO;
+    __block BOOL resolveValue = NO;
+    promise.success(^id(BOOL val){
+        handlerExecuted = YES;
+        resolveValue = val;
+        return nil;
+    });
+    [promise resolve:@16];
+    wait(!handlerExecuted, 0.02);
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertTrue(resolveValue, @"Incorrect resolve value");
+}
+
+- (void)test_acceptsResolveHandlerIdClass{
+    __block BOOL handlerExecuted = NO;
+    __block Class resolveValue = NO;
+    promise.success(^id(Class val){
+        handlerExecuted = YES;
+        resolveValue = val;
+        return nil;
+    });
+    [promise resolve:NSString.class];
+    wait(!handlerExecuted, 0.02);
+    XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
+    XCTAssertEqualObjects(resolveValue, NSString.class, @"Incorrect resolve value");
 }
 
 - (void)test_acceptsRejectHandlerNSRectId{
