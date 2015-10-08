@@ -92,62 +92,6 @@
     XCTAssertEqual(callbackQueue, queue);
 }
 
-- (void)test_syncDispatcherDoesntDealock {
-    promise = [CKPromise promiseWithDispatcher:^(dispatch_block_t block) {
-        block();
-    }];
-    __block BOOL callbackCalled = NO;
-    promise.then(^{
-        callbackCalled = YES;
-    }, nil);
-    [promise resolve: nil];
-    wait(!callbackCalled, 0.02);
-    XCTAssertTrue(callbackCalled);
-}
-
-- (void)test_syncDispatcherStillExecutesAfterTheCurrentScope {
-    promise = [CKPromise promiseWithDispatcher:^(dispatch_block_t block) {
-        block();
-    }];
-    __block BOOL callbackCalled = NO;
-    promise.queuedThen(dispatch_get_main_queue(), ^{
-        callbackCalled = YES;
-    }, nil);
-    [promise resolve: nil];
-    XCTAssertFalse(callbackCalled);
-}
-
-- (void)test_chainedPromise_resolvesWithTheSameDispatcher {
-    __block int counter = 0;
-    promise = [CKPromise promiseWithDispatcher:^(dispatch_block_t block) {
-        counter++;
-        block();
-    }];
-    CKPromise *chainedPromise = promise.then(nil, nil);
-    chainedPromise.then(^{
-
-    }, nil);
-    [promise resolve:@12345];
-    wait(counter != 2, 0.02);
-    XCTAssertEqual(counter, 2);
-}
-
-- (void)test_chainedPromise_rejectsWithTheSameDispatcher {
-    __block int counter = 0;
-    promise = [CKPromise promiseWithDispatcher:^(dispatch_block_t block) {
-        counter++;
-        block();
-    }];
-    CKPromise *chainedPromise = promise.then(nil, ^{
-        return [CKPromise rejected:@123];
-    });
-    chainedPromise.then(nil, ^{
-    });
-    [promise reject:@12345];
-    wait(counter != 2, 0.02);
-    XCTAssertEqual(counter, 2);
-}
-
 - (void)test_addingCallbacksFromMultipleQueuesWorksAsExpected {
     __block int counter = 0;\
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -171,31 +115,4 @@
     XCTAssertEqual(counter, 20000);
 }
 
-- (void)test_CoreData_Dispatcher {
-    NSManagedObjectContext *ctx = self.managedContext;
-    __block NSManagedObjectID *personId = nil;
-    __block dispatch_queue_t callbackQueue = nil;
-    __block dispatch_queue_t ctxQueue = nil;
-    
-    promise = [CKPromise promiseWithDispatcher:^(dispatch_block_t block) {
-        [ctx performBlock:block];
-    }];
-    
-    promise.then(^(NSManagedObject *p){
-        callbackQueue = dispatch_get_current_queue();
-        personId = p.objectID;
-    }, nil);
-    
-    [ctx performBlock:^{
-        ctxQueue = dispatch_get_current_queue();
-        NSManagedObject *p = [NSEntityDescription insertNewObjectForEntityForName:@"Person"
-                                                           inManagedObjectContext: ctx];
-        [p setValue:@"name1" forKey:@"name"];
-        [promise resolve: p];
-    }];
-    
-    wait(!personId, 0.02);
-    XCTAssertNotNil(personId);
-    XCTAssertEqual(callbackQueue, ctxQueue);
-}
 @end

@@ -12,6 +12,8 @@
 		0F744D481B83A13E00C7F99F /* ckpromisetests.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0F744D461B83A13E00C7F99F /* ckpromisetests.xcdatamodeld */; };
 		0FCC9B6019FF245A00292330 /* CKPromiseCallbacksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */; };
 		0FCC9B6319FF27C900292330 /* CKPromiseAggregateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */; };
+		0FD4E85E1BBC468F00DB98DA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD4E85D1BBC468F00DB98DA /* main.m */; };
+		0FD4E8621BBC469A00DB98DA /* CKPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.m */; settings = {ASSET_TAGS = (); }; };
 		0FD801EE1B276220007F9B3B /* CKPromiseDispatcherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD801ED1B276220007F9B3B /* CKPromiseDispatcherTests.m */; };
 		AA4D462219C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
 		AA4D462C19C8AB470010D0EE /* CKPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.m */; };
@@ -31,6 +33,18 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		0FD4E8591BBC468F00DB98DA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0F2EB2FA1B56D7EF006C3A8C /* CKPromisePerformanceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromisePerformanceTests.m; sourceTree = "<group>"; };
 		0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseTestsBase.m; sourceTree = "<group>"; };
@@ -39,6 +53,8 @@
 		0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseCallbacksTests.m; sourceTree = "<group>"; };
 		0FCC9B6119FF24BD00292330 /* CKPromiseTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CKPromiseTests-Prefix.pch"; sourceTree = "<group>"; };
 		0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseAggregateTests.m; sourceTree = "<group>"; };
+		0FD4E85B1BBC468F00DB98DA /* CKPromiseExample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CKPromiseExample; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FD4E85D1BBC468F00DB98DA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0FD801ED1B276220007F9B3B /* CKPromiseDispatcherTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseDispatcherTests.m; sourceTree = "<group>"; };
 		AA4D461E19C8AB460010D0EE /* libCKPromise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCKPromise.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4D462119C8AB470010D0EE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -55,6 +71,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0FD4E8581BBC468F00DB98DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA4D461B19C8AB460010D0EE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -75,12 +98,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0FD4E85C1BBC468F00DB98DA /* CKPromiseExample */ = {
+			isa = PBXGroup;
+			children = (
+				0FD4E85D1BBC468F00DB98DA /* main.m */,
+			);
+			path = CKPromiseExample;
+			sourceTree = "<group>";
+		};
 		AA4D461519C8AB460010D0EE = {
 			isa = PBXGroup;
 			children = (
 				0F2EB2FF1B5706D5006C3A8C /* CKPromise.podspec */,
 				AA4D462719C8AB470010D0EE /* CKPromise */,
 				AA4D463919C8AB470010D0EE /* CKPromiseTests */,
+				0FD4E85C1BBC468F00DB98DA /* CKPromiseExample */,
 				AA4D462019C8AB460010D0EE /* Frameworks */,
 				AA4D461F19C8AB460010D0EE /* Products */,
 			);
@@ -91,6 +123,7 @@
 			children = (
 				AA4D461E19C8AB460010D0EE /* libCKPromise.a */,
 				AA4D463219C8AB470010D0EE /* CKPromiseTests.xctest */,
+				0FD4E85B1BBC468F00DB98DA /* CKPromiseExample */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -170,6 +203,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		0FD4E85A1BBC468F00DB98DA /* CKPromiseExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0FD4E8611BBC468F00DB98DA /* Build configuration list for PBXNativeTarget "CKPromiseExample" */;
+			buildPhases = (
+				0FD4E8571BBC468F00DB98DA /* Sources */,
+				0FD4E8581BBC468F00DB98DA /* Frameworks */,
+				0FD4E8591BBC468F00DB98DA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CKPromiseExample;
+			productName = CKPromiseExample;
+			productReference = 0FD4E85B1BBC468F00DB98DA /* CKPromiseExample */;
+			productType = "com.apple.product-type.tool";
+		};
 		AA4D461D19C8AB460010D0EE /* CKPromise */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AA4D464419C8AB470010D0EE /* Build configuration list for PBXNativeTarget "CKPromise" */;
@@ -215,6 +265,11 @@
 				LastTestingUpgradeCheck = 0610;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Cristik;
+				TargetAttributes = {
+					0FD4E85A1BBC468F00DB98DA = {
+						CreatedOnToolsVersion = 7.0;
+					};
+				};
 			};
 			buildConfigurationList = AA4D461919C8AB460010D0EE /* Build configuration list for PBXProject "CKPromise" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -230,6 +285,7 @@
 			targets = (
 				AA4D461D19C8AB460010D0EE /* CKPromise */,
 				AA4D463119C8AB470010D0EE /* CKPromiseTests */,
+				0FD4E85A1BBC468F00DB98DA /* CKPromiseExample */,
 			);
 		};
 /* End PBXProject section */
@@ -262,6 +318,15 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0FD4E8571BBC468F00DB98DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FD4E85E1BBC468F00DB98DA /* main.m in Sources */,
+				0FD4E8621BBC469A00DB98DA /* CKPromise.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA4D461A19C8AB460010D0EE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -306,6 +371,49 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		0FD4E85F1BBC468F00DB98DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0FD4E8601BBC468F00DB98DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		AA4D464219C8AB470010D0EE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -425,6 +533,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0FD4E8611BBC468F00DB98DA /* Build configuration list for PBXNativeTarget "CKPromiseExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FD4E85F1BBC468F00DB98DA /* Debug */,
+				0FD4E8601BBC468F00DB98DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		AA4D461919C8AB460010D0EE /* Build configuration list for PBXProject "CKPromise" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

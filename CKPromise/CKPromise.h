@@ -27,11 +27,6 @@
 #import <Foundation/Foundation.h>
 
 /**
-  * Promise resolution callback scheduler
-  */
-typedef void(^CKPromiseDispatcher)(dispatch_block_t block);
-
-/**
   * A promise represents the eventual result of an asynchronous operation. The
   * primary way of interacting with a promise is through its "then" method, 
   * which registers callbacks to receive either a promise’s eventual value or 
@@ -68,17 +63,9 @@ typedef void(^CKPromiseDispatcher)(dispatch_block_t block);
 
 /**
   * Designated initializer. Returns a pending promise. Call resolve or reject to 
-  * change the promise state. Callbacks are scheduled on the main queue.
+  * change the promise state.
   */
-+ (CKPromise*)promise;
-
-
-/**
-  * Returns a promise that dispatches the resolution handlers via the custom
-  * provided block. Useful when creating custom type of promises
-  */
-+ (CKPromise*)promiseWithDispatcher:(CKPromiseDispatcher)dispatcher;
-- (instancetype)initWithDispatcher:(CKPromiseDispatcher)dispatcher;
++ (CKPromise* __nonnull)promise;
 
 /** 
   * A promise provides a "then" method to access its current or eventual value 
@@ -134,13 +121,13 @@ typedef void(^CKPromiseDispatcher)(dispatch_block_t block);
   *   (handler that accepts two or more values, for promises that resolve with 
   *    multiple values)
   */
-- (CKPromise*(^)(id resolveHandler, id rejectHandler))then;
-- (CKPromise*)then:(id)resolveHandler;
-- (CKPromise*)then:(id)resolveHandler :(id)rejectHandler;
+- (CKPromise* __nonnull (^__nonnull)(id __nullable resolveHandler, id __nullable rejectHandler))then;
+- (CKPromise* __nonnull)then:(id __nonnull )resolveHandler;
+- (CKPromise* __nonnull)then:(id __nullable)resolveHandler :(id __nullable)rejectHandler;
 
-- (CKPromise*(^)(dispatch_queue_t queue, id resolveHandler, id rejectHandler))queuedThen;
-- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler;
-- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler;
+- (CKPromise* __nonnull(^__nonnull)(dispatch_queue_t __nonnull queue, id __nullable resolveHandler, id __nullable rejectHandler))queuedThen;
+- (CKPromise* __nonnull)queuedThen:(dispatch_queue_t __nonnull)queue :(id __nonnull)resolveHandler;
+- (CKPromise* __nonnull)queuedThen:(dispatch_queue_t __nonnull)queue :(id __nullable)resolveHandler :(id __nullable)rejectHandler;
 
 /**
   * Resolves the promise with the provided value
@@ -160,24 +147,12 @@ typedef void(^CKPromiseDispatcher)(dispatch_block_t block);
   *
   * - If x is not a promise, resolve promise with x.
   */
-- (void)resolve:(id)value;
-
-/**
-  * The variadic variant for promises that resolve with multiple values
-  * Altough this could also be achieved by resolving the promise with a NSArray,
-  * this approach allows the developer to directly cast to the desired value
-  */
-- (void)resolveWith:(id)value, ... NS_REQUIRES_NIL_TERMINATION;
+- (void)resolve:(id __nullable)value;
 
 /**
   * Rejects the promise with the provided value
   */
-- (void)reject:(id)reason;
-
-/**
-  * Rejects the promise with multiple values.
-  */
-- (void)rejectWith:(id)reason, ... NS_REQUIRES_NIL_TERMINATION;
+- (void)reject:(id __nullable)reason;
 
 @end
 
@@ -186,12 +161,12 @@ typedef void(^CKPromiseDispatcher)(dispatch_block_t block);
 /**
   * Returns a resolved promise
   */
-+ (CKPromise*)resolved:(id)value;
++ (CKPromise* __nonnull)resolved:(id __nullable)value;
 
 /**
   * Returns a rejected promise
   */
-+ (CKPromise*)rejected:(id)reason;
++ (CKPromise* __nonnull)rejected:(id __nullable)reason;
 
 /**
   * Returns a promise that gets resolved when all input promises are resolved
@@ -201,25 +176,25 @@ typedef void(^CKPromiseDispatcher)(dispatch_block_t block);
   * of the first failed promise. In this scenario, the other promises are kept
   * running.
   */
-+ (CKPromise*)when:(NSArray*)promises;
++ (CKPromise* __nonnull)when:(NSArray* __nullable)promises;
 
 /**
   * Alias for then(resolveHandler, nil)
   */
-- (CKPromise*(^)(id resolveHandler))success;
-- (CKPromise*)success:(id)resolveHandler;
+- (CKPromise* __nonnull(^__nonnull)(id __nonnull resolveHandler))success;
+- (CKPromise* __nonnull)success:(id __nonnull)resolveHandler;
 
 /** 
   * Alias for then(nil, rejectHandler)
   */
-- (CKPromise*(^)(id rejectHandler))failure;
-- (CKPromise*)failure:(id)rejectHandler;
+- (CKPromise* __nonnull(^__nonnull)(id __nonnull rejectHandler))failure;
+- (CKPromise* __nonnull)failure:(id __nonnull)rejectHandler;
 
 /**
   * Alias for then(handler, handler)
   */
-- (CKPromise*(^)(id handler))always;
-- (CKPromise*)always:(id)handler;
+- (CKPromise*__nonnull(^__nonnull)(id __nonnull handler))always;
+- (CKPromise*__nonnull)always:(id __nonnull)handler;
 
 @end
 
