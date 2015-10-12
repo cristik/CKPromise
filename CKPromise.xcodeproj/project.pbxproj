@@ -10,13 +10,14 @@
 		0F2EB2FB1B56D7EF006C3A8C /* CKPromisePerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F2EB2FA1B56D7EF006C3A8C /* CKPromisePerformanceTests.m */; };
 		0F2EB2FE1B570649006C3A8C /* CKPromiseTestsBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */; };
 		0F744D481B83A13E00C7F99F /* ckpromisetests.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0F744D461B83A13E00C7F99F /* ckpromisetests.xcdatamodeld */; };
+		0F9338BB1BCA9CC500134BBD /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F9338BA1BCA9CC500134BBD /* libc++.tbd */; };
 		0FCC9B6019FF245A00292330 /* CKPromiseCallbacksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */; };
 		0FCC9B6319FF27C900292330 /* CKPromiseAggregateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */; };
 		0FD4E85E1BBC468F00DB98DA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD4E85D1BBC468F00DB98DA /* main.m */; };
-		0FD4E8621BBC469A00DB98DA /* CKPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.m */; settings = {ASSET_TAGS = (); }; };
+		0FD4E8621BBC469A00DB98DA /* CKPromise.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.mm */; };
 		0FD801EE1B276220007F9B3B /* CKPromiseDispatcherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD801ED1B276220007F9B3B /* CKPromiseDispatcherTests.m */; };
 		AA4D462219C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
-		AA4D462C19C8AB470010D0EE /* CKPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.m */; };
+		AA4D462C19C8AB470010D0EE /* CKPromise.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.mm */; };
 		AA4D463519C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
 		AA4D463819C8AB470010D0EE /* libCKPromise.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D461E19C8AB460010D0EE /* libCKPromise.a */; };
 		AA4D463E19C8AB470010D0EE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA4D463C19C8AB470010D0EE /* InfoPlist.strings */; };
@@ -50,6 +51,7 @@
 		0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseTestsBase.m; sourceTree = "<group>"; };
 		0F2EB2FF1B5706D5006C3A8C /* CKPromise.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CKPromise.podspec; sourceTree = "<group>"; };
 		0F744D471B83A13E00C7F99F /* ckpromisetests.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ckpromisetests.xcdatamodel; sourceTree = "<group>"; };
+		0F9338BA1BCA9CC500134BBD /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseCallbacksTests.m; sourceTree = "<group>"; };
 		0FCC9B6119FF24BD00292330 /* CKPromiseTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CKPromiseTests-Prefix.pch"; sourceTree = "<group>"; };
 		0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseAggregateTests.m; sourceTree = "<group>"; };
@@ -63,7 +65,7 @@
 		AA4D462619C8AB470010D0EE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		AA4D462919C8AB470010D0EE /* CKPromise-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CKPromise-Prefix.pch"; sourceTree = "<group>"; };
 		AA4D462A19C8AB470010D0EE /* CKPromise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKPromise.h; sourceTree = "<group>"; };
-		AA4D462B19C8AB470010D0EE /* CKPromise.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CKPromise.m; sourceTree = "<group>"; };
+		AA4D462B19C8AB470010D0EE /* CKPromise.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CKPromise.mm; sourceTree = "<group>"; };
 		AA4D463219C8AB470010D0EE /* CKPromiseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CKPromiseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4D463B19C8AB470010D0EE /* CKPromiseTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CKPromiseTests-Info.plist"; sourceTree = "<group>"; };
 		AA4D463D19C8AB470010D0EE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0F9338BB1BCA9CC500134BBD /* libc++.tbd in Frameworks */,
 				AA4D463519C8AB470010D0EE /* Cocoa.framework in Frameworks */,
 				AA4D463819C8AB470010D0EE /* libCKPromise.a in Frameworks */,
 			);
@@ -131,6 +134,7 @@
 		AA4D462019C8AB460010D0EE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0F9338BA1BCA9CC500134BBD /* libc++.tbd */,
 				AA4D462119C8AB470010D0EE /* Cocoa.framework */,
 				AA4D462319C8AB470010D0EE /* Other Frameworks */,
 			);
@@ -151,7 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				AA4D462A19C8AB470010D0EE /* CKPromise.h */,
-				AA4D462B19C8AB470010D0EE /* CKPromise.m */,
+				AA4D462B19C8AB470010D0EE /* CKPromise.mm */,
 				AA4D462819C8AB470010D0EE /* Supporting Files */,
 			);
 			path = CKPromise;
@@ -323,7 +327,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0FD4E85E1BBC468F00DB98DA /* main.m in Sources */,
-				0FD4E8621BBC469A00DB98DA /* CKPromise.m in Sources */,
+				0FD4E8621BBC469A00DB98DA /* CKPromise.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,7 +335,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA4D462C19C8AB470010D0EE /* CKPromise.m in Sources */,
+				AA4D462C19C8AB470010D0EE /* CKPromise.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -540,6 +544,7 @@
 				0FD4E8601BBC468F00DB98DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AA4D461919C8AB460010D0EE /* Build configuration list for PBXProject "CKPromise" */ = {
 			isa = XCConfigurationList;

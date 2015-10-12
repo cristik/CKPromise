@@ -24,6 +24,9 @@
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #import "CKPromise.h"
+#include <vector>
+
+using namespace std;
 
 struct CKBlockLiteral {
     void *isa;
@@ -83,8 +86,8 @@ typedef void (^CKPromiseCallbackWrapper)(id);
 @implementation CKPromise {
     CKPromiseState _state;
     id _valueOrReason;
-    NSMutableArray<CKPromiseCallbackWrapper> *_resolveHandlers;
-    NSMutableArray<CKPromiseCallbackWrapper> *_rejectHandlers;
+    vector<CKPromiseCallbackWrapper> _resolveHandlers;
+    vector<CKPromiseCallbackWrapper> _rejectHandlers;
 }
 
 static Class globalBlockClass = nil,
@@ -136,10 +139,10 @@ heapBlockClass = nil;
     
     for(CKPromise *promise in promises){
         [promise then:^id(id value) {
-            handler(promise->_valueOrReason, YES);
+            handler(value, YES);
             return nil;
         } :^id(id reason) {
-            handler(promise->_valueOrReason, NO);
+            handler(reason, NO);
             return nil;
         }];
     }
@@ -148,8 +151,6 @@ heapBlockClass = nil;
 
 - (instancetype)init {
     if(self = [super init]) {
-        _resolveHandlers = [[NSMutableArray alloc] init];
-        _rejectHandlers = [[NSMutableArray alloc] init];
         _state = CKPromiseStatePending;
     }
     return self;
@@ -221,8 +222,8 @@ heapBlockClass = nil;
         } else if(_state == CKPromiseStateRejected) {
             rejectHandlerWrapper(_valueOrReason);
         } else {
-            [_resolveHandlers addObject:successHandlerWrapper];
-            [_rejectHandlers addObject:rejectHandlerWrapper];
+            _resolveHandlers.push_back(successHandlerWrapper);
+            _rejectHandlers.push_back(rejectHandlerWrapper);
         }
     };
     return resultPromise;
@@ -290,11 +291,11 @@ heapBlockClass = nil;
         _state = CKPromiseStateResolved;
         _valueOrReason = value;
     
-        for(CKPromiseCallbackWrapper resolveHandler in _resolveHandlers){
+        for(CKPromiseCallbackWrapper resolveHandler: _resolveHandlers){
                 resolveHandler(_valueOrReason);
         }
-        [_resolveHandlers removeAllObjects];
-        [_rejectHandlers removeAllObjects];
+        _resolveHandlers.clear();
+        _rejectHandlers.clear();
     }
 }
 
@@ -305,11 +306,11 @@ heapBlockClass = nil;
         }
         _state = CKPromiseStateRejected;
         _valueOrReason = reason;
-        for(CKPromiseCallbackWrapper rejectHandler in _rejectHandlers) {
+        for(CKPromiseCallbackWrapper rejectHandler: _rejectHandlers) {
                 rejectHandler(_valueOrReason);
         }
-        [_resolveHandlers removeAllObjects];
-        [_rejectHandlers removeAllObjects];
+        _resolveHandlers.clear();
+        _rejectHandlers.clear();
     }
 }
 
@@ -329,7 +330,7 @@ heapBlockClass = nil;
     NSMethodSignature *signature = nil;
     
     if (flags & CKBlockDescriptionFlagsHasSignature) {
-        void *signatureLocation = blockRef->descriptor;
+        char *signatureLocation = (char*)blockRef->descriptor;
         signatureLocation += sizeof(unsigned long int);
         signatureLocation += sizeof(unsigned long int);
 
@@ -338,7 +339,7 @@ heapBlockClass = nil;
             signatureLocation += sizeof(void (*)(void *src));
         }
 
-        const char *sigStr = (*(const char **)signatureLocation);
+        const char *sigStr = *(char**)signatureLocation;
         signature = [NSMethodSignature signatureWithObjCTypes:sigStr];
     }
     return signature;
@@ -381,6 +382,19 @@ heapBlockClass = nil;
         break;\
 
         switch([blockSignature getArgumentTypeAtIndex:1][0]) {
+            case '@':
+            case '#':
+                if(blockReturnsVoid) {
+                    return ^id(id val) {
+                        ((void(^)(id))block)(val);
+                        return nil;
+                    };
+                } else if(blockReturnsObject) {
+                    return ^id(id val) {
+                        return ((id(^)(id))block)(val);
+                    };
+                }
+                break;
             case 'c':
             case 'C':
             case 'B':
@@ -401,19 +415,6 @@ heapBlockClass = nil;
                 buildBlock(float, floatValue)
             case 'd':
                 buildBlock(double, doubleValue)
-            case '@':
-            case '#':
-                if(blockReturnsVoid) {
-                    return ^id(id val) {
-                        ((void(^)(id))block)(val);
-                        return nil;
-                    };
-                } else if(blockReturnsObject) {
-                    return ^id(id val) {
-                        return ((id(^)(id))block)(val);
-                    };
-                }
-                break;
             // the following types are not currently supported
             case '*':
             case ':':
