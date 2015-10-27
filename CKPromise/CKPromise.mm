@@ -121,32 +121,21 @@ heapBlockClass = nil;
 + (CKPromise*)when:(NSArray*)promises {
     if(!promises.count) return [CKPromise resolved:nil];
     
-    CKPromise *promise = [self promise];
+    CKPromise *resultPromise = [self promise];
     NSMutableArray *values = [NSMutableArray arrayWithCapacity:promises.count];
     __block NSUInteger runningPromises = promises.count;
-
-    void(^handler)(id, BOOL) = ^(id valueOrReason, BOOL resolved) {
-        if(!resolved) {
-            [promise reject:valueOrReason];
-        } else {
-            runningPromises--;
-            [values addObject: valueOrReason ?: NSNull.null];
-            if(runningPromises == 0) {
-                [promise resolve:values];
-            }
-        }
-    };
     
     for(CKPromise *promise in promises){
         [promise then:^id(id value) {
-            handler(value, YES);
+            [values addObject:value ?: NSNull.null];
+            if(--runningPromises == 0) [resultPromise resolve:values];
             return nil;
         } :^id(id reason) {
-            handler(reason, NO);
+            [resultPromise reject: reason];
             return nil;
         }];
     }
-    return promise;
+    return resultPromise;
 }
 
 - (instancetype)init {

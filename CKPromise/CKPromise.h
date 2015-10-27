@@ -62,8 +62,7 @@
 @interface CKPromise: NSObject
 
 /**
-  * Designated initializer. Returns a pending promise. Call resolve or reject to 
-  * change the promise state.
+  * Returns a pending promise. Call resolve/reject to change the promise state.
   */
 + (CKPromise* __nonnull)promise;
 

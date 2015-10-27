@@ -58,6 +58,7 @@
 		0FD4E85B1BBC468F00DB98DA /* CKPromiseExample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CKPromiseExample; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FD4E85D1BBC468F00DB98DA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0FD801ED1B276220007F9B3B /* CKPromiseDispatcherTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseDispatcherTests.m; sourceTree = "<group>"; };
+		0FF0B8881BDFA8C00065B502 /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		AA4D461E19C8AB460010D0EE /* libCKPromise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCKPromise.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4D462119C8AB470010D0EE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		AA4D462419C8AB470010D0EE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -112,6 +113,7 @@
 		AA4D461519C8AB460010D0EE = {
 			isa = PBXGroup;
 			children = (
+				0FF0B8881BDFA8C00065B502 /* readme.md */,
 				0F2EB2FF1B5706D5006C3A8C /* CKPromise.podspec */,
 				AA4D462719C8AB470010D0EE /* CKPromise */,
 				AA4D463919C8AB470010D0EE /* CKPromiseTests */,
@@ -248,7 +250,6 @@
 				AA4D462D19C8AB470010D0EE /* Sources */,
 				AA4D462E19C8AB470010D0EE /* Frameworks */,
 				AA4D462F19C8AB470010D0EE /* Resources */,
-				AA4D463019C8AB470010D0EE /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -304,22 +305,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		AA4D463019C8AB470010D0EE /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0FD4E8571BBC468F00DB98DA /* Sources */ = {
