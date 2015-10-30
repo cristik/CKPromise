@@ -16,6 +16,8 @@
 		0FD4E85E1BBC468F00DB98DA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD4E85D1BBC468F00DB98DA /* main.m */; };
 		0FD4E8621BBC469A00DB98DA /* CKPromise.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.mm */; };
 		0FD801EE1B276220007F9B3B /* CKPromiseDispatcherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD801ED1B276220007F9B3B /* CKPromiseDispatcherTests.m */; };
+		0FF2A6801BE368610045A22A /* CHANGELOG.md in Sources */ = {isa = PBXBuildFile; fileRef = 0FF2A67E1BE368610045A22A /* CHANGELOG.md */; };
+		0FF2A6811BE368610045A22A /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 0FF2A67F1BE368610045A22A /* README.md */; };
 		AA4D462219C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
 		AA4D462C19C8AB470010D0EE /* CKPromise.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.mm */; };
 		AA4D463519C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
@@ -58,7 +60,8 @@
 		0FD4E85B1BBC468F00DB98DA /* CKPromiseExample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CKPromiseExample; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FD4E85D1BBC468F00DB98DA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0FD801ED1B276220007F9B3B /* CKPromiseDispatcherTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseDispatcherTests.m; sourceTree = "<group>"; };
-		0FF0B8881BDFA8C00065B502 /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
+		0FF2A67E1BE368610045A22A /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		0FF2A67F1BE368610045A22A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		AA4D461E19C8AB460010D0EE /* libCKPromise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCKPromise.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4D462119C8AB470010D0EE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		AA4D462419C8AB470010D0EE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -113,7 +116,8 @@
 		AA4D461519C8AB460010D0EE = {
 			isa = PBXGroup;
 			children = (
-				0FF0B8881BDFA8C00065B502 /* readme.md */,
+				0FF2A67E1BE368610045A22A /* CHANGELOG.md */,
+				0FF2A67F1BE368610045A22A /* README.md */,
 				0F2EB2FF1B5706D5006C3A8C /* CKPromise.podspec */,
 				AA4D462719C8AB470010D0EE /* CKPromise */,
 				AA4D463919C8AB470010D0EE /* CKPromiseTests */,
@@ -320,7 +324,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0FF2A6811BE368610045A22A /* README.md in Sources */,
 				AA4D462C19C8AB470010D0EE /* CKPromise.mm in Sources */,
+				0FF2A6801BE368610045A22A /* CHANGELOG.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
