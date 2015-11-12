@@ -26,7 +26,12 @@
 #import <XCTest/XCTest.h>
 #import <CoreData/CoreData.h>
 #include <sys/time.h>
+#ifdef USE_SWIFT_PROMISE
+#import "CKSwiftPromise-Swift.h"
+#define CKPromise CKSwiftPromise
+#else
 #include "CKPromise.h"
+#endif
 
 static inline double microtime(){
     struct timeval time;
@@ -45,5 +50,4 @@ while((condition) && microtime() - start < timeout){\
 @interface CKPromiseTestsBase : XCTestCase {
     CKPromise *promise;
 }
-- (NSManagedObjectContext*)managedContext;
 @end

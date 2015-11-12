@@ -498,7 +498,7 @@
     }, nil), @"Expected exception");
 }
 
-- (void)test_always_executes_resolveHandler{
+- (void)test_always_executes_ifResolved{
     __block BOOL handlerExecuted = NO;
     promise.always(^(){
         handlerExecuted = YES;
@@ -508,7 +508,7 @@
     XCTAssertTrue(handlerExecuted, @"Completion handler was not executed");
 }
 
-- (void)test_always_executes_rejectHandler{
+- (void)test_always_executes_ifRejected{
     __block BOOL handlerExecuted = NO;
     promise.always(^(){
         handlerExecuted = YES;

@@ -411,7 +411,7 @@
 - (void)test_resolve_transformResolvedInRejected {
     __block BOOL rejected  = NO;
     promise.then(^{
-        return [CKPromise rejected:nil];
+        return [CKPromise rejectedWith:nil];
     }, nil).then(nil,^{
         rejected = YES;
     });
@@ -423,7 +423,7 @@
 - (void)test_reject_transformRejectedInResolved {
     __block BOOL resolved  = NO;
     promise.then(nil, ^{
-        return [CKPromise resolved:nil];
+        return [CKPromise resolvedWith:nil];
     }).then(^{
         resolved = YES;
     }, nil);

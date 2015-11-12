@@ -59,6 +59,7 @@
   * cancelling the async operation should be handled by the NSURLConnection
   * instance, or by a manager if the url requests are managed by other objects.
   */
+NS_ASSUME_NONNULL_BEGIN
 @interface CKPromise: NSObject
 
 /**
@@ -120,13 +121,34 @@
   *   (handler that accepts two or more values, for promises that resolve with 
   *    multiple values)
   */
-- (CKPromise* __nonnull (^__nonnull)(id __nullable resolveHandler, id __nullable rejectHandler))then;
-- (CKPromise* __nonnull)then:(id __nonnull )resolveHandler;
-- (CKPromise* __nonnull)then:(id __nullable)resolveHandler :(id __nullable)rejectHandler;
 
-- (CKPromise* __nonnull(^__nonnull)(dispatch_queue_t __nonnull queue, id __nullable resolveHandler, id __nullable rejectHandler))queuedThen;
-- (CKPromise* __nonnull)queuedThen:(dispatch_queue_t __nonnull)queue :(id __nonnull)resolveHandler;
-- (CKPromise* __nonnull)queuedThen:(dispatch_queue_t __nonnull)queue :(id __nullable)resolveHandler :(id __nullable)rejectHandler;
+- (CKPromise* (^)(id _Nullable resolveHandler,
+                  id _Nullable rejectHandler))then;
+
+- (CKPromise* (^)(id _Nullable (^ _Nullable resolveHandler)(id _Nullable value),
+                  id _Nullable (^ _Nullable rejectHandler)(id _Nullable reason)))strictThen;
+
+- (CKPromise*)then:(id _Nullable)resolveHandler
+                  :(id _Nullable)rejectHandler;
+
+- (CKPromise*)strictThen:(id _Nullable (^ _Nullable)(id _Nullable value))resolveHandler
+                        :(id _Nullable (^ _Nullable)(id _Nullable reason))rejectHandler;
+
+- (CKPromise* (^)(dispatch_queue_t queue,
+                  id _Nullable resolveHandler,
+                  id _Nullable rejectHandler))queuedThen;
+
+- (CKPromise* (^)(dispatch_queue_t queue,
+                  id _Nullable (^ _Nullable resolveHandler)(id _Nullable value),
+                  id _Nullable (^ _Nullable rejectHandler)(id _Nullable reason)))queuedStrictThen;
+
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue
+                        :(id _Nullable)resolveHandler
+                        :(id _Nullable)rejectHandler;
+
+- (CKPromise*)queuedStrictThen:(dispatch_queue_t)queue
+                              :(id _Nullable (^ _Nullable)(id _Nullable value))resolveHandler
+                              :(id _Nullable (^ _Nullable)(id _Nullable reason))rejectHandler;
 
 /**
   * Resolves the promise with the provided value
@@ -146,12 +168,12 @@
   *
   * - If x is not a promise, resolve promise with x.
   */
-- (void)resolve:(id __nullable)value;
+- (void)resolve:(id _Nullable)value;
 
 /**
   * Rejects the promise with the provided value
   */
-- (void)reject:(id __nullable)reason;
+- (void)reject:(id _Nullable)reason;
 
 @end
 
@@ -160,12 +182,12 @@
 /**
   * Returns a resolved promise
   */
-+ (CKPromise* __nonnull)resolved:(id __nullable)value;
++ (CKPromise*)resolvedWith:(id _Nullable)value;
 
 /**
   * Returns a rejected promise
   */
-+ (CKPromise* __nonnull)rejected:(id __nullable)reason;
++ (CKPromise*)rejectedWith:(id _Nullable)reason;
 
 /**
   * Returns a promise that gets resolved when all input promises are resolved
@@ -175,25 +197,29 @@
   * of the first failed promise. In this scenario, the other promises are kept
   * running.
   */
-+ (CKPromise* __nonnull)when:(NSArray* __nullable)promises;
++ (CKPromise*)when:(NSArray* _Nullable)promises;
 
 /**
   * Alias for then(resolveHandler, nil)
   */
-- (CKPromise* __nonnull(^__nonnull)(id __nonnull resolveHandler))success;
-- (CKPromise* __nonnull)success:(id __nonnull)resolveHandler;
+- (CKPromise*(^)(id resolveHandler))success;
+- (CKPromise*(^)(id _Nullable (^ resolveHandler)(id _Nullable value)))strictSuccess;
+- (CKPromise*)success:(id)resolveHandler;
+- (CKPromise*)strictSuccess:(id _Nullable (^)(id _Nullable value))resolveHandler;
 
 /** 
   * Alias for then(nil, rejectHandler)
   */
-- (CKPromise* __nonnull(^__nonnull)(id __nonnull rejectHandler))failure;
-- (CKPromise* __nonnull)failure:(id __nonnull)rejectHandler;
+- (CKPromise*(^)(id rejectHandler))failure;
+- (CKPromise*(^)(id _Nullable (^ rejectHandler)(id _Nullable reason)))strictFailure;
+- (CKPromise*)failure:(id)rejectHandler;
+- (CKPromise*)strictfailure:(id _Nullable (^)(id _Nullable reason))rejectHandler;
 
 /**
   * Alias for then(handler, handler)
   */
-- (CKPromise*__nonnull(^__nonnull)(id __nonnull handler))always;
-- (CKPromise*__nonnull)always:(id __nonnull)handler;
+- (CKPromise*(^)(void (^ handler)()))always;
+- (CKPromise*)always:(void (^)())handler;
 
 @end
 
@@ -216,3 +242,4 @@
  */
 @interface CKInvalidHandlerException: NSException
 @end
+NS_ASSUME_NONNULL_END

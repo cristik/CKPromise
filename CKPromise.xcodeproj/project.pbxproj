@@ -9,15 +9,16 @@
 /* Begin PBXBuildFile section */
 		0F2EB2FB1B56D7EF006C3A8C /* CKPromisePerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F2EB2FA1B56D7EF006C3A8C /* CKPromisePerformanceTests.m */; };
 		0F2EB2FE1B570649006C3A8C /* CKPromiseTestsBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */; };
-		0F744D481B83A13E00C7F99F /* ckpromisetests.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0F744D461B83A13E00C7F99F /* ckpromisetests.xcdatamodeld */; };
 		0F9338BB1BCA9CC500134BBD /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F9338BA1BCA9CC500134BBD /* libc++.tbd */; };
 		0FCC9B6019FF245A00292330 /* CKPromiseCallbacksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */; };
 		0FCC9B6319FF27C900292330 /* CKPromiseAggregateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FCC9B6219FF27C900292330 /* CKPromiseAggregateTests.m */; };
 		0FD4E85E1BBC468F00DB98DA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD4E85D1BBC468F00DB98DA /* main.m */; };
 		0FD4E8621BBC469A00DB98DA /* CKPromise.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.mm */; };
 		0FD801EE1B276220007F9B3B /* CKPromiseDispatcherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD801ED1B276220007F9B3B /* CKPromiseDispatcherTests.m */; };
-		0FF2A6801BE368610045A22A /* CHANGELOG.md in Sources */ = {isa = PBXBuildFile; fileRef = 0FF2A67E1BE368610045A22A /* CHANGELOG.md */; };
-		0FF2A6811BE368610045A22A /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 0FF2A67F1BE368610045A22A /* README.md */; };
+		0FE76A2A1BE7C39A006A3FF4 /* CKSwiftPromise.h in Headers */ = {isa = PBXBuildFile; fileRef = 0FE76A291BE7C39A006A3FF4 /* CKSwiftPromise.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0FE76A301BE7C3C4006A3FF4 /* CKSwiftPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE76A2F1BE7C3C4006A3FF4 /* CKSwiftPromise.swift */; };
+		0FE76A311BE7C3DA006A3FF4 /* CKPromise.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.mm */; };
+		0FE76A321BE7C3ED006A3FF4 /* CKPromise.h in Headers */ = {isa = PBXBuildFile; fileRef = AA4D462A19C8AB470010D0EE /* CKPromise.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AA4D462219C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
 		AA4D462C19C8AB470010D0EE /* CKPromise.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4D462B19C8AB470010D0EE /* CKPromise.mm */; };
 		AA4D463519C8AB470010D0EE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4D462119C8AB470010D0EE /* Cocoa.framework */; };
@@ -49,10 +50,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0F08B2BE1BFAFCEE007C5DB9 /* CKSwiftPromise.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; path = CKSwiftPromise.podspec; sourceTree = "<group>"; };
 		0F2EB2FA1B56D7EF006C3A8C /* CKPromisePerformanceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromisePerformanceTests.m; sourceTree = "<group>"; };
 		0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseTestsBase.m; sourceTree = "<group>"; };
-		0F2EB2FF1B5706D5006C3A8C /* CKPromise.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CKPromise.podspec; sourceTree = "<group>"; };
-		0F744D471B83A13E00C7F99F /* ckpromisetests.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ckpromisetests.xcdatamodel; sourceTree = "<group>"; };
+		0F2EB2FF1B5706D5006C3A8C /* CKPromise.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; path = CKPromise.podspec; sourceTree = "<group>"; };
 		0F9338BA1BCA9CC500134BBD /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		0FCC9B5F19FF245A00292330 /* CKPromiseCallbacksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseCallbacksTests.m; sourceTree = "<group>"; };
 		0FCC9B6119FF24BD00292330 /* CKPromiseTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CKPromiseTests-Prefix.pch"; sourceTree = "<group>"; };
@@ -60,6 +61,10 @@
 		0FD4E85B1BBC468F00DB98DA /* CKPromiseExample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CKPromiseExample; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FD4E85D1BBC468F00DB98DA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0FD801ED1B276220007F9B3B /* CKPromiseDispatcherTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CKPromiseDispatcherTests.m; sourceTree = "<group>"; };
+		0FE76A271BE7C39A006A3FF4 /* CKSwiftPromise.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CKSwiftPromise.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FE76A291BE7C39A006A3FF4 /* CKSwiftPromise.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CKSwiftPromise.h; sourceTree = "<group>"; };
+		0FE76A2B1BE7C39A006A3FF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0FE76A2F1BE7C3C4006A3FF4 /* CKSwiftPromise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKSwiftPromise.swift; sourceTree = "<group>"; };
 		0FF2A67E1BE368610045A22A /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		0FF2A67F1BE368610045A22A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		AA4D461E19C8AB460010D0EE /* libCKPromise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCKPromise.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +83,13 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		0FD4E8581BBC468F00DB98DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0FE76A231BE7C39A006A3FF4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -113,15 +125,27 @@
 			path = CKPromiseExample;
 			sourceTree = "<group>";
 		};
+		0FE76A281BE7C39A006A3FF4 /* CKSwiftPromise */ = {
+			isa = PBXGroup;
+			children = (
+				0FE76A2F1BE7C3C4006A3FF4 /* CKSwiftPromise.swift */,
+				0FE76A291BE7C39A006A3FF4 /* CKSwiftPromise.h */,
+				0FE76A2B1BE7C39A006A3FF4 /* Info.plist */,
+			);
+			path = CKSwiftPromise;
+			sourceTree = "<group>";
+		};
 		AA4D461519C8AB460010D0EE = {
 			isa = PBXGroup;
 			children = (
 				0FF2A67E1BE368610045A22A /* CHANGELOG.md */,
 				0FF2A67F1BE368610045A22A /* README.md */,
 				0F2EB2FF1B5706D5006C3A8C /* CKPromise.podspec */,
+				0F08B2BE1BFAFCEE007C5DB9 /* CKSwiftPromise.podspec */,
 				AA4D462719C8AB470010D0EE /* CKPromise */,
 				AA4D463919C8AB470010D0EE /* CKPromiseTests */,
 				0FD4E85C1BBC468F00DB98DA /* CKPromiseExample */,
+				0FE76A281BE7C39A006A3FF4 /* CKSwiftPromise */,
 				AA4D462019C8AB460010D0EE /* Frameworks */,
 				AA4D461F19C8AB460010D0EE /* Products */,
 			);
@@ -133,6 +157,7 @@
 				AA4D461E19C8AB460010D0EE /* libCKPromise.a */,
 				AA4D463219C8AB470010D0EE /* CKPromiseTests.xctest */,
 				0FD4E85B1BBC468F00DB98DA /* CKPromiseExample */,
+				0FE76A271BE7C39A006A3FF4 /* CKSwiftPromise.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -195,7 +220,6 @@
 				AA4D463C19C8AB470010D0EE /* InfoPlist.strings */,
 				0FCC9B6119FF24BD00292330 /* CKPromiseTests-Prefix.pch */,
 				0F2EB2FD1B570649006C3A8C /* CKPromiseTestsBase.m */,
-				0F744D461B83A13E00C7F99F /* ckpromisetests.xcdatamodeld */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -203,6 +227,15 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		0FE76A241BE7C39A006A3FF4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FE76A321BE7C3ED006A3FF4 /* CKPromise.h in Headers */,
+				0FE76A2A1BE7C39A006A3FF4 /* CKSwiftPromise.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA4D461C19C8AB460010D0EE /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -229,6 +262,24 @@
 			productName = CKPromiseExample;
 			productReference = 0FD4E85B1BBC468F00DB98DA /* CKPromiseExample */;
 			productType = "com.apple.product-type.tool";
+		};
+		0FE76A261BE7C39A006A3FF4 /* CKSwiftPromise */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0FE76A2C1BE7C39A006A3FF4 /* Build configuration list for PBXNativeTarget "CKSwiftPromise" */;
+			buildPhases = (
+				0FE76A221BE7C39A006A3FF4 /* Sources */,
+				0FE76A231BE7C39A006A3FF4 /* Frameworks */,
+				0FE76A241BE7C39A006A3FF4 /* Headers */,
+				0FE76A251BE7C39A006A3FF4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CKSwiftPromise;
+			productName = CKSwiftPromise;
+			productReference = 0FE76A271BE7C39A006A3FF4 /* CKSwiftPromise.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 		AA4D461D19C8AB460010D0EE /* CKPromise */ = {
 			isa = PBXNativeTarget;
@@ -271,12 +322,17 @@
 		AA4D461619C8AB460010D0EE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0710;
 				LastTestingUpgradeCheck = 0610;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Cristik;
 				TargetAttributes = {
 					0FD4E85A1BBC468F00DB98DA = {
 						CreatedOnToolsVersion = 7.0;
+					};
+					0FE76A261BE7C39A006A3FF4 = {
+						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = F256K9XGKC;
 					};
 				};
 			};
@@ -295,11 +351,19 @@
 				AA4D461D19C8AB460010D0EE /* CKPromise */,
 				AA4D463119C8AB470010D0EE /* CKPromiseTests */,
 				0FD4E85A1BBC468F00DB98DA /* CKPromiseExample */,
+				0FE76A261BE7C39A006A3FF4 /* CKSwiftPromise */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0FE76A251BE7C39A006A3FF4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA4D462F19C8AB470010D0EE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -320,13 +384,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0FE76A221BE7C39A006A3FF4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FE76A301BE7C3C4006A3FF4 /* CKSwiftPromise.swift in Sources */,
+				0FE76A311BE7C3DA006A3FF4 /* CKPromise.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA4D461A19C8AB460010D0EE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0FF2A6811BE368610045A22A /* README.md in Sources */,
 				AA4D462C19C8AB470010D0EE /* CKPromise.mm in Sources */,
-				0FF2A6801BE368610045A22A /* CHANGELOG.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,7 +406,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0FCC9B6319FF27C900292330 /* CKPromiseAggregateTests.m in Sources */,
-				0F744D481B83A13E00C7F99F /* ckpromisetests.xcdatamodeld in Sources */,
 				0FD801EE1B276220007F9B3B /* CKPromiseDispatcherTests.m in Sources */,
 				0FCC9B6019FF245A00292330 /* CKPromiseCallbacksTests.m in Sources */,
 				AA4D464119C8AB470010D0EE /* CKPromiseSpecsTests.m in Sources */,
@@ -406,6 +476,85 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		0FE76A2D1BE7C39A006A3FF4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = CKSwiftPromise/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cristik.CKSwiftPromise;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		0FE76A2E1BE7C39A006A3FF4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = CKSwiftPromise/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cristik.CKSwiftPromise;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -537,6 +686,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		0FE76A2C1BE7C39A006A3FF4 /* Build configuration list for PBXNativeTarget "CKSwiftPromise" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FE76A2D1BE7C39A006A3FF4 /* Debug */,
+				0FE76A2E1BE7C39A006A3FF4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AA4D461919C8AB460010D0EE /* Build configuration list for PBXProject "CKPromise" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -565,19 +723,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		0F744D461B83A13E00C7F99F /* ckpromisetests.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				0F744D471B83A13E00C7F99F /* ckpromisetests.xcdatamodel */,
-			);
-			currentVersion = 0F744D471B83A13E00C7F99F /* ckpromisetests.xcdatamodel */;
-			path = ckpromisetests.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = AA4D461619C8AB460010D0EE /* Project object */;
 }

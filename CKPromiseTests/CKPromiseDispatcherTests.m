@@ -30,7 +30,7 @@
 
 - (void)test_defaultPromiseExecutesResolveOnMainQueue {
     __block dispatch_queue_t queue = nil;
-    [promise then:^{
+    [promise success:^{
         queue = dispatch_get_current_queue();
     }];
     [promise resolve:@17];

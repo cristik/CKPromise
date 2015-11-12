@@ -1,8 +1,8 @@
 Pod::Spec.new do |s|
 
-  s.name            = 'CKPromise'
+  s.name            = 'CKSwiftPromise'
   s.version         = '1.5.0'
-  s.summary         = 'An implementation of Promises/A+ specification for ObjectiveC'
+  s.summary         = 'Swift facade for CKPromise'
   s.homepage        = 'https://github.com/cristik/CKPromise'
   s.source          = { :git => 'https://github.com/cristik/CKPromise.git', :tag => s.version.to_s }
   s.license         = { :type => 'MIT', :file => 'License.txt' }
@@ -13,8 +13,9 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
   s.osx.deployment_target = '10.10'
-
-  s.libraries = 'c++'
   
-  s.source_files = 'CKPromise/**/*.{h,m,mm}'
+  s.dependencies = {'CKPromise' => '>= 1.5.0'}
+  
+  s.source_files = 'CKSwiftPromise/*.{swift}'
 end
+

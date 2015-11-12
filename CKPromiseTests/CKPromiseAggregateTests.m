@@ -32,13 +32,13 @@
     NSMutableArray *callbacksOrder = [NSMutableArray arrayWithCapacity:3];
     promise.success(^(id value){
         [callbacksOrder addObject:@1];
-        return [CKPromise resolved:@1];
+        return [CKPromise resolvedWith:@1];
     }).success(^(id value){
         [callbacksOrder addObject:@2];
-        return [CKPromise rejected:@2];
+        return [CKPromise rejectedWith:@2];
     }).success(^(id value){
         [callbacksOrder addObject:@3];
-        return [CKPromise resolved:@3];
+        return [CKPromise resolvedWith:@3];
     }).failure(^(){
         [callbacksOrder addObject:@4];
     });
@@ -96,8 +96,8 @@
 
 - (CKPromise*)alteredPromise{
     return promise.then(^id(int val){
-        if(val != 1) return [CKPromise rejected:@(val)];
-        else return [CKPromise resolved:@(val)];
+        if(val != 1) return [CKPromise rejectedWith:@(val)];
+        else return [CKPromise resolvedWith:@(val)];
     }, nil);
 }
 

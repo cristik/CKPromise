@@ -1,3 +1,7 @@
+## 1.5.0
+- Added Swift support, by adding a Swift framework and subspec
+- CKSwiftPromise is currently the name of the class that can be used in swift
+
 ## 1.4.6
 - Added CHANGELOG
 

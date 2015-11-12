@@ -106,20 +106,20 @@ heapBlockClass = nil;
     return [[self alloc] init];
 }
 
-+ (CKPromise*)resolved:(id)value {
++ (CKPromise*)resolvedWith:(id)value {
     CKPromise *promise = [self promise];
     [promise resolve:value];
     return promise;
 }
 
-+ (CKPromise*)rejected:(id)reason {
++ (CKPromise*)rejectedWith:(id)reason {
     CKPromise *promise = [self promise];
     [promise reject:reason];
     return promise;
 }
 
 + (CKPromise*)when:(NSArray*)promises {
-    if(!promises.count) return [CKPromise resolved:nil];
+    if(!promises.count) return [CKPromise resolvedWith:nil];
     
     CKPromise *resultPromise = [self promise];
     NSMutableArray *values = [NSMutableArray arrayWithCapacity:promises.count];
@@ -145,41 +145,66 @@ heapBlockClass = nil;
     return self;
 }
 
-- (CKPromise*(^)(id resolveHandler, id rejectHandler))then {
+- (CKPromise* (^)(id resolveHandler, id rejectHandler))then {
     return ^CKPromise*(id resolveHandler, id rejectHandler) {
-        return [self queuedThen:dispatch_get_main_queue() :resolveHandler :rejectHandler];
+        return [self strictThen:[CKPromise transformHandler:resolveHandler]
+                               :[CKPromise transformHandler:rejectHandler]];
     };
 }
 
-- (CKPromise*)then:(id)resolveHandler {
-    return [self then:resolveHandler :nil];
+- (CKPromise* (^)(id(^resolveHandler)(id value), id(^rejectHandler)(id reason)))strictThen {
+    return ^CKPromise*(id resolveHandler, id rejectHandler) {
+        return [self strictThen:resolveHandler
+                               :rejectHandler];
+    };
 }
 
 - (CKPromise*)then:(id)resolveHandler :(id)rejectHandler {
-    return [self queuedThen:dispatch_get_main_queue() :resolveHandler :rejectHandler];
+    return [self strictThen:[CKPromise transformHandler:resolveHandler]
+                           :[CKPromise transformHandler:rejectHandler]];
 }
 
-- (CKPromise*(^)(dispatch_queue_t queue, id resolveHandler, id rejectHandler))queuedThen
-{
+- (CKPromise*)strictThen:(id(^)(id value))resolveHandler :(id(^)(id reason))rejectHandler {
+    return [self queuedStrictThen:dispatch_get_main_queue()
+                                 :resolveHandler
+                                 :rejectHandler];
+}
+
+- (CKPromise* (^)(dispatch_queue_t queue, id resolveHandler, id rejectHandler))queuedThen {
     return ^CKPromise*(dispatch_queue_t queue, id resolveHandler, id rejectHandler) {
-        return [self queuedThen:queue :resolveHandler :rejectHandler];
+        return [self queuedStrictThen:queue
+                                     :[CKPromise transformHandler:resolveHandler]
+                                     :[CKPromise transformHandler:rejectHandler]];
     };
 }
 
-- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler {
-    return [self queuedThen:queue :resolveHandler :nil];
+- (CKPromise* (^)(dispatch_queue_t queue,
+                                    id(^resolveHandler)(id value),
+                                    id(^rejectHandler)(id reason)))queuedStrictThen {
+    return ^CKPromise*(dispatch_queue_t queue, id resolveHandler, id rejectHandler) {
+        return [self queuedStrictThen:queue :resolveHandler :rejectHandler];
+    };
 }
 
-- (CKPromise*)queuedThen:(dispatch_queue_t)queue :(id)resolveHandler :(id)rejectHandler {
-    id (^actualResolveHandler)(id) = [CKPromise transformHandler:resolveHandler];
-    id (^actualRejectHandler)(id) = [CKPromise transformHandler:rejectHandler];
+- (CKPromise*)queuedThen:(dispatch_queue_t)queue
+                                  :(id)resolveHandler
+                                  :(id)rejectHandler {
+    return [self queuedStrictThen:queue
+                                 :[CKPromise transformHandler:resolveHandler]
+                                 :[CKPromise transformHandler:rejectHandler]];
+}
+
+- (CKPromise*)queuedStrictThen:(dispatch_queue_t)queue
+                                        :(id(^)(id value))resolveHandler
+                                        :(id(^)(id reason))rejectHandler {
+
     CKPromise *resultPromise = [CKPromise promise];
     
     CKPromiseCallbackWrapper successHandlerWrapper = ^(id value){
         dispatch_block_t blk = ^{
             @try{
-                if(actualResolveHandler) {
-                    [resultPromise resolve:actualResolveHandler(value)];
+                if(resolveHandler) {
+                    [resultPromise resolve:resolveHandler(value)];
                 }else {
                     [resultPromise resolve:value];
                 }
@@ -193,8 +218,8 @@ heapBlockClass = nil;
     CKPromiseCallbackWrapper rejectHandlerWrapper = ^(id reason){
         dispatch_block_t blk = ^{
             @try{
-                if(actualRejectHandler) {
-                    [resultPromise resolve:actualRejectHandler(reason)];
+                if(rejectHandler) {
+                    [resultPromise resolve:rejectHandler(reason)];
                 } else {
                     [resultPromise reject:reason];
                 }
@@ -220,7 +245,13 @@ heapBlockClass = nil;
 
 - (CKPromise*(^)(id resolveHandler))success {
     return ^CKPromise*(id resolveHandler) {
-        return self.then(resolveHandler, nil);
+        return [self then:resolveHandler :nil];
+    };
+}
+
+- (CKPromise* __nonnull(^__nonnull)(id __nullable (^ __nonnull resolveHandler)(id __nullable value)))strictSuccess {
+    return ^CKPromise*(id resolveHandler) {
+        return [self then:resolveHandler :nil];
     };
 }
 
@@ -228,9 +259,19 @@ heapBlockClass = nil;
     return [self then:resolveHandler :nil];
 }
 
+- (CKPromise* __nonnull)strictSuccess:(id __nullable (^ __nonnull)(id __nullable value))resolveHandler {
+    return [self then:resolveHandler :nil];
+}
+
 - (CKPromise*(^)(id rejectHandler))failure {
     return ^CKPromise*(id rejectHandler) {
-        return self.then(nil, rejectHandler);
+        return [self then:nil :rejectHandler];
+    };
+}
+
+- (CKPromise* __nonnull(^__nonnull)(id __nullable (^ __nonnull rejectHandler)(id __nullable reason)))strictFailure {
+    return ^CKPromise*(id rejectHandler) {
+        return [self then:nil :rejectHandler];
     };
 }
 
@@ -238,13 +279,17 @@ heapBlockClass = nil;
     return [self then:nil :rejectHandler];
 }
 
-- (CKPromise*(^)(id handler))always {
+- (CKPromise* __nonnull)strictfailure:(id __nullable (^ __nonnull)(id __nullable reason))rejectHandler {
+    return [self then:nil :rejectHandler];
+}
+
+- (CKPromise*(^)(void (^handler)()))always {
     return ^CKPromise*(id handler){
-        return self.then(handler, handler);
+        return [self then:handler :handler];
     };
 }
 
-- (CKPromise*)always:(id)handler {
+- (CKPromise*)always:(void(^)())handler {
     return [self then:handler :handler];
 }
 
@@ -308,7 +353,7 @@ heapBlockClass = nil;
 + (NSMethodSignature*)methodSignatureForBlock:(id)block {
     struct CKBlockLiteral *blockRef = (__bridge struct CKBlockLiteral *)block;
     // skip tagged pointers and non-block objects
-    if (((NSInteger)blockRef & 0xf) != 0x00 ||
+    if (((NSInteger)blockRef & 0x7) != 0x00 ||
         (blockRef->isa != (__bridge void *)heapBlockClass &&
         blockRef->isa != (__bridge void *)globalBlockClass &&
          blockRef->isa != (__bridge void *)stackBlockClass)) {
