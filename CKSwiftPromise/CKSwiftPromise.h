@@ -6,6 +6,7 @@
 //  Copyright © 2015 Cristik. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import "CKPromise.h"
 
 //! Project version number for CKSwiftPromise.

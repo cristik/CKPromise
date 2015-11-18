@@ -1,3 +1,7 @@
+## 1.5.1
+- Fixed framework not compiling if cloning the repo
+- Reverted the deployment targets for CKPromise (back to iOS 5.0 and OSX 10.7)
+
 ## 1.5.0
 - Added Swift support, by adding a Swift framework and subspec
 - CKSwiftPromise is currently the name of the class that can be used in swift

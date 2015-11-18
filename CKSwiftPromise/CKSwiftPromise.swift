@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CKPromise
 
 public class CKSwiftPromise {
     private var objcPromise: CKPromise

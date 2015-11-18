@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name            = 'CKSwiftPromise'
-  s.version         = '1.5.0'
+  s.version         = '1.5.1'
   s.summary         = 'Swift facade for CKPromise'
   s.homepage        = 'https://github.com/cristik/CKPromise'
   s.source          = { :git => 'https://github.com/cristik/CKPromise.git', :tag => s.version.to_s }
@@ -16,6 +16,6 @@ Pod::Spec.new do |s|
   
   s.dependencies = {'CKPromise' => '>= 1.5.0'}
   
-  s.source_files = 'CKSwiftPromise/*.{swift}'
+  s.source_files = 'CKSwiftPromise/*.{swift}', 'CKPromise/CKPromise.h'
 end
 

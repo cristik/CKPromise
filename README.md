@@ -1,4 +1,4 @@
- [![Build Status](https://travis-ci.org/cristik/CKPromise.svg?branch=develop)](https://travis-ci.org/cristik/CKPromise)
+ [![Build Status](https://travis-ci.org/cristik/CKPromise.svg?branch=master)](https://travis-ci.org/cristik/CKPromise)
 
 # CKPromise
 
