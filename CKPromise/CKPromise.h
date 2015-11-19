@@ -197,7 +197,7 @@ NS_ASSUME_NONNULL_BEGIN
   * of the first failed promise. In this scenario, the other promises are kept
   * running.
   */
-+ (CKPromise*)when:(NSArray* _Nullable)promises;
++ (CKPromise*)when:(NSArray<CKPromise*>* _Nullable)promises;
 
 /**
   * Alias for then(resolveHandler, nil)
@@ -232,9 +232,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Thrown if a promise is attempted to be resolved/rejected twice
  * or the promise is attempted to be rejected after being resolved,
- * or vice-versa
+ * or vice-versa, or if the promise is not allowed to be directly resolved/rejected
  */
-@interface CKHasResolutionException: NSException
+@interface CKInvalidOperationException: NSException
 @end
 
 /**

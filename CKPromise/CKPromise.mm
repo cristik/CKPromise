@@ -67,10 +67,10 @@ typedef void (^CKPromiseCallbackWrapper)(id);
 @end
 
 
-@implementation CKHasResolutionException
+@implementation CKInvalidOperationException
 + (instancetype)exception {
-    return [[self alloc] initWithName:@"HasResolution"
-                      reason:@"Already resolved/rejected"
+    return [[self alloc] initWithName:@"InvalidOperation"
+                      reason:@"Not allowed"
                     userInfo:nil];
 }
 @end
@@ -81,6 +81,10 @@ typedef void (^CKPromiseCallbackWrapper)(id);
                       reason:@"Passed handler is not a valid promise handler"
                     userInfo:nil];
 }
+@end
+
+@interface CKWhenPromise: CKPromise
+- (instancetype _Nonnull)initWithPromises:(NSArray<CKPromise*>*)promises;
 @end
 
 @implementation CKPromise {
@@ -119,23 +123,11 @@ heapBlockClass = nil;
 }
 
 + (CKPromise*)when:(NSArray*)promises {
+    // two special cases
     if(!promises.count) return [CKPromise resolvedWith:nil];
+    if(promises.count == 1) return promises[0];
     
-    CKPromise *resultPromise = [self promise];
-    NSMutableArray *values = [NSMutableArray arrayWithCapacity:promises.count];
-    __block NSUInteger runningPromises = promises.count;
-    
-    for(CKPromise *promise in promises){
-        [promise then:^id(id value) {
-            [values addObject:value ?: NSNull.null];
-            if(--runningPromises == 0) [resultPromise resolve:values];
-            return nil;
-        } :^id(id reason) {
-            [resultPromise reject: reason];
-            return nil;
-        }];
-    }
-    return resultPromise;
+    return [[CKWhenPromise alloc] initWithPromises:promises];
 }
 
 - (instancetype)init {
@@ -179,28 +171,34 @@ heapBlockClass = nil;
 }
 
 - (CKPromise* (^)(dispatch_queue_t queue,
-                                    id(^resolveHandler)(id value),
-                                    id(^rejectHandler)(id reason)))queuedStrictThen {
+                  id(^resolveHandler)(id value),
+                  id(^rejectHandler)(id reason)))queuedStrictThen {
     return ^CKPromise*(dispatch_queue_t queue, id resolveHandler, id rejectHandler) {
         return [self queuedStrictThen:queue :resolveHandler :rejectHandler];
     };
 }
 
 - (CKPromise*)queuedThen:(dispatch_queue_t)queue
-                                  :(id)resolveHandler
-                                  :(id)rejectHandler {
+                        :(id)resolveHandler
+                        :(id)rejectHandler {
     return [self queuedStrictThen:queue
                                  :[CKPromise transformHandler:resolveHandler]
                                  :[CKPromise transformHandler:rejectHandler]];
 }
 
-- (CKPromise*)queuedStrictThen:(dispatch_queue_t)queue
-                                        :(id(^)(id value))resolveHandler
-                                        :(id(^)(id reason))rejectHandler {
 
+- (CKPromise*)queuedStrictThen:(dispatch_queue_t)queue
+                              :(id(^)(id value))resolveHandler
+                              :(id(^)(id reason))rejectHandler {
+    return [self internalThen:queue :resolveHandler :rejectHandler];
+}
+
+- (CKPromise*)internalThen:(dispatch_queue_t)queue
+                          :(id(^)(id value))resolveHandler
+                          :(id(^)(id reason))rejectHandler {
     CKPromise *resultPromise = [CKPromise promise];
     
-    CKPromiseCallbackWrapper successHandlerWrapper = ^(id value){
+    CKPromiseCallbackWrapper resolveHandlerWrapper = ^(id value){
         dispatch_block_t blk = ^{
             @try{
                 if(resolveHandler) {
@@ -212,7 +210,8 @@ heapBlockClass = nil;
                 [resultPromise reject:ex];
             }
         };
-        dispatch_async(queue, blk);
+        if(queue) dispatch_async(queue, blk);
+        else blk();
     };
     
     CKPromiseCallbackWrapper rejectHandlerWrapper = ^(id reason){
@@ -227,16 +226,17 @@ heapBlockClass = nil;
                 [resultPromise reject:ex];
             }
         };
-        dispatch_async(queue, blk);
+        if(queue) dispatch_async(queue, blk);
+        else blk();
     };
     
     @synchronized(self) {
         if(_state == CKPromiseStateResolved) {
-            successHandlerWrapper(_valueOrReason);
+            resolveHandlerWrapper(_valueOrReason);
         } else if(_state == CKPromiseStateRejected) {
             rejectHandlerWrapper(_valueOrReason);
         } else {
-            _resolveHandlers.push_back(successHandlerWrapper);
+            _resolveHandlers.push_back(resolveHandlerWrapper);
             _rejectHandlers.push_back(rejectHandlerWrapper);
         }
     };
@@ -296,7 +296,7 @@ heapBlockClass = nil;
 - (void)resolve:(id)value {
     @synchronized(self) {
         if(_state != CKPromiseStatePending) {
-            @throw [CKHasResolutionException exception];
+            @throw [CKInvalidOperationException exception];
         }
         // 1. If promise and x refer to the same object, reject promise with a
         //    TypeError as the reason.
@@ -336,7 +336,7 @@ heapBlockClass = nil;
 - (void)reject:(id)reason {
     @synchronized(self) {
         if(_state != CKPromiseStatePending){
-            @throw [CKHasResolutionException exception];
+            @throw [CKInvalidOperationException exception];
         }
         _state = CKPromiseStateRejected;
         _valueOrReason = reason;
@@ -466,6 +466,39 @@ heapBlockClass = nil;
     // raise an exception
     @throw [CKInvalidHandlerException exception];
     return nil;
+}
+
+@end
+
+@implementation CKWhenPromise
+
+- (instancetype)initWithPromises:(NSArray<CKPromise *> *)promises {
+    self = [super init];
+    if(!self) return nil;
+    
+    NSMutableArray *values = [NSMutableArray arrayWithCapacity:promises.count];
+    __block NSUInteger runningPromises = promises.count;
+    
+    for(CKPromise *promise in promises) {
+        [promise internalThen:nil
+                             :^id(id value) {
+                                 [values addObject:value ?: NSNull.null];
+                                 if(--runningPromises == 0) [super resolve:values];
+                                 return nil;
+                             } :^id(id reason) {
+                                 [super reject: reason];
+                                 return nil;
+                             }];
+    }
+    return self;
+}
+
+- (void)resolve:(id)value {
+    @throw [CKInvalidOperationException exception];
+}
+
+- (void)reject:(id)value {
+    @throw [CKInvalidOperationException exception];
 }
 
 @end
