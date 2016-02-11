@@ -10,7 +10,7 @@ The implementation follows all Promise/A+ specs, excepting the ones not aplicabl
 The current implementation doesn't yet implement circular promise chain detection, support for this will be added later on.
 
 ## New
-Added support for Swift, check the CKSwiftPromise framework (or CKSwiftPromise spec if you're using Cocoapods)
+Added support for Swift, check the CKSwiftPromise framework (or CKSwiftPromise spec if you're using CocoaPods)
 
 ## Installation
 
@@ -20,7 +20,7 @@ Added support for Swift, check the CKSwiftPromise framework (or CKSwiftPromise s
 2. Add the `CKPromise.xcproject` to your project/workspace
 3. Link against the `CKPromise` or/and `CKSwiftPromise` targets
 
-### Via Cocoapods
+### Via CocoaPods
 1. Add `pod 'CKPromise'`, or `pod 'CKSwiftPromise` to your Podfile
 2. Run `pod install`
 
