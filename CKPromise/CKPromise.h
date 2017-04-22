@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2015, Cristian Kocza
+// Copyright (c) 2014-2017, Cristian Kocza
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
   * Returns a pending promise. Call resolve/reject to change the promise state.
   */
-+ (CKPromise* __nonnull)promise;
++ (instancetype __nonnull)promise;
 
 /** 
   * A promise provides a "then" method to access its current or eventual value 

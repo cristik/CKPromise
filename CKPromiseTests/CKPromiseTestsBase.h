@@ -23,6 +23,26 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
-#endif
+#import <XCTest/XCTest.h>
+#import <CoreData/CoreData.h>
+#include <sys/time.h>
+#include "CKPromise.h"
+
+static inline double microtime(){
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    return time.tv_sec + time.tv_usec / 1000000.0;
+}
+
+#define wait(condition, timeout) \
+{\
+double start = microtime();\
+while((condition) && microtime() - start < timeout){\
+[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];\
+}\
+}
+
+@interface CKPromiseTestsBase : XCTestCase {
+    CKPromise *promise;
+}
+@end

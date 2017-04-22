@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2015, Cristian Kocza
+// Copyright (c) 2014-2017, Cristian Kocza
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
