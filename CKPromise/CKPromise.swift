@@ -58,19 +58,6 @@ import Foundation
  * cancelling the async operation should be handled by the NSURLConnection
  * instance, or by a manager if the url requests are managed by other objects.
  */
-
-class PR2<T> {
-    func on<U,V>(success: ((T)->U)? = nil, failure:((Error)->V)? = nil) -> PR2<Either<U,V>> {
-        let pr = PR2<Either<U,V>>()
-        return pr
-    }
-    
-    func on<U>(success: ((T)->U)? = nil, failure:((Error)->U)? = nil) -> PR2<U> {
-        let pr = PR2<U>()
-        return pr
-    }
-}
-
 public class CKPromise<T> {
     internal var state: CKPromiseState<T> = .pending
     private var successCallbacks: [(T)->Void] = []
@@ -124,9 +111,30 @@ public class CKPromise<T> {
     }
     
     @discardableResult
-    public func on<U>(success successCallback: @escaping (T) throws -> U,
-                     failure failureCallback: @escaping (Error) throws -> U) -> CKPromise<U> {
-        let promise = CKPromise<U>()
+    public func on<U>(success successCallback: ((T) throws -> U)?,
+                     failure failureCallback: ((Error) throws -> U)?) -> CKPromise<U> {
+        let promise2 = CKPromise<U>()
+        switch state {
+        case .pending:
+            successCallbacks.append {
+                do {
+                    try promise2.resolve(successCallback($0))
+                } catch {
+                    promise2.reject(error)
+                }
+            }
+            failureCallback.append {
+                do {
+                    try promise2.resolve(successCallback($0))
+                } catch {
+                    promise2.reject(error)
+                }
+            }
+            failureCallbacks.append { reason in DispatchQueue.main.async { callback(reason) } }
+        case .success: break
+        case let .failure(reason): DispatchQueue.main.async { callback(reason) }
+        }
+        return promise
         register(success: {
             do { try promise.resolve(successCallback($0)) }
             catch { promise.reject(error) }
